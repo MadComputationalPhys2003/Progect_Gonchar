@@ -12,16 +12,16 @@ namespace Eigen {
 		double xmax; //Value of x at the right boundary
 		double h; //Step size for the numerical method
 		std::function<double(double)> coefficient_k; //2*(potetial-energy)
-		std::function<double(double)> coefficient_k_diff; //Differential of 2*(potetial-energy)
+		std::function<double(double)> coefficient_k_diff; //Differential of 2*(energy- potential)
 		std::vector<double> x; //Vector of x values
 		std::vector<double> psi; //Vector of wavefunction values
 		std::vector<double> psi_diff; //Vector of wavefunction derivative values
 		size_t N; //Number of steps in the numerical method
-		init(double xmin, double xmax, std::function<double(double)> coefficient_k, std::function<double(double)> coefficient_k_diff, double h)
-			: xmin(xmin), xmax(xmax), coefficient_k(coefficient_k), coefficient_k_diff(coefficient_k_diff), h(h)
+		init(double xmin, double xmax, std::function<double(double)> coefficient_k, std::function<double(double)> coefficient_k_diff, double h, parity par)
+			: xmin(xmin), xmax(xmax), coefficient_k(coefficient_k), coefficient_k_diff(coefficient_k_diff), h(h), wavefunction_parity(par)
 		{
+			N =  static_cast<size_t>(std::round(std::abs(xmax) * 1.0 / (2 * h) + 1));
 			if (wavefunction_parity == parity::Even) {
-				N = std::abs(xmin - xmax) * 1.0 / (2 * h) + 1;
 				x.resize(N);
 				psi.resize(N);
 				psi_diff.resize(N);
@@ -32,7 +32,6 @@ namespace Eigen {
 				psi[1] = bootstrap(wavefunction_parity);
 			}
 			else if (wavefunction_parity == parity::Odd) {
-				N = std::abs(xmin - xmax) * 1.0 / (h)+1;
 				x.resize(N);
 				psi.resize(N);
 				psi_diff.resize(N);
@@ -51,12 +50,12 @@ namespace Eigen {
 		double bootstrap(parity par) {
 			double psi1;
 			if (par == parity::Even) {
-				psi1 = 1 - h * h * coefficient_k(x[0]) * coefficient_k(x[0]) - (h * h) / (12)
-					* coefficient_k_diff(x[0]) * coefficient_k(x[0]);
+				psi1 = 1 - h * h * coefficient_k(x[0]) - (h * h) / (12)
+					* coefficient_k_diff(x[0]);
 			}
 			else
 			{
-				psi1 = h - (h * h * h) * 1.0 / (6) * coefficient_k(x[0]) * coefficient_k(x[0]);
+				psi1 = h - (h * h * h) * 1.0 / (6) * coefficient_k(x[0]);
 			}
 			return psi1;
 		}
