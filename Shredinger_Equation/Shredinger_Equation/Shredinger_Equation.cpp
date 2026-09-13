@@ -70,13 +70,15 @@ namespace Eigen {
 		double alpha_3 = (1 + (ini.h * ini.h) / 12.0 * ini.coefficient_k(ini.x[2]));
 		for (size_t i = 2; i < ini.N; i++) {
 			ini.psi[i] = (alpha_2 * ini.psi[i - 1] - alpha_1 * ini.psi[i - 2]) * 1.0 / (alpha_3);
-			if (ini.psi[i] > psi_max) {
+			if (std::abs(ini.psi[i]) > psi_max) {
 				std::cout << "Warning: Wavefunction exceeded maximum value at x = " << ini.x[i] << std::endl;
 				break;
 			}
-			alpha_1 = alpha_2;
-			alpha_2 = alpha_3;
-			alpha_3 = (1 + (ini.h * ini.h) / 12.0 * ini.coefficient_k(ini.x[i + 1]));
+			if (i + 1 < ini.N) {
+				alpha_1 = alpha_2;
+				alpha_2 = alpha_3;
+				alpha_3 = (1 + (ini.h * ini.h) / 12.0 * ini.coefficient_k(ini.x[i + 1]));
+			}
 		}
 	}
 
