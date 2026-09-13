@@ -17,14 +17,14 @@ namespace Eigen {
 		std::vector<double> psi; //Vector of wavefunction values
 		std::vector<double> psi_diff; //Vector of wavefunction derivative values
 		size_t N; //Number of steps in the numerical method
-		init(parity par, double h,double xmin, double xmax, std::function<double(double)> coefficient_k, std::function<double(double)> coefficient_k_diff)
+		init(parity par,double xmin, double xmax, double h, std::function<double(double)> coefficient_k, std::function<double(double)> coefficient_k_diff)
 			: wavefunction_parity(par),  h(h), xmin(xmin), xmax(xmax), coefficient_k(coefficient_k), coefficient_k_diff(coefficient_k_diff)
 		{
 			N =  static_cast<size_t>(std::round(std::abs(xmax) * 1.0 / (h) + 1));
 			x.resize(N);
 			for(size_t i=0; i<N; i++)
 			{
-				x[i] = xmin + i * h;
+				x[i] =i * h;
 			}
 			psi.resize(N);
 			psi_diff.resize(N);
@@ -56,7 +56,7 @@ namespace Eigen {
 			}
 			else
 			{
-				psi1 = 1 - (h * h / 2.0) * coefficient_k(x[0]) - (h * h * h / 6.0) * coefficient_k_diff(x[0]);
+				psi1 = h-(h * h * h / 6.0) * coefficient_k_diff(x[0]);
 			}
 			return psi1;
 		}
