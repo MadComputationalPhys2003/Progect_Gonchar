@@ -81,11 +81,11 @@ namespace Eigen {
 				break;
 			}
 			if (i + 1 < ini.N) {
-				double coeff_1 = coeff_2;
-				double coeff_2 = coeff_3;
-				double coeff_3 = ini.coefficient_k(ini.x[i + 1]);
-				alpha_1 = alpha_2;
-				alpha_2 = alpha_3;
+				coeff_1 = coeff_2;
+				coeff_2 = coeff_3;
+				coeff_3 = ini.coefficient_k(ini.x[i + 1]);
+				alpha_1 = (1 + (ini.h * ini.h) / 12.0 * coeff_1);
+				alpha_2 = 2 * (1 - (5 * ini.h * ini.h / 12.0 * coeff_2));
 				alpha_3 = (1 + (ini.h * ini.h) / 12.0 * coeff_3);
 			}
 		}
@@ -124,7 +124,42 @@ void export_to_csv(const Eigen::init& ini, const std::string& filename) {
 		out << ini.x[i] << "," << ini.psi[i] << "\n";
 	}
 }
+void potential_infinite_well(Eigen::init& ini, double E) {
+	for (std::size_t i = 0; i < ini.N; ++i) {
+		ini.coefficient_k[i] = 2.0 * E;
+		ini.coefficient_k_diff[i] = 0.0;
+	}
+}
 
+void potential_finite_well(Eigen::init& ini, double E, double a, double V0) {
+	for (std::size_t i = 0; i < ini.N; ++i) {
+		double V = (std::abs(ini.x[i]) <= a) ? -V0 : 0.0;
+		ini.coefficient_k[i] = 2.0 * (E - V);
+		ini.coefficient_k_diff[i] = 0.0;
+		// V кусочно-постоянна, производная всюду 0, кроме самой точки x=a,
+		// где она формально не определена (дельта-функция). bootstrap()
+		// читает coefficient_k_diff только в x=0, что заведомо внутри ямы
+		// при a>0 — сейчас это безопасно. Если coefficient_k_diff когда-то
+		// понадобится по всему массиву, точка x=a потребует отдельной обработки.
+	}
+}
+
+void potential_harmonic(Eigen::init& ini, double E) {
+	for (std::size_t i = 0; i < ini.N; ++i) {
+		double x = ini.x[i];
+		ini.coefficient_k[i] = 2.0 * E - x * x;
+		ini.coefficient_k_diff[i] = -2.0 * x;
+	}
+}
+
+void potential_anharmonic(Eigen::init& ini, double E, double lambda) {
+	for (std::size_t i = 0; i < ini.N; ++i) {
+		double x = ini.x[i];
+		double x2 = x * x;
+		ini.coefficient_k[i] = 2.0 * E - 2.0 * lambda * x2 * x2;
+		ini.coefficient_k_diff[i] = -8.0 * lambda * x2 * x;
+	}
+}
 int main()
 {
 	std::cout << "Hello World!\n";
