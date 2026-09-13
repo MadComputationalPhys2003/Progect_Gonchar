@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include<cstdint>
+#include <fstream>
+#include<iomanip>
 #include<numbers>
 constexpr double pi=std::numbers::pi;
 //Like program "Eigen" from Guld part 2 but used Numerov Method(Problems 17.1-17.4)
@@ -65,19 +67,26 @@ namespace Eigen {
 		}
 	};
 	void numerow_method(init& ini,const double& psi_max) {
-		double alpha_1 = (1 + (ini.h * ini.h) / 12.0 * ini.coefficient_k(ini.x[0]));
-		double alpha_2 = 2*(1-(5*ini.h*ini.h/12.0*ini.coefficient_k(ini.x[1])));
-		double alpha_3 = (1 + (ini.h * ini.h) / 12.0 * ini.coefficient_k(ini.x[2]));
+		double coeff_1 = ini.coefficient_k(ini.x[0]);
+		double coeff_2 = ini.coefficient_k(ini.x[1]);
+		double coeff_3 = ini.coefficient_k(ini.x[2]);
+		double alpha_1 = (1 + (ini.h * ini.h) / 12.0 * coeff_1);
+		double alpha_2 = 2*(1-(5*ini.h*ini.h/12.0*coeff_2));
+		double alpha_3 = (1 + (ini.h * ini.h) / 12.0 * coeff_3);
 		for (size_t i = 2; i < ini.N; i++) {
 			ini.psi[i] = (alpha_2 * ini.psi[i - 1] - alpha_1 * ini.psi[i - 2]) * 1.0 / (alpha_3);
 			if (std::abs(ini.psi[i]) > psi_max) {
 				std::cout << "Warning: Wavefunction exceeded maximum value at x = " << ini.x[i] << std::endl;
+				ini.psi.resize(i);
 				break;
 			}
 			if (i + 1 < ini.N) {
+				double coeff_1 = coeff_2;
+				double coeff_2 = coeff_3;
+				double coeff_3 = ini.coefficient_k(ini.x[i + 1]);
 				alpha_1 = alpha_2;
 				alpha_2 = alpha_3;
-				alpha_3 = (1 + (ini.h * ini.h) / 12.0 * ini.coefficient_k(ini.x[i + 1]));
+				alpha_3 = (1 + (ini.h * ini.h) / 12.0 * coeff_3);
 			}
 		}
 	}
@@ -101,7 +110,20 @@ double func(double x) {
 	return 2 * (E - potential_1(x, a, V0));
 }
 
+void export_to_csv(const Eigen::init& ini, const std::string& filename) {
+	std::ofstream out(filename);
+	if (!out.is_open()) {
+		std::cerr << "Error: could not open file " << filename << std::endl;
+		return;
+	}
 
+	out << "x,psi\n";
+	out << std::setprecision(15);
+
+	for (size_t i = 0; i < ini.psi.size(); ++i) {
+		out << ini.x[i] << "," << ini.psi[i] << "\n";
+	}
+}
 
 int main()
 {
