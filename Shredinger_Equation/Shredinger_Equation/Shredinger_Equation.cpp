@@ -6,6 +6,7 @@
 #include <fstream>
 #include<iomanip>
 #include<numbers>
+#include <utility>
 constexpr double pi=std::numbers::pi;
 //Like program "Eigen" from Guld part 2 but used Numerov Method(Problems 17.1-17.4)
 namespace Eigen {
@@ -90,15 +91,28 @@ namespace Eigen {
 			}
 		}
 	}
+	void export_to_csv(const init& ini, const std::string& filename) {
+		std::ofstream out(filename);
+		if (!out.is_open()) {
+			std::cerr << "Error: could not open file " << filename << std::endl;
+			return;
+		}
 
+		out << "x,psi\n";
+		out << std::setprecision(15);
+
+		for (size_t i = 0; i < ini.psi.size(); ++i) {
+			out << ini.x[i] << "," << ini.psi[i] << "\n";
+		}
+	}
 
 
 }
-double potential_1(double x,double a,double V0) {
+double potential_1(double x, double a, double V0) {
 	if (std::abs(x) <= a) {
 		return 0;
 	}
-	else{
+	else {
 		return V0;
 	}
 }
@@ -109,58 +123,47 @@ double func(double x) {
 	double E = n * n * pi * pi / (8 * a * a);
 	return 2 * (E - potential_1(x, a, V0));
 }
+namespace Test_Eigen {
 
-void export_to_csv(const Eigen::init& ini, const std::string& filename) {
-	std::ofstream out(filename);
-	if (!out.is_open()) {
-		std::cerr << "Error: could not open file " << filename << std::endl;
-		return;
+	std::pair<std::function<double(double)>, std::function<double(double)>>
+		make_infinite_well(double E) {
+		return {
+			[E](double) { return 2.0 * E; },
+			[](double) { return 0.0; }
+		};
 	}
 
-	out << "x,psi\n";
-	out << std::setprecision(15);
-
-	for (size_t i = 0; i < ini.psi.size(); ++i) {
-		out << ini.x[i] << "," << ini.psi[i] << "\n";
+	std::pair<std::function<double(double)>, std::function<double(double)>>
+		make_finite_well(double E, double a, double V0) {
+		return {
+			[E, a, V0](double x) { return 2.0 * (E - potential_1(x, a, V0)); },
+			[](double) { return 0.0; } // V кусочно-постоянна; про x=a — см. ниже
+		};
 	}
-}
-void potential_infinite_well(Eigen::init& ini, double E) {
-	for (std::size_t i = 0; i < ini.N; ++i) {
-		ini.coefficient_k[i] = 2.0 * E;
-		ini.coefficient_k_diff[i] = 0.0;
-	}
-}
 
-void potential_finite_well(Eigen::init& ini, double E, double a, double V0) {
-	for (std::size_t i = 0; i < ini.N; ++i) {
-		double V = (std::abs(ini.x[i]) <= a) ? -V0 : 0.0;
-		ini.coefficient_k[i] = 2.0 * (E - V);
-		ini.coefficient_k_diff[i] = 0.0;
-		// V кусочно-постоянна, производная всюду 0, кроме самой точки x=a,
-		// где она формально не определена (дельта-функция). bootstrap()
-		// читает coefficient_k_diff только в x=0, что заведомо внутри ямы
-		// при a>0 — сейчас это безопасно. Если coefficient_k_diff когда-то
-		// понадобится по всему массиву, точка x=a потребует отдельной обработки.
+	std::pair<std::function<double(double)>, std::function<double(double)>>
+		make_harmonic(double E) {
+		return {
+			[E](double x) { return 2.0 * E - x * x; },
+			[](double x) { return -2.0 * x; }
+		};
 	}
-}
 
-void potential_harmonic(Eigen::init& ini, double E) {
-	for (std::size_t i = 0; i < ini.N; ++i) {
-		double x = ini.x[i];
-		ini.coefficient_k[i] = 2.0 * E - x * x;
-		ini.coefficient_k_diff[i] = -2.0 * x;
+	std::pair<std::function<double(double)>, std::function<double(double)>>
+		make_anharmonic(double E, double lambda) {
+		return {
+			[E, lambda](double x) {
+				double x2 = x * x;
+				return 2.0 * E - x2 - 2.0 * lambda * x2 * x2;
+			},
+			[lambda](double x) {
+				double x2 = x * x;
+				return -2.0 * x - 8.0 * lambda * x2 * x;
+			}
+		};
 	}
 }
 
-void potential_anharmonic(Eigen::init& ini, double E, double lambda) {
-	for (std::size_t i = 0; i < ini.N; ++i) {
-		double x = ini.x[i];
-		double x2 = x * x;
-		ini.coefficient_k[i] = 2.0 * E - 2.0 * lambda * x2 * x2;
-		ini.coefficient_k_diff[i] = -8.0 * lambda * x2 * x;
-	}
-}
-int main()
-{
-	std::cout << "Hello World!\n";
+int main() {
+	
 }
