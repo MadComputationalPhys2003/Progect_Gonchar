@@ -2,6 +2,7 @@
 #include<functional>
 #include <vector>
 #include <cmath>
+#include<complex>
 #include<cstdint>
 #include <fstream>
 #include<iomanip>
@@ -123,7 +124,7 @@ double func(double x) {
 	double E = n * n * pi * pi / (8 * a * a);
 	return 2 * (E - potential_1(x, a, V0));
 }
-namespace Test_Eigen {
+namespace Test_Eigen_func {
 
 	std::pair<std::function<double(double)>, std::function<double(double)>>
 		make_infinite_well(double E) {
@@ -163,7 +164,208 @@ namespace Test_Eigen {
 		};
 	}
 }
+namespace Out_Eigen {
+	int count_nodes(const std::vector<double>& psi) {
+		int nodes = 0;
+		for (size_t i = 1; i < psi.size(); ++i) {
+			if (psi[i - 1] * psi[i] < 0.0) ++nodes;
+		}
+		return nodes;
+	}
+
+	void test_infinite_well() {
+		const double a = 1.0;
+		const double h = 0.001;
+		const double psi_max = 1e6;
+		const int n = 1;
+		const double E_exact = n * n * pi * pi / (8.0 * a * a);
+
+		auto [k, kd] = Test_Eigen_func::make_infinite_well(E_exact);
+		Eigen::init ini(Eigen::init::parity::Even, 0.0, a, h, k, kd);
+		Eigen::numerow_method(ini, psi_max);
+		Eigen::export_to_csv(ini, "infinite_well.csv");
+
+		double psi_end = ini.psi.back();
+		int nodes = count_nodes(ini.psi);
+		bool pass = std::abs(psi_end) < 1e-3 && nodes == 0;
+
+		std::cout << "[infinite well] n=" << n
+			<< " E_exact=" << E_exact
+			<< " psi(a)=" << psi_end
+			<< " nodes=" << nodes
+			<< " (" << ini.psi.size() << "/" << ini.N << " points)"
+			<< (pass ? "  PASS" : "  FAIL") << "\n";
+	}
+
+	void test_harmonic() {
+		const double xmax = 8.0;
+		const double h = 0.001;
+		const double psi_max = 1e6;
+		const int n = 0;
+		const double E_exact = n + 0.5;
+
+		auto [k, kd] = Test_Eigen_func::make_harmonic(E_exact);
+		Eigen::init ini(Eigen::init::parity::Even, 0.0, xmax, h, k, kd);
+		Eigen::numerow_method(ini, psi_max);
+		Eigen::export_to_csv(ini, "harmonic.csv");
+
+		double psi_end = ini.psi.back();
+		int nodes = count_nodes(ini.psi);
+		bool pass = std::abs(psi_end) < 1e-6 && nodes == 0;
+
+		std::cout << "[harmonic] n=" << n
+			<< " E_exact=" << E_exact
+			<< " psi(xmax)=" << psi_end
+			<< " nodes=" << nodes
+			<< " (" << ini.psi.size() << "/" << ini.N << " points)"
+			<< (pass ? "  PASS" : "  FAIL") << "\n";
+	}
+
+	void test_finite_well() {
+		const double a = 1.0, V0 = 150.0, h = 0.001, psi_max = 1e6;
+		const double E_guess = 1.0 * pi * pi / (8.0 * a * a);
+
+		auto [k, kd] = Test_Eigen_func::make_finite_well(E_guess, a, V0);
+		Eigen::init ini(Eigen::init::parity::Even, 0.0, a * 3.0, h, k, kd);
+		Eigen::numerow_method(ini, psi_max);
+		Eigen::export_to_csv(ini, "finite_well.csv");
+
+		std::cout << "[finite well] E_guess=" << E_guess
+			<< " psi(edge)=" << ini.psi.back()
+			<< " nodes=" << count_nodes(ini.psi)
+			<< " (" << ini.psi.size() << "/" << ini.N << " points)"
+			<< "  -- sanity-check, не PASS/FAIL\n";
+	}
+
+	void test_anharmonic() {
+		const double lambda = 0.1;
+		const double xmax = 8.0, h = 0.0001, psi_max = 1e4;
+		const double E_guess = 0.175;
+
+		auto [k, kd] = Test_Eigen_func::make_anharmonic(E_guess, lambda);
+		Eigen::init ini(Eigen::init::parity::Even, 0.0, xmax, h, k, kd);
+		Eigen::numerow_method(ini, psi_max);
+		Eigen::export_to_csv(ini, "anharmonic.csv");
+
+		std::cout << "[anharmonic] lambda=" << lambda
+			<< " E_guess=" << E_guess
+			<< " psi(xmax)=" << ini.psi.back()
+			<< " nodes=" << count_nodes(ini.psi)
+			<< " (" << ini.psi.size() << "/" << ini.N << " points)"
+			<< "  -- sanity-check, не PASS/FAIL\n";
+	}
+}
+namespace Krank_Nicolson {
+	namespace detail {
+		std::vector<std::complex<double>> thomas_algorithm(const std::complex<double> A,
+			const std::vector<std::complex<double>>& B,
+			const std::vector<std::complex<double>>& D) {
+			if(D.empty()||B.empty()||B.size()!=D.size()){
+				throw std::runtime_error("Error: D or B vector is empty or their sizes do not match.");
+			};
+			size_t n = D.size();
+			std::vector<std::complex<double>> psi_state;
+			psi_state.resize(n);
+			std::vector<std::complex<double>> alpha;
+			std::vector<std::complex<double>> beta;
+			alpha.resize(n);
+			beta.resize(n);
+			alpha[0] = -A / B[0];
+			beta[0] = D[0] / B[0];
+			for(size_t i =1;i<n;i++){
+				alpha[i] = -A*1.0 / (B[i] + A * alpha[i - 1]);
+				beta[i] = (D[i] - A * beta[i - 1]) * 1.0 / (B[i] + A * alpha[i - 1]);
+			}
+			psi_state[n - 1] = beta[n - 1];
+			for(size_t i = n - 2; i < n; --i) {
+				psi_state[i] = alpha[i] * psi_state[i + 1] + beta[i];
+			}
+			return psi_state;
+		}
+
+	}
+	class init {
+	public:
+		double dx, dt; //Spatial and temporal step sizes
+		std::function<double(double, double)> V;//Potential function
+		std::vector<std::complex<double>> psi; //Wavefunction vector at time dt
+		std::vector<double> x; //Spatial grid vector
+		double xmin, xmax; //left and right boundary
+		size_t N; //Number of spatial grid points
+		double t; //Current time
+		init(double ddx, double ddt, std::function<double(double, double)> V_func,
+			double x_min, double x_max) :
+			dx(ddx), dt(ddt), V(V_func), xmin(x_min), xmax(x_max), t(0.0)
+		{
+			N = static_cast<size_t>(std::round((std::abs(xmax - xmin)) / dx)) + 1;
+			dx = std::abs(xmax - xmin) / (N - 1);
+			x.resize(N);
+			for (size_t i = 0; i < N; ++i) {
+				x[i] = xmin + i * dx;
+			}
+			psi.resize(N, 0.0);
+		}
+
+	};
+
+	void step(init& ini) {
+		std::vector<std::complex<double>> B(ini.N-2);
+		std::vector<std::complex<double>> D(ini.N-2);
+		const double dx2 = ini.dx * ini.dx;
+		const std::complex<double> A = std::complex<double>(0, -ini.dt / (4.0 * dx2));
+		size_t n = ini.N - 2;//Number of interior points
+		double t_mid =ini.t+ini.dt*0.5;
+		std::vector<std::complex<double>> psi_new;
+		for (size_t i = 0; i < n; i++) {
+			double V_mid=ini.V(ini.x[i + 1], t_mid);
+			B[i]=std::complex<double>(1.0, ini.dt*0.5*(1.0/dx2 + V_mid));
+			D[i] = (2.0 - B[i]) * ini.psi[i+1] - A * (ini.psi[i + 2] + ini.psi[i]);
+		}
+		psi_new = detail::thomas_algorithm(A, B, D);
+		for(size_t i=0;i<n;i++){
+			ini.psi[i+1] = psi_new[i];
+		}
+		ini.psi[0] = 0.0; //Boundary condition at the left end
+		ini.psi[ini.N - 1] = 0.0; //Boundary condition at the right end
+		ini.t += ini.dt;
+	}
+	void evolve(init& ini, size_t n_steps) {
+		for (size_t k = 0; k < n_steps; ++k)
+			step(ini);
+	}
+	void write_psi_csv(const std::string& filename,
+		const std::vector<double>& x,
+		const std::vector<std::complex<double>>& psi)
+	{
+		std::ofstream out(filename);
+		if (!out.is_open())
+			throw std::runtime_error("write_psi_csv: cannot open " + filename);
+
+		out << std::setprecision(15);
+		out << "x,Re_psi,Im_psi\n";
+
+		for (size_t j = 0; j < psi.size(); ++j) {
+			out << x[j] << ","
+				<< psi[j].real() << ","
+				<< psi[j].imag() << "\n";
+		}
+	}
+
+
+
+
+
+}
+
+
+
+
+
+
 
 int main() {
-	
+	Out_Eigen::test_infinite_well();
+	Out_Eigen::test_harmonic();
+	Out_Eigen::test_finite_well();
+	Out_Eigen::test_anharmonic();
 }
