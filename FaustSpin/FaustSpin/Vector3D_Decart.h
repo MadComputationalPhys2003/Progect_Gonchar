@@ -47,16 +47,16 @@ namespace Vector3D_Decart
 			return Vec3D[i];
 		}
 	};
-	Vector3D_Dec operator+(Vector3D_Dec vec1,Vector3D_Dec vec2) {
+	inline Vector3D_Dec operator+(Vector3D_Dec vec1,Vector3D_Dec vec2) {
 		return vec1 += vec2;
 	}
-	Vector3D_Dec operator-(Vector3D_Dec vec1,Vector3D_Dec vec2) {
+	inline Vector3D_Dec operator-(Vector3D_Dec vec1,Vector3D_Dec vec2) {
 		return vec1 -= vec2;
 	}
-	Vector3D_Dec operator*(Vector3D_Dec vec, double scalar) {
+	inline Vector3D_Dec operator*(Vector3D_Dec vec, double scalar) {
 		return vec *= scalar;
 	}
-	double scalar_product(const Vector3D_Dec& vec1, const Vector3D_Dec& vec2) {
+	inline double scalar_product(const Vector3D_Dec& vec1, const Vector3D_Dec& vec2) {
 		return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
 	}
 
