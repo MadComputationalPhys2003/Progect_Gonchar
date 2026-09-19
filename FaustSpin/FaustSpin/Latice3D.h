@@ -40,8 +40,8 @@ namespace Lattice3D {
 		}
 		void set_cells(const std::vector<Cell3D>& new_cells) {
 			if (new_cells.size() != N) throw std::invalid_argument("New cells vector size must match the total number of cells");
-			lattice_set = true;
 			cells = new_cells;
+			lattice_set = true;
 		}
 		const Cell3D& get_cell0() const {
 			return cell0;
