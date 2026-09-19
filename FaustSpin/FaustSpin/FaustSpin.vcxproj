@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Latice3D.h" />
+    <ClInclude Include="Lattice2D.h" />
     <ClInclude Include="Vector3D_Decart.h" />
     <ClInclude Include="Urfaust.h" />
   </ItemGroup>
