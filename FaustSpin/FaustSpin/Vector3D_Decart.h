@@ -1,46 +1,51 @@
 #pragma once
 #include <cmath>
+#include<stdexcept>
 #include<array>
 namespace Vector3D_Decart
 {
 	class Vector3D_Dec
 	{
-	public:
-		double norm() const { return std::sqrt(Vx * Vx + Vy * Vy + Vz * Vz); }
-		double Vx, Vy, Vz;//Projections
+	private:
 		std::array<double, 3> Vec3D;
+	public:
+		double norm() const { return std::sqrt(Vec3D[0] * Vec3D[0] + Vec3D[1] * Vec3D[1] + Vec3D[2] * Vec3D[2]); }
 		double norma;
-		explicit Vector3D_Dec(double x, double y, double z) : Vx(x), Vy(y), Vz(z), Vec3D({ x, y, z }) {
+		explicit Vector3D_Dec(double x, double y, double z) : Vec3D({ x, y, z }) {
 			norma = norm();
 		}
 		Vector3D_Dec operator-()const {
-			return Vector3D_Dec(-Vx, -Vy, -Vz);
+			return Vector3D_Dec(-Vec3D[0], -Vec3D[1], -Vec3D[2]);
 		}
 		Vector3D_Dec& operator+=(const Vector3D_Dec& other) {
-			Vx += other.Vx;
-			Vy += other.Vy;
-			Vz += other.Vz;
-			Vec3D = { Vx, Vy, Vz };
+			Vec3D[0] += other.Vec3D[0];
+			Vec3D[1] += other.Vec3D[1];
+			Vec3D[2] += other.Vec3D[2];
 			norma = norm();
 			return *this;
 		}
 		Vector3D_Dec& operator-=(const Vector3D_Dec& other) {
-			Vx -= other.Vx;
-			Vy -= other.Vy;
-			Vz -= other.Vz;
-			Vec3D = { Vx, Vy, Vz };
+			Vec3D[0] -= other.Vec3D[0];
+			Vec3D[1] -= other.Vec3D[1];
+			Vec3D[2] -= other.Vec3D[2];
 			norma = norm();
 			return *this;
 		}
 		Vector3D_Dec operator*=(double scalar) {
-			Vx *= scalar;
-			Vy *= scalar;
-			Vz *= scalar;
-			Vec3D = { Vx, Vy, Vz };
+			Vec3D[0] *= scalar;
+			Vec3D[1] *= scalar;
+			Vec3D[2] *= scalar;
 			norma = norm();
 			return *this;
 		}
-
+		const double& operator[](size_t i)const {
+			if(i>=3) throw std::out_of_range("Index out of range");
+			return Vec3D[i];
+		}
+		double& operator[](size_t i){
+			if (i >= 3) throw std::out_of_range("Index out of range");
+			return Vec3D[i];
+		}
 	};
 	Vector3D_Dec operator+(Vector3D_Dec vec1,Vector3D_Dec vec2) {
 		return vec1 += vec2;
@@ -52,6 +57,7 @@ namespace Vector3D_Decart
 		return vec *= scalar;
 	}
 	double scalar_product(const Vector3D_Dec& vec1, const Vector3D_Dec& vec2) {
-		return vec1.Vx * vec2.Vx + vec1.Vy * vec2.Vy + vec1.Vz * vec2.Vz;
+		return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
 	}
+
 }
