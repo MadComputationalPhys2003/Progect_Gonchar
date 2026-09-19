@@ -26,7 +26,7 @@ namespace Vector3D_Decart
 			Vec3D[2] -= other.Vec3D[2];
 			return *this;
 		}
-		Vector3D_Dec operator*=(double scalar) {
+		Vector3D_Dec& operator*=(double scalar) {
 			Vec3D[0] *= scalar;
 			Vec3D[1] *= scalar;
 			Vec3D[2] *= scalar;
