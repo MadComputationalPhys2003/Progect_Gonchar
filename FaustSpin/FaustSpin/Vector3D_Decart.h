@@ -9,10 +9,7 @@ namespace Vector3D_Decart
 	private:
 		std::array<double, 3> Vec3D;
 	public:
-		double norm() const { return std::sqrt(Vec3D[0] * Vec3D[0] + Vec3D[1] * Vec3D[1] + Vec3D[2] * Vec3D[2]); }
-		double norma;
 		explicit Vector3D_Dec(double x, double y, double z) : Vec3D({ x, y, z }) {
-			norma = norm();
 		}
 		Vector3D_Dec operator-()const {
 			return Vector3D_Dec(-Vec3D[0], -Vec3D[1], -Vec3D[2]);
@@ -21,21 +18,18 @@ namespace Vector3D_Decart
 			Vec3D[0] += other.Vec3D[0];
 			Vec3D[1] += other.Vec3D[1];
 			Vec3D[2] += other.Vec3D[2];
-			norma = norm();
 			return *this;
 		}
 		Vector3D_Dec& operator-=(const Vector3D_Dec& other) {
 			Vec3D[0] -= other.Vec3D[0];
 			Vec3D[1] -= other.Vec3D[1];
 			Vec3D[2] -= other.Vec3D[2];
-			norma = norm();
 			return *this;
 		}
 		Vector3D_Dec operator*=(double scalar) {
 			Vec3D[0] *= scalar;
 			Vec3D[1] *= scalar;
 			Vec3D[2] *= scalar;
-			norma = norm();
 			return *this;
 		}
 		const double& operator[](size_t i)const {
@@ -59,5 +53,10 @@ namespace Vector3D_Decart
 	inline double scalar_product(const Vector3D_Dec& vec1, const Vector3D_Dec& vec2) {
 		return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
 	}
-
+	inline double norm(const Vector3D_Dec& vec) { return std::sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec	[2]); }
+	inline Vector3D_Dec normalize(const Vector3D_Dec& vec) {
+		double n = norm(vec);
+		if (n == 0) throw std::runtime_error("Cannot normalize zero vector");
+		return vec * (1.0 / n);
+	}
 }
