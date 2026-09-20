@@ -23,7 +23,7 @@ namespace Lattice3D {
 		bool lattice_set;//
 	public:
 		explicit Lattice3D_Data(uint64_t Lx, uint64_t Ly, uint64_t Lz,
-			int64_t x0 = 0, int64_t y0 = 0, int64_t z0 = 0) :
+			uint64_t x0 = 0, uint64_t y0 = 0, uint64_t z0 = 0) :
 			Lx(Lx), Ly(Ly), Lz(Lz), cell0(x0, y0, z0) {
 			N = static_cast<size_t>(Lx * Ly * Lz);
 			cells.resize(N);
