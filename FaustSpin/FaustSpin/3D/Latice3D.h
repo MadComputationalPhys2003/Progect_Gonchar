@@ -52,14 +52,14 @@ namespace Lattice3D {
 		const size_t& get_N() const { return N; }
 		std::array<int64_t, 3> get_coords(size_t idx) const {
 			if (idx >= N) throw std::out_of_range("Index out of range");
-			int64_t x=idx/(Ly*Lz);
-			int64_t r = idx % (Ly * Lz);
-			int64_t y = r / Lz;
-			int64_t z = r % Lz;
+			uint64_t x=idx/(Ly*Lz);
+			uint64_t r = idx % (Ly * Lz);
+			uint64_t y = r / Lz;
+			uint64_t z = r % Lz;
 			return {x, y, z};
 		}
-		size_t get_index(int64_t x, int64_t y, int64_t z) const {
-			if (x < 0 || x >= static_cast<int64_t>(Lx) ||
+		size_t get_index(uint64_t x, uint64_t y, uint64_t z) const {
+			if (x >= Lx || y >= Ly || z >= Lz) {
 				y < 0 || y >= static_cast<int64_t>(Ly) ||
 				z < 0 || z >= static_cast<int64_t>(Lz)) {
 				throw std::out_of_range("Coordinates out of range");
@@ -67,7 +67,7 @@ namespace Lattice3D {
 			return static_cast<size_t>(x * Ly * Lz + y * Lz + z);
 		}
 	};
-	inline Latice3D_Data create_lattice3D(const Latice3D_Data& ld, std::function<Cell3D(const Latice3D_Data&, int64_t, int64_t, int64_t)> func) {
+	inline Latice3D_Data create_lattice3D(const Latice3D_Data& ld, std::function<Cell3D(const Latice3D_Data&, uint64_t, uint64_t, uint64_t)> func) {
 		std::vector<Cell3D> new_cells(ld.get_N());
 		size_t ion_count = 0;
 		for (size_t x = 0; x < ld.get_Lx() && ion_count < ld.get_N(); x++) {
@@ -84,19 +84,19 @@ namespace Lattice3D {
 	}
 }
 namespace Lattice3D_Setters {
-	inline Cell3D set_cube_cell(const Lattice3D::Latice3D_Data& lattice,int64_t x, int64_t y, int64_t z) {
+	inline Cell3D set_cube_cell(const Lattice3D::Latice3D_Data& lattice,uint64_t x, uint64_t y, uint64_t z) {
 		Cell3D cell_0 = lattice.get_cell0();
-		int64_t x0 = cell_0.x;
-		int64_t y0 = cell_0.y;
-		int64_t z0 = cell_0.z;
-		if ((0>x||x >= lattice.get_Lx()) ||
+		uint64_t x0 = cell_0.x;
+		uint64_t y0 = cell_0.y;
+		uint64_t z0 = cell_0.z;
+		if (x >= lattice.get_Lx() ||
 			(0>y||y >= lattice.get_Ly() )||
 			(0>z||z >= lattice.get_Lz())) {
 			throw std::out_of_range("Coordinates out of range");
 		}
-		int64_t x_cell = (x0 + x);
-		int64_t y_cell = (y0 + y);
-		int64_t z_cell = (z0 + z);
+		uint64_t x_cell = (x0 + x);
+		uint64_t y_cell = (y0 + y);
+		uint64_t z_cell = (z0 + z);
 		return Cell3D(x_cell, y_cell, z_cell);
 	}
 }

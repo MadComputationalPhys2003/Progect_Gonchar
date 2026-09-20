@@ -7,8 +7,8 @@
 
 struct Cell2D
 {
-	int64_t x, y;
-	Cell2D(int64_t x = 0, int64_t y = 0) : x(x), y(y) {}
+	uint64_t x, y;
+	Cell2D(uint64_t x = 0, uint64_t y = 0) : x(x), y(y) {}
 };
 namespace Lattice2D {
 	class Lattice2D_Data {
@@ -48,19 +48,18 @@ namespace Lattice2D {
 		const size_t& get_N() const { return N; }
 		std::array<int64_t, 2> get_coords(size_t idx) const {
 			if (idx >= N) throw std::out_of_range("Index out of range");
-			int64_t x = idx / Ly;
-			int64_t y = idx % Ly;
+			uint64_t x = idx / Ly;
+			uint64_t y = idx % Ly;
 			return { x, y };
 		}
-		size_t get_index(int64_t x, int64_t y) const {
-			if (x < 0 || x >= static_cast<int64_t>(Lx) ||
-				y < 0 || y >= static_cast<int64_t>(Ly)) {
+		size_t get_index(uint64_t x, uint64_t y) const {
+			if (x >= Lx || y >= Ly) {
 				throw std::out_of_range("Coordinates out of range");
 			}
 			return static_cast<size_t>(x * Ly + y);
 		}
 	};
-	inline Lattice2D_Data create_lattice2D(const Lattice2D_Data& ld, std::function<Cell2D(const Lattice2D_Data&, int64_t, int64_t)> func) {
+	inline Lattice2D_Data create_lattice2D(const Lattice2D_Data& ld, std::function<Cell2D(const Lattice2D_Data&, uint64_t, uint64_t)> func) {
 		std::vector<Cell2D> new_cells(ld.get_N());
 		size_t ion_count = 0;
 		for (size_t x = 0; x < ld.get_Lx() && ion_count < ld.get_N(); x++) {
@@ -75,16 +74,16 @@ namespace Lattice2D {
 	}
 }
 namespace Lattice2D_Setters {
-	inline Cell2D set_square_cell(const Lattice2D::Lattice2D_Data& lattice, int64_t x, int64_t y) {
+	inline Cell2D set_square_cell(const Lattice2D::Lattice2D_Data& lattice, uint64_t x, uint64_t y) {
 		const Cell2D& cell_0 = lattice.get_cell0();
-		int64_t x0 = cell_0.x;
-		int64_t y0 = cell_0.y;
+		uint64_t x0 = cell_0.x;
+		uint64_t y0 = cell_0.y;
 		if ((0 > x || x >= lattice.get_Lx()) ||
 			(0 > y || y >= lattice.get_Ly())) {
 			throw std::out_of_range("Coordinates out of range");
 		}
-		int64_t x_cell = (x0 + x);
-		int64_t y_cell = (y0 + y);
+		uint64_t x_cell = (x0 + x);
+		uint64_t y_cell = (y0 + y);
 		return Cell2D(x_cell, y_cell);
 	}
 }

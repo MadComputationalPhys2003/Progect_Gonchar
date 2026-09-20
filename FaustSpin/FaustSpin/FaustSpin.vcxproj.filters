@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы заголовков\NewFilter1">
+      <UniqueIdentifier>{4c22ef31-59e8-4195-a0a3-b7b17778fd19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FaustSpin.cpp">
@@ -26,13 +29,19 @@
     <ClInclude Include="Vector3D_Decart.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Latice3D.h">
+    <ClInclude Include="1D\Neighbors_1D.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Lattice2D.h">
+    <ClInclude Include="1D\Lattice1D.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Lattice1D.h">
+    <ClInclude Include="3D\Latice3D.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="2D\Lattice2D.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="2D\Neighbors_2D_Cube.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
