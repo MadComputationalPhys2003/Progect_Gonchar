@@ -44,6 +44,7 @@ inline std::vector<uint64_t> get_neighbors_periodic_BC(const Lattice2D::Lattice2
 	//int64_t x_new, y_new;
 	size_t idx = 0;
 	for (uint64_t x = 0; x < lx; x++) {
+
 		for (uint64_t y = 0; y < ly; y++) {
 			idx = 4 * (ly * x + y);
 			if (x + 1 == lx) {
