@@ -14,7 +14,7 @@ struct Cell3D
 	Cell3D(int64_t x=0, int64_t y=0, int64_t z=0) : x(x), y(y), z(z) {}
 };
 namespace Lattice3D {
-	class Latice3D_Data {
+	class Lattice3D_Data {
 	private:
 		uint64_t Lx, Ly, Lz; // Dimensions of the lattice
 		size_t N; // Total number of cells
@@ -22,7 +22,7 @@ namespace Lattice3D {
 		Cell3D cell0; // Reference cell
 		bool lattice_set;//
 	public:
-		explicit Latice3D_Data(uint64_t Lx, uint64_t Ly, uint64_t Lz,
+		explicit Lattice3D_Data(uint64_t Lx, uint64_t Ly, uint64_t Lz,
 			int64_t x0 = 0, int64_t y0 = 0, int64_t z0 = 0) :
 			Lx(Lx), Ly(Ly), Lz(Lz), cell0(x0, y0, z0) {
 			N = static_cast<size_t>(Lx * Ly * Lz);
@@ -65,7 +65,7 @@ namespace Lattice3D {
 			return static_cast<size_t>(x * Ly * Lz + y * Lz + z);
 		}
 	};
-	inline Latice3D_Data create_lattice3D(const Latice3D_Data& ld, std::function<Cell3D(const Latice3D_Data&, uint64_t, uint64_t, uint64_t)> func) {
+	inline Lattice3D_Data create_lattice3D(const Lattice3D_Data& ld, std::function<Cell3D(const Lattice3D_Data&, uint64_t, uint64_t, uint64_t)> func) {
 		std::vector<Cell3D> new_cells(ld.get_N());
 		size_t ion_count = 0;
 		for (size_t x = 0; x < ld.get_Lx() && ion_count < ld.get_N(); x++) {
@@ -76,13 +76,13 @@ namespace Lattice3D {
 				}
 			}
 		}
-		Latice3D_Data new_lattice(ld.get_Lx(), ld.get_Ly(), ld.get_Lz(), ld.get_cell0().x, ld.get_cell0().y, ld.get_cell0().z);
+		Lattice3D_Data new_lattice(ld.get_Lx(), ld.get_Ly(), ld.get_Lz(), ld.get_cell0().x, ld.get_cell0().y, ld.get_cell0().z);
 		new_lattice.set_cells(new_cells);
 		return new_lattice;
 	}
 }
 namespace Lattice3D_Setters {
-	inline Cell3D set_cube_cell(const Lattice3D::Latice3D_Data& lattice,uint64_t x, uint64_t y, uint64_t z) {
+	inline Cell3D set_cube_cell(const Lattice3D::Lattice3D_Data& lattice,uint64_t x, uint64_t y, uint64_t z) {
 		Cell3D cell_0 = lattice.get_cell0();
 		uint64_t x0 = cell_0.x;
 		uint64_t y0 = cell_0.y;

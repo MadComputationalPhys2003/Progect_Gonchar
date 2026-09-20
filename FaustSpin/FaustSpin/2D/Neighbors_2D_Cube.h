@@ -36,15 +36,13 @@ namespace Lattice2D_Neighbors_Open_BC {
 	}
 }
 
-inline std::vector<uint64_t> get_neighbors_periodic_BC(const Lattice2D::Lattice2D_Data& ld) {
+inline std::vector<uint64_t> get_neighbors_periodic_BC_2D(const Lattice2D::Lattice2D_Data& ld) {
 	std::vector<uint64_t> neighbors;
 	neighbors.resize(4 * ld.get_N());
 	uint64_t lx = ld.get_Lx();
 	uint64_t ly = ld.get_Ly();
-	//int64_t x_new, y_new;
 	size_t idx = 0;
 	for (uint64_t x = 0; x < lx; x++) {
-
 		for (uint64_t y = 0; y < ly; y++) {
 			idx = 4 * (ly * x + y);
 			if (x + 1 == lx) {

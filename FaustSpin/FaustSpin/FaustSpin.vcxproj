@@ -132,6 +132,7 @@
     <ClInclude Include="2D\Lattice2D.h" />
     <ClInclude Include="2D\Neighbors_2D_Cube.h" />
     <ClInclude Include="3D\Latice3D.h" />
+    <ClInclude Include="3D\Neighbors_3D_Cube.h" />
     <ClInclude Include="Vector3D_Decart.h" />
     <ClInclude Include="Urfaust.h" />
   </ItemGroup>

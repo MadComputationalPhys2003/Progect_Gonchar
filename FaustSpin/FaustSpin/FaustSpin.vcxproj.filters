@@ -44,5 +44,8 @@
     <ClInclude Include="2D\Neighbors_2D_Cube.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="3D\Neighbors_3D_Cube.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
