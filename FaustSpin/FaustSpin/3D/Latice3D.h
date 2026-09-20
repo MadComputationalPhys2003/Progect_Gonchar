@@ -50,7 +50,7 @@ namespace Lattice3D {
 		const uint64_t& get_Ly() const { return Ly; }
 		const uint64_t& get_Lz() const { return Lz; }
 		const size_t& get_N() const { return N; }
-		std::array<int64_t, 3> get_coords(size_t idx) const {
+		std::array<uint64_t, 3> get_coords(size_t idx) const {
 			if (idx >= N) throw std::out_of_range("Index out of range");
 			uint64_t x=idx/(Ly*Lz);
 			uint64_t r = idx % (Ly * Lz);
@@ -60,8 +60,6 @@ namespace Lattice3D {
 		}
 		size_t get_index(uint64_t x, uint64_t y, uint64_t z) const {
 			if (x >= Lx || y >= Ly || z >= Lz) {
-				y < 0 || y >= static_cast<int64_t>(Ly) ||
-				z < 0 || z >= static_cast<int64_t>(Lz)) {
 				throw std::out_of_range("Coordinates out of range");
 			}
 			return static_cast<size_t>(x * Ly * Lz + y * Lz + z);
@@ -90,8 +88,8 @@ namespace Lattice3D_Setters {
 		uint64_t y0 = cell_0.y;
 		uint64_t z0 = cell_0.z;
 		if (x >= lattice.get_Lx() ||
-			(0>y||y >= lattice.get_Ly() )||
-			(0>z||z >= lattice.get_Lz())) {
+			(y >= lattice.get_Ly() )||
+			(z >= lattice.get_Lz())) {
 			throw std::out_of_range("Coordinates out of range");
 		}
 		uint64_t x_cell = (x0 + x);
