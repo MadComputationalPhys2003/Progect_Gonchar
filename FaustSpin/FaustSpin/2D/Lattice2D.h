@@ -20,7 +20,7 @@ namespace Lattice2D {
 		bool lattice_set;
 	public:
 		explicit Lattice2D_Data(uint64_t Lx, uint64_t Ly,
-			int64_t x0 = 0, int64_t y0 = 0) :
+			uint64_t x0 = 0, uint64_t y0 = 0) :
 			Lx(Lx), Ly(Ly), cell0(x0, y0) {
 			N = static_cast<size_t>(Lx * Ly);
 			cells.resize(N);
@@ -46,7 +46,7 @@ namespace Lattice2D {
 		const uint64_t& get_Lx() const { return Lx; }
 		const uint64_t& get_Ly() const { return Ly; }
 		const size_t& get_N() const { return N; }
-		std::array<int64_t, 2> get_coords(size_t idx) const {
+		std::array<uint64_t, 2> get_coords(size_t idx) const {
 			if (idx >= N) throw std::out_of_range("Index out of range");
 			uint64_t x = idx / Ly;
 			uint64_t y = idx % Ly;

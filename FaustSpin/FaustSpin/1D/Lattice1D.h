@@ -7,8 +7,8 @@
 
 struct Cell1D
 {
-	int64_t x;
-	Cell1D(int64_t x = 0) : x(x) {}
+	uint64_t x;
+	Cell1D(uint64_t x = 0) : x(x) {}
 };
 namespace Lattice1D {
 	class Lattice1D_Data {
@@ -20,12 +20,11 @@ namespace Lattice1D {
 		bool lattice_set;
 		bool neighbors_set;
 	public:
-		explicit Lattice1D_Data(uint64_t Lx, int64_t x0 = 0) :
+		explicit Lattice1D_Data(uint64_t Lx, uint64_t x0 = 0) :
 			Lx(Lx), cell0(x0) {
 			N = static_cast<size_t>(Lx);
 			cells.resize(N);
 			lattice_set = false;
-			neighbors_set = false;
 		}
 		const Cell1D& get_cell(size_t index) const {
 			if (!lattice_set) throw std::runtime_error("Lattice doesn't set");
@@ -46,11 +45,11 @@ namespace Lattice1D {
 		}
 		const uint64_t& get_Lx() const { return Lx; }
 		const size_t& get_N() const { return N; }
-		int64_t get_coords(size_t idx) const {
+		uint64_t get_coords(size_t idx) const {
 			if (idx >= N) throw std::out_of_range("Index out of range");
-			return static_cast<int64_t>(idx);
+			return static_cast<uint64_t>(idx);
 		}
-		size_t get_index(int64_t x) const {
+		size_t get_index(uint64_t x) const {
 			if (x < 0 || x >= static_cast<int64_t>(Lx)) {
 				throw std::out_of_range("Coordinates out of range");
 			}
@@ -58,7 +57,7 @@ namespace Lattice1D {
 		}
 
 	};
-	inline Lattice1D_Data create_lattice1D(const Lattice1D_Data& ld, std::function<Cell1D(const Lattice1D_Data&, int64_t)> func) {
+	inline Lattice1D_Data create_lattice1D(const Lattice1D_Data& ld, std::function<Cell1D(const Lattice1D_Data&, uint64_t)> func) {
 		std::vector<Cell1D> new_cells(ld.get_N());
 		size_t ion_count = 0;
 		for (size_t x = 0; x < ld.get_Lx() && ion_count < ld.get_N(); x++) {
@@ -71,13 +70,13 @@ namespace Lattice1D {
 	}
 }
 namespace Lattice1D_Setters {
-	inline Cell1D set_chain_cell(const Lattice1D::Lattice1D_Data& lattice, int64_t x) {
+	inline Cell1D set_chain_cell(const Lattice1D::Lattice1D_Data& lattice, uint64_t x) {
 		const Cell1D& cell_0 = lattice.get_cell0();
-		int64_t x0 = cell_0.x;
+		uint64_t x0 = cell_0.x;
 		if (0 > x || x >= lattice.get_Lx()) {
 			throw std::out_of_range("Coordinates out of range");
 		}
-		int64_t x_cell = (x0 + x);
+		uint64_t x_cell = (x0 + x);
 		return Cell1D(x_cell);
 	}
 }

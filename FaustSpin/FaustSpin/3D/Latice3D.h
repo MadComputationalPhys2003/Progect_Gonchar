@@ -10,8 +10,8 @@
 
 struct Cell3D
 {
-	int64_t x, y, z;
-	Cell3D(int64_t x=0, int64_t y=0, int64_t z=0) : x(x), y(y), z(z) {}
+	uint64_t x, y, z;
+	Cell3D(uint64_t x=0, uint64_t y=0, uint64_t z=0) : x(x), y(y), z(z) {}
 };
 namespace Lattice3D {
 	class Lattice3D_Data {

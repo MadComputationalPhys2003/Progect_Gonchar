@@ -1,6 +1,6 @@
 #pragma once
 #include "Lattice1D.h"
-std::array<uint64_t, 2> periodic_BC_1D(const Lattice1D::Lattice1D_Data& ld, int64_t x) {
+std::array<uint64_t, 2> periodic_BC_1D(const Lattice1D::Lattice1D_Data& ld, uint64_t x) {
 	size_t idx = ld.get_index(x);
 	uint64_t left;
 	uint64_t right;
@@ -19,7 +19,7 @@ std::array<uint64_t, 2> periodic_BC_1D(const Lattice1D::Lattice1D_Data& ld, int6
 	std::array<uint64_t, 2> neighbors = { left,right };
 	return neighbors;
 }
-std::vector<uint64_t> open_BC_1D(const Lattice1D::Lattice1D_Data& ld, int64_t x) {
+std::vector<uint64_t> open_BC_1D(const Lattice1D::Lattice1D_Data& ld, uint64_t x) {
 	uint64_t left;
 	uint64_t right;
 	std::vector<uint64_t> neighbors;
