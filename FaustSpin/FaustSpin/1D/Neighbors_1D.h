@@ -1,6 +1,6 @@
 #pragma once
 #include "Lattice1D.h"
-std::vector<uint64_t> get_neighbors_periodic_BC_1D(
+inline std::vector<uint64_t> get_neighbors_periodic_BC_1D(
     const Lattice1D::Lattice1D_Data& ld
 ) {
     const uint64_t N = ld.get_N();
@@ -24,7 +24,7 @@ std::vector<uint64_t> get_neighbors_periodic_BC_1D(
 
     return neighbors;
 }
-std::vector<uint64_t> open_BC_1D(const Lattice1D::Lattice1D_Data& ld, uint64_t x) {
+inline std::vector<uint64_t> open_BC_1D(const Lattice1D::Lattice1D_Data& ld, uint64_t x) {
 	uint64_t left;
 	uint64_t right;
 	std::vector<uint64_t> neighbors;

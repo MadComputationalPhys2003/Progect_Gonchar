@@ -1,103 +1,143 @@
 ﻿#include "Urfaust.h"
 
-#include <cmath>
 #include <cstdint>
-#include <exception>
-#include <iomanip>
 #include <iostream>
+#include <stdexcept>
+#include <variant>
 
-int main()
-{
-    try {
-        constexpr uint64_t Lx = 100;
-        constexpr uint64_t Ly = 100;
-        constexpr uint64_t Lz = 100;
+enum class Dimension {
+    one,
+    two,
+    three
+};
 
-        constexpr uint64_t x0 = 0;
-        constexpr uint64_t y0 = 0;
-        constexpr uint64_t z0 = 0;
+enum class Initialization {
+    parallel,
+    random
+};
 
-        constexpr double S = 1.0;
-        constexpr double J = -1.0;
-        constexpr double eps = 1.0e-10;
+struct UrFaustPseudoInterface {
+    using System = std::variant<
+        UrFaust1D::SpinSystem1D,
+        UrFaust2D::SpinSystem2D,
+        UrFaust3D::SpinSystem3D
+    >;
 
-        const double N =
-            static_cast<double>(Lx) *
-            static_cast<double>(Ly) *
-            static_cast<double>(Lz);
+    Dimension dim;
+    Initialization initialization;
 
-        UrFaust3D::SpinSystem3D parallel_system(
-            Lx, Ly, Lz,
-            x0, y0, z0,
-            S, J, eps,
-            UrFaust3D::Ions::SpinInit::parallel
-        );
+    uint64_t Lx, Ly, Lz;
+    uint64_t x0, y0, z0;
 
-        UrFaust3D::SpinSystem3D random_system(
-            Lx, Ly, Lz,
-            x0, y0, z0,
-            S, J, eps,
-            UrFaust3D::Ions::SpinInit::random
-        );
+    double S;
+    double J;
+    double eps;
 
-        const double parallel_energy = parallel_system.energy();
-        const double random_energy = random_system.energy();
+    System system;
 
-        const double expected_parallel_energy =
-            3.0 * N * J * S * S;
-
-        const double comparison_tolerance =
-            eps * (1.0 + std::abs(expected_parallel_energy));
-
-        std::cout << std::setprecision(17);
-
-        std::cout
-            << "Number of ions: " << N << '\n'
-            << "Parallel energy: " << parallel_energy << '\n'
-            << "Expected energy: " << expected_parallel_energy << '\n'
-            << "Random energy:   " << random_energy << '\n';
-
-        if (std::abs(
-            parallel_energy -
-            expected_parallel_energy
-        ) > comparison_tolerance) {
-
-            std::cerr
-                << "ERROR: parallel-state energy is incorrect.\n";
-
-            return 1;
-        }
-
-        if (!std::isfinite(random_energy)) {
-            std::cerr
-                << "ERROR: random-state energy is not finite.\n";
-
-            return 1;
-        }
-
-        const double energy_bound =
-            3.0 * N * std::abs(J) * S * S;
-
-        if (std::abs(random_energy) >
-            energy_bound + comparison_tolerance) {
-
-            std::cerr
-                << "ERROR: random-state energy is outside "
-                << "the theoretical bounds.\n";
-
-            return 1;
-        }
-
-        std::cout << "All initialization and energy tests passed.\n";
-
-        return 0;
+    UrFaustPseudoInterface(
+        Dimension ddim,
+        uint64_t lx, uint64_t ly, uint64_t lz,
+        uint64_t x_0, uint64_t y_0, uint64_t z_0,
+        double s, double j, double e,
+        Initialization init
+    )
+        : dim(ddim),
+        initialization(init),
+        Lx(lx), Ly(ly), Lz(lz),
+        x0(x_0), y0(y_0), z0(z_0),
+        S(s), J(j), eps(e),
+        system(create_system(
+            ddim,
+            lx, ly, lz,
+            x_0, y_0, z_0,
+            s, j, e,
+            init
+        ))
+    {
     }
-    catch (const std::exception& error) {
-        std::cerr
-            << "Exception: "
-            << error.what()
-            << '\n';
 
-        return 1;
+    double energy() const {
+        return std::visit(
+            [](const auto& selected_system) {
+                return selected_system.energy();
+            },
+            system
+        );
     }
+
+private:
+    static System create_system(
+        Dimension dim,
+        uint64_t lx, uint64_t ly, uint64_t lz,
+        uint64_t x0, uint64_t y0, uint64_t z0,
+        double S, double J, double eps,
+        Initialization initialization
+    ) {
+        if (dim == Dimension::one) {
+            const auto mode =
+                initialization == Initialization::parallel
+                ? UrFaust1D::Ions::SpinInit::parallel
+                : UrFaust1D::Ions::SpinInit::random;
+
+            return UrFaust1D::SpinSystem1D(
+                lx,
+                x0,
+                S, J, eps,
+                mode
+            );
+        }
+
+        if (dim == Dimension::two) {
+            const auto mode =
+                initialization == Initialization::parallel
+                ? UrFaust2D::Ions::SpinInit::parallel
+                : UrFaust2D::Ions::SpinInit::random;
+
+            return UrFaust2D::SpinSystem2D(
+                lx, ly,
+                x0, y0,
+                S, J, eps,
+                mode
+            );
+        }
+
+        if (dim == Dimension::three) {
+            const auto mode =
+                initialization == Initialization::parallel
+                ? UrFaust3D::Ions::SpinInit::parallel
+                : UrFaust3D::Ions::SpinInit::random;
+
+            return UrFaust3D::SpinSystem3D(
+                lx, ly, lz,
+                x0, y0, z0,
+                S, J, eps,
+                mode
+            );
+        }
+
+        throw std::invalid_argument("Unknown lattice dimension");
+    }
+};
+
+
+
+int main() {
+    UrFaustPseudoInterface simulation(
+        Dimension::two,
+
+        100, 100, 1,  // Lx, Ly, Lz
+        0, 0, 0,      // x0, y0, z0
+
+        1.0,           // S
+        -1.0,          // J
+        1.0e-10,       // eps
+
+        Initialization::random
+    );
+
+    std::cout
+        << "Energy: "
+        << simulation.energy()
+        << '\n';
 }
