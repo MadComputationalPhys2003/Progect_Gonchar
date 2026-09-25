@@ -1,0 +1,8 @@
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/UrFaustGUI_TEST_1.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/edit_cache.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/rebuild_cache.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/list_install_components.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/install.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/install/local.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/UrFaustGUI_TEST_1_autogen_timestamp_deps.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/build/Desktop_Qt_6_11_2_MSVC2022_64bit_MinSizeRel/CMakeFiles/UrFaustGUI_TEST_1_autogen.dir
