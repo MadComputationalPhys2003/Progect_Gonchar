@@ -73,7 +73,7 @@ namespace Lattice1D_Setters {
 	inline Cell1D set_chain_cell(const Lattice1D::Lattice1D_Data& lattice, uint64_t x) {
 		const Cell1D& cell_0 = lattice.get_cell0();
 		uint64_t x0 = cell_0.x;
-		if (0 > x || x >= lattice.get_Lx()) {
+		if (x >= lattice.get_Lx()) {
 			throw std::out_of_range("Coordinates out of range");
 		}
 		uint64_t x_cell = (x0 + x);

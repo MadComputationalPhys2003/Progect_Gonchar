@@ -1,0 +1,153 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "FaustSpin",
+					"jsonFile" : "directory-FaustSpin-Debug-5a4866740f036f4978b1.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "FaustSpin",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				},
+				{
+					"build" : "UrFaustGUI_TEST_1",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-UrFaustGUI_TEST_1-Debug-2aff8f78e0935c89eee1.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "UrFaustGUI_TEST_1",
+					"targetIndexes" : 
+					[
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "UrFaust",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2
+					],
+					"name" : "UrFaustGUI_TEST_1",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "UrFaustConsole::@5e3dd901d906fd76c124",
+					"jsonFile" : "target-UrFaustConsole-Debug-3b80530387377bd6f851.json",
+					"name" : "UrFaustConsole",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "UrFaustConsole_autogen::@5e3dd901d906fd76c124",
+					"jsonFile" : "target-UrFaustConsole_autogen-Debug-39f4411ae7521abe8b81.json",
+					"name" : "UrFaustConsole_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "UrFaustConsole_autogen_timestamp_deps::@5e3dd901d906fd76c124",
+					"jsonFile" : "target-UrFaustConsole_autogen_timestamp_deps-Debug-64301ba17e30210842cf.json",
+					"name" : "UrFaustConsole_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "UrFaustGUI_TEST_1::@78d05d7dfb5bcbb8691f",
+					"jsonFile" : "target-UrFaustGUI_TEST_1-Debug-05b5d5b59f66c621adb6.json",
+					"name" : "UrFaustGUI_TEST_1",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "UrFaustGUI_TEST_1_autogen::@78d05d7dfb5bcbb8691f",
+					"jsonFile" : "target-UrFaustGUI_TEST_1_autogen-Debug-d4e26acfd3abe45f48b7.json",
+					"name" : "UrFaustGUI_TEST_1_autogen",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "UrFaustGUI_TEST_1_autogen_timestamp_deps::@78d05d7dfb5bcbb8691f",
+					"jsonFile" : "target-UrFaustGUI_TEST_1_autogen_timestamp_deps-Debug-f12f4897542df94c9cb3.json",
+					"name" : "UrFaustGUI_TEST_1_autogen_timestamp_deps",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/Nout/Desktop/Progect/FaustSpin/build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug",
+		"source" : "C:/Users/Nout/Desktop/Progect/FaustSpin"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

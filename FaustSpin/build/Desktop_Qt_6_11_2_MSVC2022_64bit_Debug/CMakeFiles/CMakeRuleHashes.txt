@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+c00d8eed4878c806400f4f37663b15b8 FaustSpin/CMakeFiles/UrFaustConsole_autogen
+3468921a9333cd3925e4bfa2cb7d0ef1 FaustSpin/UrFaustConsole_autogen/timestamp
+394040fce2fe28755e52976d99ec1ecc UrFaustGUI_TEST_1/CMakeFiles/UrFaustGUI_TEST_1_autogen
+36dc7fe769a66e4d8dd3d4e55c198537 UrFaustGUI_TEST_1/UrFaustGUI_TEST_1_autogen/timestamp

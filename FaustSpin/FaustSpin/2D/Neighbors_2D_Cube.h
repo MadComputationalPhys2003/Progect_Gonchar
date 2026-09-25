@@ -14,8 +14,8 @@ namespace Lattice2D_Neighbors_Open_BC {
 		result.neighbors.reserve(N * 4); // верхн€€ оценка: не больше 4 соседей на узел в 2D
 		result.offsets.push_back(0);
 
-		int64_t Lx = static_cast<int64_t>(ld.get_Lx());
-		int64_t Ly = static_cast<int64_t>(ld.get_Ly());
+		uint64_t Lx = static_cast<int64_t>(ld.get_Lx());
+		uint64_t Ly = static_cast<int64_t>(ld.get_Ly());
 
 		for (int64_t x = 0; x < Lx; x++) {
 			for (int64_t y = 0; y < Ly; y++) {
@@ -51,7 +51,7 @@ inline std::vector<uint64_t> get_neighbors_periodic_BC_2D(const Lattice2D::Latti
 			else{
 				neighbors[idx] = ld.get_index(x + 1, y);
 			}
-			if (static_cast<int64_t> (x) - 1 < 0) {
+			if (static_cast<int64_t> (x) - 1 < 0) {//ѕќƒ”ћј“№
 				neighbors[idx + 1] = ld.get_index(lx - 1, y);
 			}
 			else{

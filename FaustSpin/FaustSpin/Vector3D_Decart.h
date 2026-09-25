@@ -7,7 +7,7 @@ namespace Vector3D_Decart
 	class Vector3D_Dec
 	{
 	private:
-		std::array<double, 3> Vec3D;
+		std::array<double, 3> Vec3D;//Исправить
 	public:
 		explicit Vector3D_Dec(double x, double y, double z) : Vec3D({ x, y, z }) {
 		}

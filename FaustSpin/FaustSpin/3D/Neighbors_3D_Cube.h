@@ -41,8 +41,6 @@ namespace Lattice3D_Neighbors {
 		return { nl.neighbors.data() + begin, count };
 	}
 }
-
-
 inline std::vector<uint64_t> get_neighbors_periodic_BC_3D(const Lattice3D::Lattice3D_Data& ld) {
 	std::vector<uint64_t> neighbors;
 	neighbors.resize(6 * ld.get_N());

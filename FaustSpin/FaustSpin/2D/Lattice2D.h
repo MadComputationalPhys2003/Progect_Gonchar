@@ -78,8 +78,8 @@ namespace Lattice2D_Setters {
 		const Cell2D& cell_0 = lattice.get_cell0();
 		uint64_t x0 = cell_0.x;
 		uint64_t y0 = cell_0.y;
-		if ((0 > x || x >= lattice.get_Lx()) ||
-			(0 > y || y >= lattice.get_Ly())) {
+		if ((x >= lattice.get_Lx()) ||
+			(y >= lattice.get_Ly())) {
 			throw std::out_of_range("Coordinates out of range");
 		}
 		uint64_t x_cell = (x0 + x);

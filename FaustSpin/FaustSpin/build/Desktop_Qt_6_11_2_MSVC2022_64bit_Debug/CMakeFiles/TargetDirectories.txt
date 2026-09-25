@@ -1,0 +1,3 @@
+C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/CMakeFiles/UrFaustConsole.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/CMakeFiles/edit_cache.dir
+C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/CMakeFiles/rebuild_cache.dir
