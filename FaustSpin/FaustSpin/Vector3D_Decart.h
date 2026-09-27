@@ -50,6 +50,9 @@ namespace Vector3D_Decart
 	inline Vector3D_Dec operator*(Vector3D_Dec vec, double scalar) {
 		return vec *= scalar;
 	}
+	inline Vector3D_Dec operator*(double scalar,Vector3D_Dec vec) {
+		return vec *= scalar;
+	}
 	inline double scalar_product(const Vector3D_Dec& vec1, const Vector3D_Dec& vec2) {
 		return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
 	}

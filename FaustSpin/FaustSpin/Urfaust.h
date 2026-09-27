@@ -49,6 +49,7 @@ namespace UrFaust3D {
 			}
 		}
 	private:
+		//Rework
 		void direction_generator() {
 			std::random_device rd;
 			std::mt19937 gen(rd());
@@ -73,12 +74,13 @@ namespace UrFaust3D {
 		double S;
 		double J;
 		double eps;
+		uint64_t max_iter;
 	public:
 		SpinSystem3D(uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0,
-			double ss, double j,double e,
+			double ss, double j,double e,uint64_t mi,
 			Ions::SpinInit mode) :
-			il(lx, ly, lz, x0, y0, z0),ions(il.lattice.get_N(), mode), S(ss), J(j),eps(e)
+			il(lx, ly, lz, x0, y0, z0),ions(il.lattice.get_N(), mode), S(ss), J(j),eps(e),max_iter(mi)
 		{
 		
 		}
@@ -100,6 +102,28 @@ namespace UrFaust3D {
 
 			return 0.5 * J * S * S * sum;
 		}
+		double min_energy() {
+			double H_i = energy();
+			double H = 0.0;
+			uint64_t iter = 0;
+			Vector3D_Decart::Vector3D_Dec h(0,0,0);
+			Vector3D_Decart::Vector3D_Dec sum_vec(0,0,0);
+			auto old_direction = ions.ions[0].get_direction();
+			do
+			{
+				for (size_t i = 0; i < il.lattice.get_N(); ++i) {
+					for (size_t a = 0; a < 6; ++a) {
+						const size_t slot = 6 * i + a;
+						const size_t j =static_cast<size_t>(il.neighbors[slot]);
+						h = (-S * S) * J *ions.ions[i].get_direction();
+					}
+				}
+
+
+
+			} while ((iter<max_iter)||((H_i-H)*1.0/il.lattice.get_N()<eps));
+		}
+
 	};
 }
 namespace UrFaust2D {
