@@ -191,11 +191,12 @@ namespace UrFaust {
 			}
 		}
 		std::vector<Vector3D_Decart::Vector3D_Dec> get_Directions() const {
-			std::vector<Vector3D_Decart::Vector3D_Dec> res;
-			for (size_t i = 0; i < ions.size(); i++) {
-				res[i] = ions[i].get_direction();
+			std::vector<Vector3D_Decart::Vector3D_Dec> result;
+			result.reserve(ions.size());
+			for (const Ion& ion : ions) {
+				result.push_back(ion.get_direction());
 			}
-			return res;
+			return result;
 		};
 	private:
 		void direction_generator() {
