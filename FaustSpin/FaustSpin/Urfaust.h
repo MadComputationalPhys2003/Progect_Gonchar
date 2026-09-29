@@ -146,10 +146,16 @@ namespace UrFaust {
 		void set_direction(
 			const Vector3D_Decart::Vector3D_Dec& new_direction
 		) {
-			direction = new_direction;
-			if (std::abs(Vector3D_Decart::norm(direction) - 1) > 1e-12) {
-				throw std::invalid_argument("Ion's norma doesn't equal one");
+			const double newNorm = Vector3D_Decart::norm(new_direction);
+
+			if (!std::isfinite(newNorm) ||
+				std::abs(newNorm - 1.0) > 1.0e-12) {
+				throw std::invalid_argument(
+					"Ion direction must be a finite unit vector"
+				);
 			}
+
+			direction = new_direction;
 		}
 		double getPhi() const
 		{
