@@ -18,7 +18,6 @@ namespace Lattice1D {
 		std::vector<Cell1D> cells;
 		Cell1D cell0;
 		bool lattice_set;
-		bool neighbors_set;
 	public:
 		explicit Lattice1D_Data(uint64_t Lx, uint64_t x0 = 0) :
 			Lx(Lx), cell0(x0) {

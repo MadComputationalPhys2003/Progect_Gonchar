@@ -44,6 +44,7 @@ namespace Vector3D_Decart
 	inline Vector3D_Dec operator+(Vector3D_Dec vec1,Vector3D_Dec vec2) {
 		return vec1 += vec2;
 	}
+
 	inline Vector3D_Dec operator-(Vector3D_Dec vec1,Vector3D_Dec vec2) {
 		return vec1 -= vec2;
 	}

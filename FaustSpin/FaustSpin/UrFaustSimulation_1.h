@@ -110,7 +110,7 @@ private:
             return UrFaust3D::SpinSystem3D(
                 lx, ly, lz,
                 x0, y0, z0,
-                S, J, eps,
+                S, J,
                 mode
             );
         }
