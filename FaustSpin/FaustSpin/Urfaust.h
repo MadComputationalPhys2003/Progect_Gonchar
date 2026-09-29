@@ -246,9 +246,7 @@ namespace UrFaust {
 		{
 		}
 		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
-			std::vector<Vector3D_Decart::Vector3D_Dec> res;
-			res = ions.get_Directions();
-			return res;
+			return ions.get_Directions();
 		};
 		double energy() const {
 			double sum = 0.0;
