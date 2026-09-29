@@ -190,6 +190,13 @@ namespace UrFaust {
 				direction_generator();
 			}
 		}
+		std::vector<Vector3D_Decart::Vector3D_Dec> get_Directions() const {
+			std::vector<Vector3D_Decart::Vector3D_Dec> res;
+			for (size_t i = 0; i < ions.size(); i++) {
+				res[i] = ions[i].get_direction();
+			}
+			return res;
+		};
 	private:
 		void direction_generator() {
 			std::random_device rd;
@@ -237,6 +244,11 @@ namespace UrFaust {
 			ions(il.getN(),mode), S(ss), J(j),eps(ee)
 		{
 		}
+		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
+			std::vector<Vector3D_Decart::Vector3D_Dec> res;
+			res = ions.get_Directions();
+			return res;
+		};
 		double energy() const {
 			double sum = 0.0;
 			for (size_t i = 0; i < il.getN(); ++i) {
