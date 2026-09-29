@@ -1,57 +1,55 @@
 #pragma once
 #include"Vector3D_Decart.h"
-#include "1D/Lattice1D.h"
-#include "2D/Lattice2D.h"
-#include "3D/Latice3D.h"
-#include"1D/Neighbors_1D.h"
-#include"2D/Neighbors_2D_Cube.h"
-#include"3D/Neighbors_3D_Cube.h"
+#include"Lattice_Headers.h"
+#include"Neighbor_Headers.h"
 #include<random>
 #include <variant>
 #include<numbers>
+
 constexpr const double pi = std::numbers::pi;
+
 namespace UrFaust {
-	enum class Dimention {
+	enum class Dimension {
 		one,
 		two,
 		three
 	};
 	struct NeighborInit{
 	private:
-		Dimention dim;
+		Dimension dim;
 		Neighbors1D::NeighborData ND1D;
 		Neighbors2D::NeighborData ND2D;
 		Neighbors3D::NeighborData ND3D;
 	public:
 		NeighborInit(const Lattice1D::Lattice1D_Data& lattice):
-			dim(Dimention::one), ND1D(Neighbors1D::get_neighbors_periodic_BC_1D(lattice))
+			dim(Dimension::one), ND1D(Neighbors1D::get_neighbors_periodic_BC_1D(lattice))
 		{}
 		NeighborInit(const Lattice2D::Lattice2D_Data& lattice ) :
-			dim(Dimention::two), ND2D(Neighbors2D::get_neighbors_periodic_BC_2D(lattice))
+			dim(Dimension::two), ND2D(Neighbors2D::get_neighbors_periodic_BC_2D(lattice))
 		{}
 		NeighborInit(const Lattice3D::Lattice3D_Data& lattice):
-			dim(Dimention::three), ND3D(Neighbors3D::get_neighbors_periodic_BC_3D(lattice))
+			dim(Dimension::three), ND3D(Neighbors3D::get_neighbors_periodic_BC_3D(lattice))
 		{}
 		const std::vector<uint64_t>& getIndices() const {
-			if (dim == Dimention::one) {
+			if (dim == Dimension::one) {
 				return ND1D.indices;
 			}
-			if (dim == Dimention::two) {
+			if (dim == Dimension::two) {
 				return ND2D.indices;
 			}
-			if (dim == Dimention::three) {
+			if (dim == Dimension::three) {
 				return ND3D.indices;
 			}
 			throw std::logic_error("Unknown dimension");
 		}
 		const uint8_t& getCount() const {
-			if (dim == Dimention::one) {
+			if (dim == Dimension::one) {
 				return ND1D.count;
 			}
-			if (dim == Dimention::two) {
+			if (dim == Dimension::two) {
 				return ND2D.count;
 			}
-			if (dim == Dimention::three) {
+			if (dim == Dimension::three) {
 				return ND3D.count;
 			}
 			throw std::logic_error("Unknown dimension");
@@ -59,30 +57,30 @@ namespace UrFaust {
 	};
 	struct InitLattice{
 	private:
-		Dimention dim;
+		Dimension dim;
 		Lattice1D::Lattice1D_Data lattice1D;
 		Lattice2D::Lattice2D_Data lattice2D;
 		Lattice3D::Lattice3D_Data lattice3D;
 		NeighborInit neighbors;
 	public:
-		InitLattice(uint64_t lx,uint64_t x_0,Dimention d=Dimention::one) :
-			dim(d),
+		InitLattice(uint64_t lx,uint64_t x_0) :
+			dim(Dimension::one),
 			lattice1D(Lattice1D::create_lattice1D(Lattice1D::Lattice1D_Data(lx,x_0),Lattice1D_Setters::set_chain_cell)),
 			neighbors(lattice1D),
 			lattice2D(Lattice2D::create_lattice2D(Lattice2D::Lattice2D_Data(1,1,1,1),Lattice2D_Setters::set_square_cell)),
 			lattice3D(Lattice3D::create_lattice3D(Lattice3D::Lattice3D_Data(1,1,1,1,1,1),Lattice3D_Setters::set_cube_cell))
 		{ 	
 		}
-		InitLattice(uint64_t lx, uint64_t ly, uint64_t x_0, uint64_t y_0, Dimention d = Dimention::two) :
-			dim(d),
+		InitLattice(uint64_t lx, uint64_t ly, uint64_t x_0, uint64_t y_0) :
+			dim(Dimension::two),
 			lattice1D(Lattice1D::create_lattice1D(Lattice1D::Lattice1D_Data(1, 1), Lattice1D_Setters::set_chain_cell)),
 			lattice2D(Lattice2D::create_lattice2D(Lattice2D::Lattice2D_Data(lx, ly, x_0, y_0), Lattice2D_Setters::set_square_cell)),
 			neighbors(lattice2D),
 			lattice3D(Lattice3D::create_lattice3D(Lattice3D::Lattice3D_Data(1, 1, 1, 1,1,1), Lattice3D_Setters::set_cube_cell))
 		{
 		}
-		InitLattice(uint64_t lx, uint64_t ly,uint64_t lz, uint64_t x_0, uint64_t y_0,uint64_t z_0, Dimention d=Dimention::three) :
-			dim(d),
+		InitLattice(uint64_t lx, uint64_t ly,uint64_t lz, uint64_t x_0, uint64_t y_0,uint64_t z_0) :
+			dim(Dimension::three),
 			lattice1D(Lattice1D::create_lattice1D(Lattice1D::Lattice1D_Data(1, 1), Lattice1D_Setters::set_chain_cell)),
 			lattice2D(Lattice2D::create_lattice2D(Lattice2D::Lattice2D_Data(1, 1, 1, 1), Lattice2D_Setters::set_square_cell)),
 			lattice3D(Lattice3D::create_lattice3D(Lattice3D::Lattice3D_Data(lx, ly, lz, x_0,y_0,z_0), Lattice3D_Setters::set_cube_cell)),
@@ -91,31 +89,31 @@ namespace UrFaust {
 		}
 	public:
 		const Lattice1D::Lattice1D_Data& get_lattice1D( ) const {
-			if (dim != Dimention::one) {
-				throw std::invalid_argument("Wrong dimention!");
+			if (dim != Dimension::one) {
+				throw std::invalid_argument("Wrong dimension!");
 			}
 			return lattice1D;
 		}
 		const Lattice2D::Lattice2D_Data& get_lattice2D() const {
-			if (dim != Dimention::two) {
-				throw std::invalid_argument("Wrong dimention!");
+			if (dim != Dimension::two) {
+				throw std::invalid_argument("Wrong dimension!");
 			}
 			return lattice2D;
 		}
 		const Lattice3D::Lattice3D_Data& get_lattice3D() const{
-			if (dim != Dimention::three) {
-				throw std::invalid_argument("Wrong dimention!");
+			if (dim != Dimension::three) {
+				throw std::invalid_argument("Wrong dimension!");
 			}
 			return lattice3D;
 		}
 		const std::size_t& getN() const {
-			if (dim == Dimention::one) {
+			if (dim == Dimension::one) {
 				return lattice1D.get_N();
 			}
-			if (dim == Dimention::two) {
+			if (dim == Dimension::two) {
 				return lattice2D.get_N();
 			}
-			if (dim == Dimention::three) {
+			if (dim == Dimension::three) {
 				return lattice3D.get_N();
 			}
 			throw std::logic_error("Unknown dimension");
@@ -124,12 +122,10 @@ namespace UrFaust {
 		{
 			return neighbors.getIndices();
 		}
-
 		uint8_t getNeighborCount() const
 		{
 			return neighbors.getCount();
 		}
-		
 	};
 	struct Ion {
 	private:
@@ -151,6 +147,9 @@ namespace UrFaust {
 			const Vector3D_Decart::Vector3D_Dec& new_direction
 		) {
 			direction = new_direction;
+			if (std::abs(Vector3D_Decart::norm(direction) - 1) > 1e-12) {
+				throw std::invalid_argument("Ion's norma doesn't equal one");
+			}
 		}
 		double getPhi() const
 		{
@@ -158,15 +157,12 @@ namespace UrFaust {
 				std::clamp(direction[2], -1.0, 1.0)
 			);
 		}
-
 		double getTheta() const
 		{
 			double theta = std::atan2(direction[1], direction[0]);
-
 			if (theta < 0.0) {
 				theta += 2.0 * pi;
 			}
-
 			return theta;
 		}
 	};
@@ -213,46 +209,38 @@ namespace UrFaust {
 		double S;
 		double J;
 		double eps;
-		Dimention dim;
-		static InitLattice makeInitLattice(Dimention dim, uint64_t lx, uint64_t ly, uint64_t lz,
+		static InitLattice makeInitLattice(Dimension dim, uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0) {
-			if (dim == Dimention::one) {
+			if (dim == Dimension::one) {
 				return InitLattice(lx, x0);
 			}
-			if (dim == Dimention::two) {
+			if (dim == Dimension::two) {
 				return InitLattice(lx,ly,x0,y0);
 			}
-			if (dim == Dimention::three) {
+			if (dim == Dimension::three) {
 				return InitLattice(lx,ly,lz,x0,y0,z0);
 			}
+			throw std::logic_error("Unknown dimension");
 		}
 	public:
 		SpinSystem(uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0,
 			double ss, double j, double ee,
-			Ions::SpinInit mode,Dimention d):
+			Ions::SpinInit mode,Dimension d):
 			il(makeInitLattice(d,lx,ly,lz,x0,y0,z0)),
 			ions(il.getN(),mode), S(ss), J(j),eps(ee)
 		{
-		
 		}
-
 		double energy() const {
 			double sum = 0.0;
-
 			for (size_t i = 0; i < il.getN(); ++i) {
 				for (size_t a = 0; a < il.getNeighborCount(); ++a) {
 					const size_t slot = il.getNeighborCount() * i + a;
 					const size_t j =
 						static_cast<size_t>(il.getNeighborIndices()[slot]);
-
-					sum += Vector3D_Decart::scalar_product(
-						ions.ions[i].get_direction(),
-						ions.ions[j].get_direction()
-					);
+					sum += Vector3D_Decart::scalar_product(ions.ions[i].get_direction(),ions.ions[j].get_direction());
 				}
 			}
-
 			return 0.5 * J * S * S * sum;
 		}
 		void relaxation_sweep() {
@@ -275,10 +263,5 @@ namespace UrFaust {
 				}
 			}
 		}
-
-
-
-
-
 	};
 }
