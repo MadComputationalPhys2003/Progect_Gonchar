@@ -3,6 +3,33 @@
 
 FaustSpin\UrFaustConsole_autogen\timestamp: C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
   C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
+  D:\Qt\Tools\CMake_64\bin\cmake.exe \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\CMakeLists.txt \
+  C:\Users\Nout\Desktop\Progect\FaustSpin\FaustSpin\FaustSpin.cpp \
   D:\Qt\Tools\CMake_64\bin\cmake.exe
 
 

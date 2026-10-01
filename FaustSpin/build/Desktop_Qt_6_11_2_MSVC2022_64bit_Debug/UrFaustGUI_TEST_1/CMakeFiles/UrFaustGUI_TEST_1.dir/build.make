@@ -149,7 +149,9 @@ UrFaustGUI_TEST_1.exe: UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\UrFaus
 UrFaustGUI_TEST_1.exe: UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\main.cpp.obj
 UrFaustGUI_TEST_1.exe: UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\main_window_1.cpp.obj
 UrFaustGUI_TEST_1.exe: UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\build.make
+UrFaustGUI_TEST_1.exe: D:\Qt\6.11.2\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib
 UrFaustGUI_TEST_1.exe: D:\Qt\6.11.2\msvc2022_64\lib\Qt6Widgetsd.lib
+UrFaustGUI_TEST_1.exe: D:\Qt\6.11.2\msvc2022_64\lib\Qt6OpenGLd.lib
 UrFaustGUI_TEST_1.exe: D:\Qt\6.11.2\msvc2022_64\lib\Qt6Guid.lib
 UrFaustGUI_TEST_1.exe: D:\Qt\6.11.2\msvc2022_64\lib\Qt6Cored.lib
 UrFaustGUI_TEST_1.exe: D:\Qt\6.11.2\msvc2022_64\lib\Qt6EntryPointd.lib
@@ -158,7 +160,7 @@ UrFaustGUI_TEST_1.exe: UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\object
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\Nout\Desktop\Progect\FaustSpin\build\Desktop_Qt_6_11_2_MSVC2022_64bit_Debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable ..\UrFaustGUI_TEST_1.exe"
 	cd C:\Users\Nout\Desktop\Progect\FaustSpin\build\Desktop_Qt_6_11_2_MSVC2022_64bit_Debug\UrFaustGUI_TEST_1
 	D:\Qt\Tools\CMake_64\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\UrFaustGUI_TEST_1.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100261~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100261~1.0\x64\mt.exe --manifests UrFaustGUI_TEST_1.exe.manifest -- C:\PROGRA~1\MICROS~4\2022\COMMUN~1\VC\Tools\MSVC\1444~1.352\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\UrFaustGUI_TEST_1.dir\objects1.rsp @<<
- /out:..\UrFaustGUI_TEST_1.exe /implib:UrFaustGUI_TEST_1.lib /pdb:C:\Users\Nout\Desktop\Progect\FaustSpin\build\Desktop_Qt_6_11_2_MSVC2022_64bit_Debug\UrFaustGUI_TEST_1.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:windows /MANIFEST:NO  D:\Qt\6.11.2\msvc2022_64\lib\Qt6Widgetsd.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6Guid.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6Cored.lib mpr.lib userenv.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6EntryPointd.lib shell32.lib d3d11.lib dxgi.lib dxguid.lib d3d12.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
+ /out:..\UrFaustGUI_TEST_1.exe /implib:UrFaustGUI_TEST_1.lib /pdb:C:\Users\Nout\Desktop\Progect\FaustSpin\build\Desktop_Qt_6_11_2_MSVC2022_64bit_Debug\UrFaustGUI_TEST_1.pdb /version:0.0 /machine:x64 /debug /INCREMENTAL /subsystem:windows /MANIFEST:NO  D:\Qt\6.11.2\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6Widgetsd.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6OpenGLd.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6Guid.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6Cored.lib mpr.lib userenv.lib D:\Qt\6.11.2\msvc2022_64\lib\Qt6EntryPointd.lib shell32.lib d3d11.lib dxgi.lib dxguid.lib d3d12.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
 <<
 	cd C:\Users\Nout\Desktop\Progect\FaustSpin\build\Desktop_Qt_6_11_2_MSVC2022_64bit_Debug
 

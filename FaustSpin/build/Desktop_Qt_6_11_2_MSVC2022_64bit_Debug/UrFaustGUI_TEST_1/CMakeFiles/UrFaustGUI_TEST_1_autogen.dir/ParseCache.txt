@@ -37,12 +37,15 @@ C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/main_window_1.h
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/map
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/memory
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/new
+ mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/numbers
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/numeric
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/optional
+ mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/random
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/sal.h
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/set
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/stdarg.h
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/stdbool.h
+ mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/stdexcept
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/string
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/string_view
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/tuple
@@ -58,6 +61,17 @@ C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/main_window_1.h
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/version
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/yvals.h
  mdp:C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include/yvals_core.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/1D/Lattice1D.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/1D/Neighbors_1D.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/2D/Lattice2D.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/2D/Neighbors_2D_Cube.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/3D/Latice3D.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/3D/Neighbors_3D_Cube.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/Lattice_Headers.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/Neighbor_Headers.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/UrFaustSimulation_1.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/Urfaust.h
+ mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin/Vector3D_Decart.h
  mdp:C:/Users/Nout/Desktop/Progect/FaustSpin/UrFaustGUI_TEST_1/main_window_1.h
  mdp:D:/Qt/6.11.2/msvc2022_64/include/QtCore/q17memory.h
  mdp:D:/Qt/6.11.2/msvc2022_64/include/QtCore/q20bit.h

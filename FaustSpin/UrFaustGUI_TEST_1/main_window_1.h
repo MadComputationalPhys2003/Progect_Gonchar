@@ -2,7 +2,7 @@
 #define MAIN_WINDOW_1_H
 
 #include <QMainWindow>
-
+#include "UrFaustSimulation_1.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow_1;
@@ -19,5 +19,6 @@ public:
 
 private:
     Ui::MainWindow_1 *ui;
+    UrFaustSim::SimulationConfig readConfig() const;
 };
 #endif // MAIN_WINDOW_1_H

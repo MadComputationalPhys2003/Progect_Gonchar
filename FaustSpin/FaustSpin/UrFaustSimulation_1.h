@@ -18,10 +18,6 @@ namespace UrFaustSim {
 		std::uint64_t ly{ 1 };
 		std::uint64_t lz{ 1 };
 
-		std::uint64_t x0{ 0 };
-		std::uint64_t y0{ 0 };
-		std::uint64_t z0{ 0 };
-
 		double spinLength{ 1.0 };
 		double exchangeIntegral{ -1.0 };
 		double epsilon{ 1.0e-10 };
@@ -141,9 +137,9 @@ namespace UrFaustSim {
 				config.lx,
 				config.ly,
 				config.lz,
-				config.x0,
-				config.y0,
-				config.z0,
+				0, // x0
+				0, // y0
+				0, // z0
 				config.spinLength,
 				config.exchangeIntegral,
 				config.epsilon,

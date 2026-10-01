@@ -1,0 +1,75 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"UrFaustGUI_TEST_1/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "UrFaustGUI_TEST_1_autogen_timestamp_deps::@78d05d7dfb5bcbb8691f"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "UrFaustGUI_TEST_1_autogen::@78d05d7dfb5bcbb8691f",
+	"isGeneratorProvided" : true,
+	"name" : "UrFaustGUI_TEST_1_autogen",
+	"paths" : 
+	{
+		"build" : "UrFaustGUI_TEST_1",
+		"source" : "UrFaustGUI_TEST_1"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/UrFaustGUI_TEST_1/CMakeFiles/UrFaustGUI_TEST_1_autogen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/UrFaustGUI_TEST_1/CMakeFiles/UrFaustGUI_TEST_1_autogen.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/UrFaustGUI_TEST_1/UrFaustGUI_TEST_1_autogen/timestamp.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

@@ -40,7 +40,7 @@
 				{
 					"build" : "UrFaustGUI_TEST_1",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-UrFaustGUI_TEST_1-Debug-2aff8f78e0935c89eee1.json",
+					"jsonFile" : "directory-UrFaustGUI_TEST_1-Debug-89ba64eed1a2bb8c1553.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.16"
@@ -118,7 +118,7 @@
 				{
 					"directoryIndex" : 2,
 					"id" : "UrFaustGUI_TEST_1::@78d05d7dfb5bcbb8691f",
-					"jsonFile" : "target-UrFaustGUI_TEST_1-Debug-05b5d5b59f66c621adb6.json",
+					"jsonFile" : "target-UrFaustGUI_TEST_1-Debug-c737df17df4f5161c9f9.json",
 					"name" : "UrFaustGUI_TEST_1",
 					"projectIndex" : 1
 				},

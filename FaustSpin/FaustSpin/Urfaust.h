@@ -157,12 +157,14 @@ namespace UrFaust {
 
 			direction = new_direction;
 		}
+		//Phi->Theta
 		double getPhi() const
 		{
 			return std::acos(
 				std::clamp(direction[2], -1.0, 1.0)
 			);
 		}
+		//Theta->Phi
 		double getTheta() const
 		{
 			double theta = std::atan2(direction[1], direction[0]);

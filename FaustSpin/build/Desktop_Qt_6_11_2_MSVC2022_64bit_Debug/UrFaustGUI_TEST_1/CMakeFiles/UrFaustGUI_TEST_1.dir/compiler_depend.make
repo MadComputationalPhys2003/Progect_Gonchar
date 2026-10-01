@@ -5,7 +5,11 @@ UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\UrFaustGUI_TEST_1_autogen\moc
 
 UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\main.cpp.obj: C:\Users\Nout\Desktop\Progect\FaustSpin\UrFaustGUI_TEST_1\main.cpp
 
+UrFaustGUI_TEST_1\CMakeFiles\UrFaustGUI_TEST_1.dir\main_window_1.cpp.obj: C:\Users\Nout\Desktop\Progect\FaustSpin\UrFaustGUI_TEST_1\main_window_1.cpp
+
 
 UrFaustGUI_TEST_1\UrFaustGUI_TEST_1_autogen\mocs_compilation.cpp:
 
 C:\Users\Nout\Desktop\Progect\FaustSpin\UrFaustGUI_TEST_1\main.cpp:
+
+C:\Users\Nout\Desktop\Progect\FaustSpin\UrFaustGUI_TEST_1\main_window_1.cpp:

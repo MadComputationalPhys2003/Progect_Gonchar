@@ -38,9 +38,11 @@
 			"UrFaustGUI_TEST_1/CMakeLists.txt",
 			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6/QtPublicWindowsHelpers.cmake",
 			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:942:EVAL",
+			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6OpenGLWidgets/Qt6OpenGLWidgetsTargets.cmake",
+			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6OpenGLWidgets/Qt6OpenGLWidgetsConfig.cmake",
+			"build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/.qtcreator/cmake-helper/maintenance_tool_provider.cmake",
 			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsTargets.cmake",
 			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6Widgets/Qt6WidgetsConfig.cmake",
-			"build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/.qtcreator/cmake-helper/maintenance_tool_provider.cmake",
 			"CMakeLists.txt",
 			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
 			"D:/Qt/6.11.2/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
@@ -86,7 +88,7 @@
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 22,
+				"line" : 24,
 				"parent" : 0
 			},
 			{
@@ -125,39 +127,71 @@
 				"parent" : 0
 			},
 			{
-				"file" : 7
-			},
-			{
 				"command" : 12,
-				"file" : 7,
-				"line" : 9,
-				"parent" : 12
+				"file" : 1,
+				"line" : 4,
+				"parent" : 0
 			},
 			{
 				"command" : 12,
 				"file" : 6,
 				"line" : 235,
-				"parent" : 13
+				"parent" : 12
 			},
 			{
 				"file" : 5,
-				"parent" : 14
+				"parent" : 13
 			},
 			{
 				"command" : 11,
 				"file" : 5,
 				"line" : 55,
-				"parent" : 15
+				"parent" : 14
 			},
 			{
 				"file" : 4,
-				"parent" : 16
+				"parent" : 15
 			},
 			{
 				"command" : 10,
 				"file" : 4,
 				"line" : 61,
-				"parent" : 17
+				"parent" : 16
+			},
+			{
+				"file" : 9
+			},
+			{
+				"command" : 12,
+				"file" : 9,
+				"line" : 9,
+				"parent" : 18
+			},
+			{
+				"command" : 12,
+				"file" : 6,
+				"line" : 235,
+				"parent" : 19
+			},
+			{
+				"file" : 8,
+				"parent" : 20
+			},
+			{
+				"command" : 11,
+				"file" : 8,
+				"line" : 55,
+				"parent" : 21
+			},
+			{
+				"file" : 7,
+				"parent" : 22
+			},
+			{
+				"command" : 10,
+				"file" : 7,
+				"line" : 61,
+				"parent" : 23
 			},
 			{
 				"command" : 9,
@@ -167,171 +201,171 @@
 			},
 			{
 				"command" : 11,
-				"file" : 5,
+				"file" : 8,
 				"line" : 40,
-				"parent" : 15
-			},
-			{
-				"file" : 12,
-				"parent" : 20
-			},
-			{
-				"command" : 14,
-				"file" : 12,
-				"line" : 51,
 				"parent" : 21
 			},
 			{
-				"command" : 13,
-				"file" : 11,
-				"line" : 142,
-				"parent" : 22
-			},
-			{
-				"command" : 12,
-				"file" : 10,
-				"line" : 76,
-				"parent" : 23
-			},
-			{
-				"command" : 12,
-				"file" : 6,
-				"line" : 254,
-				"parent" : 24
-			},
-			{
-				"file" : 9,
-				"parent" : 25
-			},
-			{
-				"command" : 11,
-				"file" : 9,
-				"line" : 57,
+				"file" : 14,
 				"parent" : 26
-			},
-			{
-				"file" : 8,
-				"parent" : 27
-			},
-			{
-				"command" : 10,
-				"file" : 8,
-				"line" : 61,
-				"parent" : 28
-			},
-			{
-				"command" : 11,
-				"file" : 9,
-				"line" : 42,
-				"parent" : 26
-			},
-			{
-				"file" : 15,
-				"parent" : 30
 			},
 			{
 				"command" : 14,
-				"file" : 15,
-				"line" : 52,
+				"file" : 14,
+				"line" : 51,
+				"parent" : 27
+			},
+			{
+				"command" : 13,
+				"file" : 13,
+				"line" : 142,
+				"parent" : 28
+			},
+			{
+				"command" : 12,
+				"file" : 12,
+				"line" : 76,
+				"parent" : 29
+			},
+			{
+				"command" : 12,
+				"file" : 6,
+				"line" : 254,
+				"parent" : 30
+			},
+			{
+				"file" : 11,
 				"parent" : 31
 			},
 			{
-				"command" : 13,
+				"command" : 11,
 				"file" : 11,
-				"line" : 142,
+				"line" : 57,
 				"parent" : 32
 			},
 			{
-				"command" : 12,
 				"file" : 10,
-				"line" : 76,
 				"parent" : 33
 			},
 			{
-				"command" : 12,
-				"file" : 6,
-				"line" : 254,
+				"command" : 10,
+				"file" : 10,
+				"line" : 61,
 				"parent" : 34
 			},
 			{
-				"file" : 14,
-				"parent" : 35
+				"command" : 11,
+				"file" : 11,
+				"line" : 42,
+				"parent" : 32
 			},
 			{
-				"command" : 11,
-				"file" : 14,
-				"line" : 55,
+				"file" : 17,
 				"parent" : 36
 			},
 			{
-				"file" : 13,
+				"command" : 14,
+				"file" : 17,
+				"line" : 52,
 				"parent" : 37
 			},
 			{
-				"command" : 10,
-				"file" : 13,
-				"line" : 61,
-				"parent" : 38
-			},
-			{
-				"command" : 10,
-				"file" : 13,
-				"line" : 94,
-				"parent" : 38
-			},
-			{
 				"command" : 13,
-				"file" : 11,
+				"file" : 13,
 				"line" : 142,
-				"parent" : 22
+				"parent" : 38
 			},
 			{
 				"command" : 12,
-				"file" : 10,
+				"file" : 12,
 				"line" : 76,
-				"parent" : 41
+				"parent" : 39
 			},
 			{
 				"command" : 12,
 				"file" : 6,
 				"line" : 254,
-				"parent" : 42
+				"parent" : 40
 			},
 			{
-				"file" : 17,
-				"parent" : 43
+				"file" : 16,
+				"parent" : 41
 			},
 			{
 				"command" : 11,
-				"file" : 17,
+				"file" : 16,
 				"line" : 55,
-				"parent" : 44
+				"parent" : 42
 			},
 			{
-				"file" : 16,
-				"parent" : 45
+				"file" : 15,
+				"parent" : 43
 			},
 			{
 				"command" : 10,
-				"file" : 16,
+				"file" : 15,
 				"line" : 61,
-				"parent" : 46
+				"parent" : 44
 			},
 			{
-				"command" : 16,
-				"file" : 7,
-				"line" : 3,
-				"parent" : 12
+				"command" : 10,
+				"file" : 15,
+				"line" : 94,
+				"parent" : 44
 			},
 			{
-				"file" : 18,
+				"command" : 13,
+				"file" : 13,
+				"line" : 142,
+				"parent" : 28
+			},
+			{
+				"command" : 12,
+				"file" : 12,
+				"line" : 76,
+				"parent" : 47
+			},
+			{
+				"command" : 12,
+				"file" : 6,
+				"line" : 254,
 				"parent" : 48
 			},
 			{
-				"command" : 15,
-				"file" : 18,
-				"line" : 82,
+				"file" : 19,
 				"parent" : 49
+			},
+			{
+				"command" : 11,
+				"file" : 19,
+				"line" : 55,
+				"parent" : 50
+			},
+			{
+				"file" : 18,
+				"parent" : 51
+			},
+			{
+				"command" : 10,
+				"file" : 18,
+				"line" : 61,
+				"parent" : 52
+			},
+			{
+				"command" : 16,
+				"file" : 9,
+				"line" : 3,
+				"parent" : 18
+			},
+			{
+				"file" : 20,
+				"parent" : 54
+			},
+			{
+				"command" : 15,
+				"file" : 20,
+				"line" : 82,
+				"parent" : 55
 			},
 			{
 				"command" : 17,
@@ -350,22 +384,22 @@
 					"fragment" : "/DWIN32 /D_WINDOWS /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"fragment" : "-Zc:__cplusplus"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"fragment" : "-permissive-"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"fragment" : "-utf-8"
 				}
 			],
 			"defines" : 
 			[
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "QT_CORE_LIB"
 				},
 				{
@@ -373,7 +407,15 @@
 					"define" : "QT_GUI_LIB"
 				},
 				{
-					"backtrace" : 50,
+					"backtrace" : 11,
+					"define" : "QT_OPENGLWIDGETS_LIB"
+				},
+				{
+					"backtrace" : 11,
+					"define" : "QT_OPENGL_LIB"
+				},
+				{
+					"backtrace" : 56,
 					"define" : "QT_QML_DEBUG"
 				},
 				{
@@ -381,27 +423,27 @@
 					"define" : "QT_WIDGETS_LIB"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "UNICODE"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "WIN32"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "WIN64"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "_ENABLE_EXTENDED_ALIGNED_STORAGE"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "_UNICODE"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"define" : "_WIN64"
 				}
 			],
@@ -412,17 +454,21 @@
 					"path" : "C:/Users/Nout/Desktop/Progect/FaustSpin/build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/UrFaustGUI_TEST_1/UrFaustGUI_TEST_1_autogen/include"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 11,
+					"path" : "C:/Users/Nout/Desktop/Progect/FaustSpin/FaustSpin"
+				},
+				{
+					"backtrace" : 25,
 					"isSystem" : true,
 					"path" : "D:/Qt/6.11.2/msvc2022_64/include/QtCore"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"isSystem" : true,
 					"path" : "D:/Qt/6.11.2/msvc2022_64/include"
 				},
 				{
-					"backtrace" : 19,
+					"backtrace" : 25,
 					"isSystem" : true,
 					"path" : "D:/Qt/6.11.2/msvc2022_64/mkspecs/win32-msvc"
 				},
@@ -435,6 +481,16 @@
 					"backtrace" : 11,
 					"isSystem" : true,
 					"path" : "D:/Qt/6.11.2/msvc2022_64/include/QtGui"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "D:/Qt/6.11.2/msvc2022_64/include/QtOpenGLWidgets"
+				},
+				{
+					"backtrace" : 11,
+					"isSystem" : true,
+					"path" : "D:/Qt/6.11.2/msvc2022_64/include/QtOpenGL"
 				}
 			],
 			"language" : "CXX",
@@ -442,8 +498,9 @@
 			{
 				"backtraces" : 
 				[
-					19,
-					19
+					25,
+					25,
+					11
 				],
 				"standard" : "20"
 			},
@@ -458,11 +515,11 @@
 	"dependencies" : 
 	[
 		{
-			"backtrace" : 0,
-			"id" : "UrFaustGUI_TEST_1_autogen::@78d05d7dfb5bcbb8691f"
+			"id" : "UrFaustGUI_TEST_1_autogen_timestamp_deps::@78d05d7dfb5bcbb8691f"
 		},
 		{
-			"id" : "UrFaustGUI_TEST_1_autogen_timestamp_deps::@78d05d7dfb5bcbb8691f"
+			"backtrace" : 0,
+			"id" : "UrFaustGUI_TEST_1_autogen::@78d05d7dfb5bcbb8691f"
 		}
 	],
 	"id" : "UrFaustGUI_TEST_1::@78d05d7dfb5bcbb8691f",
@@ -499,56 +556,66 @@
 			},
 			{
 				"backtrace" : 11,
+				"fragment" : "D:\\Qt\\6.11.2\\msvc2022_64\\lib\\Qt6OpenGLWidgetsd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 11,
 				"fragment" : "D:\\Qt\\6.11.2\\msvc2022_64\\lib\\Qt6Widgetsd.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 18,
+				"backtrace" : 17,
+				"fragment" : "D:\\Qt\\6.11.2\\msvc2022_64\\lib\\Qt6OpenGLd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 24,
 				"fragment" : "D:\\Qt\\6.11.2\\msvc2022_64\\lib\\Qt6Guid.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 19,
+				"backtrace" : 25,
 				"fragment" : "D:\\Qt\\6.11.2\\msvc2022_64\\lib\\Qt6Cored.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 29,
+				"backtrace" : 35,
 				"fragment" : "mpr.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 29,
+				"backtrace" : 35,
 				"fragment" : "userenv.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 39,
+				"backtrace" : 45,
 				"fragment" : "D:\\Qt\\6.11.2\\msvc2022_64\\lib\\Qt6EntryPointd.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 40,
+				"backtrace" : 46,
 				"fragment" : "shell32.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 47,
+				"backtrace" : 53,
 				"fragment" : "d3d11.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 47,
+				"backtrace" : 53,
 				"fragment" : "dxgi.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 47,
+				"backtrace" : 53,
 				"fragment" : "dxguid.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 47,
+				"backtrace" : 53,
 				"fragment" : "d3d12.lib",
 				"role" : "libraries"
 			},
@@ -646,7 +713,7 @@
 			"sourceGroupIndex" : 3
 		},
 		{
-			"backtrace" : 51,
+			"backtrace" : 57,
 			"path" : "build/Desktop_Qt_6_11_2_MSVC2022_64bit_Debug/UrFaustGUI_TEST_1/UrFaustGUI_TEST_1.exe.manifest",
 			"sourceGroupIndex" : 4
 		},

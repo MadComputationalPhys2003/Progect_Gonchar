@@ -1,0 +1,31 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"FaustSpin/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "UrFaustConsole_autogen_timestamp_deps::@5e3dd901d906fd76c124",
+	"isGeneratorProvided" : true,
+	"name" : "UrFaustConsole_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "FaustSpin",
+		"source" : "FaustSpin"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
