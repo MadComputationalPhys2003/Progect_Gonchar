@@ -1,83 +1,136 @@
 #include "main_window_1.h"
 #include "ui_main_window_1.h"
-#include <QDebug>
-#include <QPushButton>
-#include<cstdint>
+#include "parameters_dialog.h"
+#include "system_results_dialog.h"
+#include "energy_plot_dialog.h"
+#include "spin_visualization_dialog.h"
+#include <QAction>
+#include <QMessageBox>
+#include <QPixmap>
 MainWindow_1::MainWindow_1(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow_1)
 {
     ui->setupUi(this);
-    connect(ui->calculateButton, &QPushButton::clicked,
+    setWindowTitle(QStringLiteral("UrFaust, subprogram FaustSpin"));
+
+    const auto showCat = [](QLabel *label,
+                            const QString &resourcePath,
+                            int width,
+                            int height)
+    {
+        const QPixmap picture(resourcePath);
+
+        label->setAlignment(Qt::AlignCenter);
+        label->setScaledContents(false);
+        label->setMinimumSize(width, height);
+
+        label->setPixmap(
+            picture.scaled(
+                width, height,
+                Qt::KeepAspectRatio,
+                Qt::SmoothTransformation
+                )
+            );
+    };
+
+    showCat(ui->catLabel1, QStringLiteral(":/images/cat_1"), 160, 160);
+    showCat(ui->catLabel2, QStringLiteral(":/images/cat_2"), 160, 160);
+    showCat(ui->catLabel5, QStringLiteral(":/images/cat_3"), 160, 160);
+    showCat(ui->catLabel4, QStringLiteral(":/images/cat_4"), 160, 160);
+    showCat(ui->catLabel3, QStringLiteral(":/images/main_cat"), 320, 240);
+    connect(ui->actionSysten_results, &QAction::triggered,
             this, [this]()
             {
-                const auto config = readConfig();
+                if (!parametersDialog ||
+                    parametersDialog->getSimulationResult().frames.empty()) {
+                    QMessageBox::information(
+                        this,
+                        QStringLiteral("No results"),
+                        QStringLiteral("Run a simulation first.")
+                        );
+                    return;
+                }
 
-                qDebug() << "Dimension:"
-                         << static_cast<int>(config.dimension) + 1;
+                if (!systemResultsDialog) {
+                    systemResultsDialog =
+                        new SystemResultsDialog(this);
+                }
 
-                qDebug() << "Lx:" << config.lx
-                         << "Ly:" << config.ly
-                         << "Lz:" << config.lz;
+                systemResultsDialog->setResult(
+                    parametersDialog->getSimulationResult()
+                    );
 
-                qDebug() << "Spin length:" << config.spinLength;
-                qDebug() << "Exchange integral:" << config.exchangeIntegral;
-                qDebug() << "Epsilon:" << config.epsilon;
-                qDebug() << "Maximum iterations:" << config.maxSweeps;
-
-                qDebug() << "Initialization:"
-                         << (config.initialization ==
-                                     UrFaust::Ions::SpinInit::parallel
-                                 ? "Parallel"
-                                 : "Random");
+                systemResultsDialog->show();
+                systemResultsDialog->raise();
+                systemResultsDialog->activateWindow();
             });
+    connect(ui->actionSetParameters, &QAction::triggered,
+            this, [this]()
+            {
+                if (!parametersDialog) {
+                    parametersDialog = new ParametersDialog(this);
+                }
 
+                parametersDialog->show();
+                parametersDialog->raise();
+                parametersDialog->activateWindow();
+            });
+    connect(ui->actionEnergy_plot, &QAction::triggered,
+            this, [this]()
+            {
+        if (!parametersDialog ||
+            parametersDialog->getSimulationResult().frames.empty()) {
+            QMessageBox::information(
+                this,
+                QStringLiteral("No results"),
+                QStringLiteral("Run a simulation first.")
+                );
+            return;
+        }
+                if (!energyPlotDialog) {
+                    energyPlotDialog =
+                        new EnergyPlotDialog(this);
+                }
+
+                energyPlotDialog->show();
+                energyPlotDialog->setResult(
+                    parametersDialog->getSimulationResult()
+                    );
+                energyPlotDialog->raise();
+                energyPlotDialog->activateWindow();
+            });
+    connect(ui->actionSpin_Visualisation, &QAction::triggered,
+            this, [this]()
+            {
+                if (!parametersDialog ||
+                    parametersDialog->getSimulationResult()
+                        .frames.empty()) {
+                    QMessageBox::information(
+                        this,
+                        QStringLiteral("No results"),
+                        QStringLiteral("Run a simulation first.")
+                        );
+                    return;
+                }
+
+                if (!spinVisualizationDialog) {
+                    spinVisualizationDialog =
+                        new SpinVisualizationDialog(this);
+                }
+
+                spinVisualizationDialog->setResult(
+                    parametersDialog->getSimulationResult()
+                    );
+
+                spinVisualizationDialog->show();
+                spinVisualizationDialog->raise();
+                spinVisualizationDialog->activateWindow();
+            });
 }
-UrFaustSim::SimulationConfig MainWindow_1::readConfig() const
-{
-    UrFaustSim::SimulationConfig config;
 
-    const int dimensionIndex =
-        ui->dimensionComboBox->currentIndex();
-
-    config.dimension =
-        static_cast<UrFaust::Dimension>(dimensionIndex);
-
-    config.lx =
-        static_cast<std::uint64_t>(ui->lxSpinBox->value());
-
-    config.ly = dimensionIndex >= 1
-                    ? static_cast<std::uint64_t>(ui->lySpinBox->value())
-                    : 1;
-
-    config.lz = dimensionIndex >= 2
-                    ? static_cast<std::uint64_t>(ui->lzSpinBox->value())
-                    : 1;
-
-    config.spinLength = ui->spinLengthSpinBox->value();
-    config.exchangeIntegral = ui->exchangeIntegralSpinBox->value();
-    ui->exchangeIntegralSpinBox->setRange(-1000.0, 1000.0);
-    ui->exchangeIntegralSpinBox->setValue(-1.0);
-
-    qDebug() << "J range:"
-             << ui->exchangeIntegralSpinBox->minimum()
-             << ui->exchangeIntegralSpinBox->maximum();
-
-    qDebug() << "J value:"
-             << ui->exchangeIntegralSpinBox->value();
-    config.epsilon = ui->epsilonSpinBox->value();
-
-    config.maxSweeps =
-        static_cast<std::size_t>(ui->maxSweepsSpinBox->value());
-
-    config.initialization =
-        static_cast<UrFaust::Ions::SpinInit>(
-            ui->initializationComboBox->currentIndex()
-            );
-
-    return config;
-}
 MainWindow_1::~MainWindow_1()
 {
     delete ui;
 }
+

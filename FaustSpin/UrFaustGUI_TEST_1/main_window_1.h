@@ -2,13 +2,16 @@
 #define MAIN_WINDOW_1_H
 
 #include <QMainWindow>
-#include "UrFaustSimulation_1.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow_1;
 }
 QT_END_NAMESPACE
-
+class SystemResultsDialog;
+class ParametersDialog;
+class EnergyPlotDialog;
+class SpinVisualizationDialog;
 class MainWindow_1 : public QMainWindow
 {
     Q_OBJECT
@@ -19,6 +22,10 @@ public:
 
 private:
     Ui::MainWindow_1 *ui;
-    UrFaustSim::SimulationConfig readConfig() const;
+    ParametersDialog *parametersDialog = nullptr;
+    SystemResultsDialog *systemResultsDialog = nullptr;
+    EnergyPlotDialog *energyPlotDialog = nullptr;
+    SpinVisualizationDialog *spinVisualizationDialog = nullptr;
 };
-#endif // MAIN_WINDOW_1_H
+
+#endif

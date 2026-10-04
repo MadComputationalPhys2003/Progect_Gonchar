@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SpinVisualizationDialog</class>
+ <widget class="QDialog" name="SpinVisualizationDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>899</width>
+    <height>595</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>21</x>
+     <y>11</y>
+     <width>44</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Frame:</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="frameSpinBox">
+   <property name="geometry">
+    <rect>
+     <x>72</x>
+     <y>11</y>
+     <width>51</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="frameInfoLabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>50</y>
+     <width>101</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>No results</string>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="SpinOpenGLWidget" name="spinOpenGLWidget">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>0</y>
+     <width>681</width>
+     <height>581</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SpinOpenGLWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>spin_opengl_widget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="main_cat">Cats_Main_Window/photo_2026-10-04_20-25-02.jpg</file>
+        <file alias="cat_1">Cats_Main_Window/Pizdisik_1.png</file>
+        <file alias="cat_2">Cats_Main_Window/Pizdisik_2.png</file>
+        <file alias="cat_3">Cats_Main_Window/Pizdisik_3.png</file>
+        <file alias="cat_4">Cats_Main_Window/Pizdisik_4.png</file>
+    </qresource>
+</RCC>
+
