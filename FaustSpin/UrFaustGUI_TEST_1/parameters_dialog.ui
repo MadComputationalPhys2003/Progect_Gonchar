@@ -13,46 +13,7 @@
   <property name="windowTitle">
    <string>Parameters</string>
   </property>
-  <widget class="QPushButton" name="calculateButton">
-   <property name="geometry">
-    <rect>
-     <x>360</x>
-     <y>510</y>
-     <width>93</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Calculate</string>
-   </property>
-  </widget>
-  <widget class="QProgressBar" name="simulationProgressBar">
-   <property name="geometry">
-    <rect>
-     <x>470</x>
-     <y>510</y>
-     <width>118</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="value">
-    <number>0</number>
-   </property>
-  </widget>
-  <widget class="QLabel" name="calculationStatusLabel">
-   <property name="geometry">
-    <rect>
-     <x>610</x>
-     <y>510</y>
-     <width>63</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Ready</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -90,7 +51,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -126,12 +87,18 @@
       <property name="buttonSymbols">
        <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
       </property>
+      <property name="minimum">
+       <number>3</number>
+      </property>
      </widget>
     </item>
     <item row="1" column="1">
      <widget class="QSpinBox" name="LySpinBox">
       <property name="buttonSymbols">
        <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>3</number>
       </property>
      </widget>
     </item>
@@ -140,11 +107,14 @@
       <property name="buttonSymbols">
        <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
       </property>
+      <property name="minimum">
+       <number>3</number>
+      </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -177,7 +147,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -206,7 +176,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>280</x>
@@ -241,7 +211,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>410</x>
@@ -270,7 +240,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>550</x>
@@ -297,6 +267,79 @@
       </property>
       <property name="maximum">
        <double>2.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>520</y>
+     <width>266</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_8">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="calculateButton">
+      <property name="text">
+       <string>Calculate</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QProgressBar" name="simulationProgressBar">
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QLabel" name="calculationStatusLabel">
+      <property name="text">
+       <string>Ready</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>670</x>
+     <y>0</y>
+     <width>128</width>
+     <height>130</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_9">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>Show results</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="systemResultsButton">
+      <property name="text">
+       <string>System Results</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="energyPlotButton">
+      <property name="text">
+       <string>Energy Plot</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QPushButton" name="spinVisualizationButton">
+      <property name="text">
+       <string>Spin Visualization</string>
       </property>
      </widget>
     </item>

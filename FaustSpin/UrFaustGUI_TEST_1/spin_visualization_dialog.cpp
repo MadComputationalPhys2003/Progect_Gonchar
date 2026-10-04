@@ -11,7 +11,14 @@ SpinVisualizationDialog::SpinVisualizationDialog(QWidget *parent)
     , ui(new Ui::SpinVisualizationDialog)
 {
     ui->setupUi(this);
-
+    setWindowFlags(
+        (windowFlags() & ~Qt::WindowContextHelpButtonHint)
+        | Qt::CustomizeWindowHint
+        | Qt::WindowTitleHint
+        | Qt::WindowSystemMenuHint
+        | Qt::WindowMinimizeButtonHint
+        | Qt::WindowCloseButtonHint
+        );
     ui->frameSpinBox->setRange(0, 0);
     ui->frameSpinBox->setEnabled(false);
 

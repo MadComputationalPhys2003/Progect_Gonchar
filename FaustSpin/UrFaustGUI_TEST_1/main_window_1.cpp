@@ -7,11 +7,14 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QPushButton>
 MainWindow_1::MainWindow_1(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow_1)
 {
     ui->setupUi(this);
+    connect(ui->setParametersButton, &QPushButton::clicked,
+            ui->actionSetParameters, &QAction::trigger);
     setWindowTitle(QStringLiteral("UrFaust, subprogram FaustSpin"));
 
     const auto showCat = [](QLabel *label,
@@ -61,7 +64,7 @@ MainWindow_1::MainWindow_1(QWidget *parent)
                     parametersDialog->getSimulationResult()
                     );
 
-                systemResultsDialog->show();
+                systemResultsDialog->showNormal();
                 systemResultsDialog->raise();
                 systemResultsDialog->activateWindow();
             });
@@ -70,9 +73,45 @@ MainWindow_1::MainWindow_1(QWidget *parent)
             {
                 if (!parametersDialog) {
                     parametersDialog = new ParametersDialog(this);
+                    connect(parametersDialog,
+                            &ParametersDialog::systemResultsRequested,
+                            ui->actionSysten_results,
+                            &QAction::trigger);
+
+                    connect(parametersDialog,
+                            &ParametersDialog::energyPlotRequested,
+                            ui->actionEnergy_plot,
+                            &QAction::trigger);
+
+                    connect(parametersDialog,
+                            &ParametersDialog::spinVisualizationRequested,
+                            ui->actionSpin_Visualisation,
+                            &QAction::trigger);
+                    connect(
+                        parametersDialog,
+                        &ParametersDialog::simulationFinished,
+                        this,
+                        [this]()
+                        {
+                            const auto &result =
+                                parametersDialog->getSimulationResult();
+
+                            if (systemResultsDialog) {
+                                systemResultsDialog->setResult(result);
+                            }
+
+                            if (energyPlotDialog) {
+                                energyPlotDialog->setResult(result);
+                            }
+
+                            if (spinVisualizationDialog) {
+                                spinVisualizationDialog->setResult(result);
+                            }
+                        }
+                        );
                 }
 
-                parametersDialog->show();
+                parametersDialog->showNormal();
                 parametersDialog->raise();
                 parametersDialog->activateWindow();
             });
@@ -93,7 +132,7 @@ MainWindow_1::MainWindow_1(QWidget *parent)
                         new EnergyPlotDialog(this);
                 }
 
-                energyPlotDialog->show();
+                energyPlotDialog->showNormal();
                 energyPlotDialog->setResult(
                     parametersDialog->getSimulationResult()
                     );
@@ -123,7 +162,7 @@ MainWindow_1::MainWindow_1(QWidget *parent)
                     parametersDialog->getSimulationResult()
                     );
 
-                spinVisualizationDialog->show();
+                spinVisualizationDialog->showNormal();
                 spinVisualizationDialog->raise();
                 spinVisualizationDialog->activateWindow();
             });

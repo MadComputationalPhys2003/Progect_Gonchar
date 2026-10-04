@@ -15,7 +15,11 @@ public:
     explicit ParametersDialog(QWidget *parent = nullptr);
     ~ParametersDialog();
     const UrFaustSim::SimulationResult &getSimulationResult() const;
-
+signals:
+    void simulationFinished();
+    void systemResultsRequested();
+    void energyPlotRequested();
+    void spinVisualizationRequested();
 private:
     Ui::ParametersDialog *ui;
     UrFaustSim::SimulationConfig readConfig() const;

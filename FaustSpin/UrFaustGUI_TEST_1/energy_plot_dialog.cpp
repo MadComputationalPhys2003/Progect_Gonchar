@@ -16,6 +16,14 @@ EnergyPlotDialog::EnergyPlotDialog(QWidget *parent)
     , ui(new Ui::EnergyPlotDialog)
 {
     ui->setupUi(this);
+    setWindowFlags(
+        (windowFlags() & ~Qt::WindowContextHelpButtonHint)
+        | Qt::CustomizeWindowHint
+        | Qt::WindowTitleHint
+        | Qt::WindowSystemMenuHint
+        | Qt::WindowMinimizeButtonHint
+        | Qt::WindowCloseButtonHint
+        );
     scene = new QGraphicsScene(this);
     ui->energyGraphicsView->setScene(scene);
     ui->energyGraphicsView->setRenderHint(QPainter::Antialiasing);

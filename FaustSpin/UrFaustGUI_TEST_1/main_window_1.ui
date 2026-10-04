@@ -130,6 +130,19 @@
         <string>TextLabel</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="setParametersButton">
+       <property name="geometry">
+        <rect>
+         <x>470</x>
+         <y>430</y>
+         <width>121</width>
+         <height>29</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Set Parameters</string>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>

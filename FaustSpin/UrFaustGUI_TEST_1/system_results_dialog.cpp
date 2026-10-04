@@ -7,6 +7,14 @@ SystemResultsDialog::SystemResultsDialog(QWidget *parent)
     , ui(new Ui::SystemResultsDialog)
 {
     ui->setupUi(this);
+    setWindowFlags(
+        (windowFlags() & ~Qt::WindowContextHelpButtonHint)
+        | Qt::CustomizeWindowHint
+        | Qt::WindowTitleHint
+        | Qt::WindowSystemMenuHint
+        | Qt::WindowMinimizeButtonHint
+        | Qt::WindowCloseButtonHint
+        );
     ui->finalSpinDirectionValueLabel->setTextInteractionFlags(
         Qt::TextSelectableByMouse |
         Qt::TextSelectableByKeyboard

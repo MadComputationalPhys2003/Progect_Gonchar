@@ -26,8 +26,6 @@ target_link_libraries(UrFaustGUI_TEST_1
         Qt::Core
         Qt::Widgets
         Qt6::OpenGLWidgets
-        Qt6::OpenGLWidgets
-        Qt6::OpenGLWidgets
         Qt6::OpenGL
         UrFaustCore
 )

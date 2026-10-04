@@ -17,8 +17,24 @@ ParametersDialog::ParametersDialog(QWidget *parent)
     , ui(new Ui::ParametersDialog)
 {
     ui->setupUi(this);
+    setWindowFlags(
+        (windowFlags() & ~Qt::WindowContextHelpButtonHint)
+        | Qt::CustomizeWindowHint
+        | Qt::WindowTitleHint
+        | Qt::WindowSystemMenuHint
+        | Qt::WindowMinimizeButtonHint
+        | Qt::WindowCloseButtonHint
+        );
     connect(ui->calculateButton, &QPushButton::clicked,
             this, &ParametersDialog::startSimulation);
+    connect(ui->systemResultsButton, &QPushButton::clicked,
+            this, &ParametersDialog::systemResultsRequested);
+
+    connect(ui->energyPlotButton, &QPushButton::clicked,
+            this, &ParametersDialog::energyPlotRequested);
+
+    connect(ui->spinVisualizationButton, &QPushButton::clicked,
+            this, &ParametersDialog::spinVisualizationRequested);
 }
 UrFaustSim::SimulationConfig ParametersDialog::readConfig() const
 {
@@ -128,7 +144,7 @@ void ParametersDialog::startSimulation()
 
                 ui->calculationStatusLabel->setText(
                     QStringLiteral("Finished"));
-
+                emit simulationFinished();
                 qDebug() << "Initial energy:"
                          << simulationResult.frames.front().energy;
 
