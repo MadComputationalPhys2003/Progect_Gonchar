@@ -14,6 +14,8 @@
 #include <vector>
 class QMouseEvent;
 class QWheelEvent;
+class QPainter;
+class QMatrix4x4;
 class SpinOpenGLWidget : public QOpenGLWidget,
                          protected QOpenGLFunctions
 {
@@ -26,13 +28,16 @@ public:
     void setFrame(
         const UrFaustSim::SimulationConfig &config,
         const UrFaustSim::SimulationFrame &frame);
-
+    void setViewAlongX();
+    void setViewAlongY();
+    void setViewAlongZ();
+    void resetView();
 protected:
     void initializeGL() override;
     void paintGL() override;
-    void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 private:
     struct Vertex {
         float position[3];
@@ -48,7 +53,7 @@ private:
     QOpenGLBuffer vbo{QOpenGLBuffer::VertexBuffer};
     QOpenGLVertexArrayObject vao;
     std::unique_ptr<QOpenGLShaderProgram> program;
-
+    bool orthographicView = false;
     bool ready = false;
     bool geometryDirty = true;
 
@@ -58,6 +63,9 @@ private:
         const QVector3D &color);
 
     void cleanup();
+    void drawOrientationAxes(
+        QPainter &painter,
+        const QMatrix4x4 &view);
 };
 
 #endif // SPIN_OPENGL_WIDGET_H

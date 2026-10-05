@@ -56,7 +56,7 @@
         <enum>QFrame::Shadow::Sunken</enum>
        </property>
        <property name="text">
-        <string>Welcome to GUI interface for Urfaust, subprogram FaustSpin. Author Knyazev Alexander Romanovich (MadComputationalPhys2003)</string>
+        <string>Welcome to GUI for UrFaust, subprogram FaustSpin. Author: Knyazev Alexander Romanovich (MadComputationalPhys2003)</string>
        </property>
        <property name="textFormat">
         <enum>Qt::TextFormat::RichText</enum>

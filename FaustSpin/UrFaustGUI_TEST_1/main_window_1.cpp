@@ -37,10 +37,10 @@ MainWindow_1::MainWindow_1(QWidget *parent)
             );
     };
 
-    showCat(ui->catLabel1, QStringLiteral(":/images/cat_1"), 160, 160);
-    showCat(ui->catLabel2, QStringLiteral(":/images/cat_2"), 160, 160);
-    showCat(ui->catLabel5, QStringLiteral(":/images/cat_3"), 160, 160);
-    showCat(ui->catLabel4, QStringLiteral(":/images/cat_4"), 160, 160);
+    showCat(ui->catLabel1, QStringLiteral(":/images/cat_1"), 320, 320);
+    showCat(ui->catLabel2, QStringLiteral(":/images/cat_2"), 320, 320);
+    showCat(ui->catLabel5, QStringLiteral(":/images/cat_3"), 320, 320);
+    showCat(ui->catLabel4, QStringLiteral(":/images/cat_4"), 320, 320);
     showCat(ui->catLabel3, QStringLiteral(":/images/main_cat"), 320, 240);
     connect(ui->actionSysten_results, &QAction::triggered,
             this, [this]()

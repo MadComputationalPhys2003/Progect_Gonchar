@@ -12,6 +12,10 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QtMath>
+#include <QPainter>
+#include <QPen>
+#include <QFont>
+#include <QColor>
 SpinOpenGLWidget::SpinOpenGLWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
@@ -272,6 +276,56 @@ void main()
 
 void SpinOpenGLWidget::paintGL()
 {
+    const float aspect =
+        static_cast<float>(std::max(1, width())) /
+        static_cast<float>(std::max(1, height()));
+
+    QMatrix4x4 projection;
+
+    if (orthographicView) {
+        const float halfHeight =
+            cameraDistance *
+            std::tan(qDegreesToRadians(22.5f));
+
+        const float halfWidth = halfHeight * aspect;
+
+        projection.ortho(
+            -halfWidth, halfWidth,
+            -halfHeight, halfHeight,
+            0.1f, 100.0f);
+    }
+    else {
+        projection.perspective(
+            45.0f, aspect, 0.1f, 100.0f);
+    }
+
+    const float yawRadians = qDegreesToRadians(yaw);
+    const float pitchRadians = qDegreesToRadians(pitch);
+
+    const float cosYaw = std::cos(yawRadians);
+    const float sinYaw = std::sin(yawRadians);
+    const float cosPitch = std::cos(pitchRadians);
+    const float sinPitch = std::sin(pitchRadians);
+
+    const QVector3D eye(
+        cameraDistance * cosPitch * cosYaw,
+        cameraDistance * cosPitch * sinYaw,
+        cameraDistance * sinPitch);
+
+    const QVector3D cameraUp(
+        -sinPitch * cosYaw,
+        -sinPitch * sinYaw,
+        cosPitch);
+
+    QMatrix4x4 view;
+    view.lookAt(
+        eye,
+        QVector3D(0.0f, 0.0f, 0.0f),
+        cameraUp);
+
+    QPainter painter(this);
+    painter.beginNativePainting();
+
     glClearColor(0.08f, 0.10f, 0.14f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
@@ -284,69 +338,37 @@ void SpinOpenGLWidget::paintGL()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (!ready || vertices.empty()) {
-        return;
+    if (ready && !vertices.empty()) {
+        program->bind();
+        vao.bind();
+        vbo.bind();
+
+        if (geometryDirty) {
+            vbo.allocate(
+                vertices.data(),
+                static_cast<int>(
+                    vertices.size() * sizeof(Vertex)));
+
+            geometryDirty = false;
+        }
+
+        program->setUniformValue(
+            "mvp",
+            projection * view);
+
+        glDrawArrays(
+            GL_LINES,
+            0,
+            static_cast<GLsizei>(vertices.size()));
+
+        vao.release();
+        vbo.release();
+        program->release();
     }
 
-    QMatrix4x4 projection;
-    projection.perspective(
-        45.0f,
-        static_cast<float>(width()) /
-            static_cast<float>(std::max(1, height())),
-        0.1f,
-        100.0f);
+    painter.endNativePainting();
 
-    const float yawRadians = qDegreesToRadians(yaw);
-    const float pitchRadians = qDegreesToRadians(pitch);
-
-    const QVector3D eye(
-        cameraDistance *
-            std::cos(pitchRadians) * std::cos(yawRadians),
-
-        cameraDistance *
-            std::cos(pitchRadians) * std::sin(yawRadians),
-
-        cameraDistance * std::sin(pitchRadians));
-
-    QMatrix4x4 view;
-    view.lookAt(
-        eye,
-        QVector3D(0.0f, 0.0f, 0.0f),
-        QVector3D(0.0f, 0.0f, 1.0f));
-    program->bind();
-    vao.bind();
-    vbo.bind();
-
-    if (geometryDirty) {
-        vbo.allocate(
-            vertices.data(),
-            static_cast<int>(
-                vertices.size() * sizeof(Vertex)));
-
-        geometryDirty = false;
-    }
-
-    program->setUniformValue("mvp", projection * view);
-
-    glDrawArrays(
-        GL_LINES,
-        0,
-        static_cast<GLsizei>(vertices.size()));
-
-    vao.release();
-    vbo.release();
-    program->release();
-}
-void SpinOpenGLWidget::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton) {
-        lastMousePosition = event->position();
-
-        event->accept();
-        return;
-    }
-
-    QOpenGLWidget::mousePressEvent(event);
+    drawOrientationAxes(painter, view);
 }
 
 void SpinOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
@@ -367,8 +389,10 @@ void SpinOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
 
     pitch = std::clamp(
         pitch + static_cast<float>(delta.y()) * 0.4f,
-        -85.0f,
-        85.0f);
+        -90.0f,
+        90.0f);
+
+    orthographicView = false;
 
     update();
     event->accept();
@@ -396,4 +420,130 @@ void SpinOpenGLWidget::wheelEvent(QWheelEvent *event)
 
     update();
     event->accept();
+}
+
+void SpinOpenGLWidget::setViewAlongX()
+{
+    yaw = 0.0f;
+    pitch = 0.0f;
+    orthographicView = true;
+    update();
+}
+
+void SpinOpenGLWidget::setViewAlongY()
+{
+    yaw = -90.0f;
+    pitch = 0.0f;
+    orthographicView = true;
+    update();
+}
+
+void SpinOpenGLWidget::setViewAlongZ()
+{
+    yaw = -90.0f;
+    pitch = 90.0f;
+    orthographicView = true;
+    update();
+}
+
+void SpinOpenGLWidget::resetView()
+{
+    yaw = -52.0f;
+    pitch = 29.0f;
+    cameraDistance = 5.2f;
+    orthographicView = false;
+    update();
+}
+
+void SpinOpenGLWidget::drawOrientationAxes(
+    QPainter &painter,
+    const QMatrix4x4 &view)
+{
+    painter.save();
+
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+
+    QFont font = painter.font();
+    font.setPointSize(10);
+    font.setBold(true);
+    painter.setFont(font);
+
+    const QPointF origin(60.0, height() - 60.0);
+    constexpr qreal axisLength = 34.0;
+
+    const auto drawAxis = [&](const QVector3D &axis,
+                              const QColor &color,
+                              const QString &label)
+    {
+        const QVector3D rotated = view.mapVector(axis);
+
+        const QPointF offset(
+            axisLength * rotated.x(),
+            -axisLength * rotated.y());
+
+        const QPointF end = origin + offset;
+        const qreal length =
+            std::hypot(offset.x(), offset.y());
+
+        painter.setPen(QPen(color, 2.0));
+        painter.setBrush(color);
+
+        // Ось, направленная вдоль взгляда,
+        // проецируется в точку.
+        if (length < 1.0) {
+            painter.drawEllipse(origin, 3.0, 3.0);
+            painter.drawText(
+                origin + QPointF(6.0, 14.0),
+                label);
+            return;
+        }
+
+        painter.drawLine(origin, end);
+
+        const QPointF direction = offset / length;
+        const QPointF normal(
+            -direction.y(),
+            direction.x());
+
+        painter.drawLine(
+            end,
+            end - direction * 6.0 + normal * 3.0);
+
+        painter.drawLine(
+            end,
+            end - direction * 6.0 - normal * 3.0);
+
+        painter.drawText(
+            end + QPointF(5.0, -5.0),
+            label);
+    };
+
+    drawAxis(
+        QVector3D(1.0f, 0.0f, 0.0f),
+        QColor(240, 80, 80),
+        QStringLiteral("X"));
+
+    drawAxis(
+        QVector3D(0.0f, 1.0f, 0.0f),
+        QColor(90, 220, 100),
+        QStringLiteral("Y"));
+
+    drawAxis(
+        QVector3D(0.0f, 0.0f, 1.0f),
+        QColor(100, 160, 255),
+        QStringLiteral("Z"));
+
+    painter.restore();
+}
+void SpinOpenGLWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        lastMousePosition = event->position();
+
+        event->accept();
+        return;
+    }
+
+    QOpenGLWidget::mousePressEvent(event);
 }

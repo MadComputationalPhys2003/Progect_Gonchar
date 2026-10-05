@@ -5,12 +5,27 @@
 #include <QSpinBox>
 #include <QString>
 #include <cstddef>
-
+#include <QPushButton>
 SpinVisualizationDialog::SpinVisualizationDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::SpinVisualizationDialog)
 {
     ui->setupUi(this);
+    connect(ui->viewXButton, &QPushButton::clicked,
+            ui->spinOpenGLWidget,
+            &SpinOpenGLWidget::setViewAlongX);
+
+    connect(ui->viewYButton, &QPushButton::clicked,
+            ui->spinOpenGLWidget,
+            &SpinOpenGLWidget::setViewAlongY);
+
+    connect(ui->viewZButton, &QPushButton::clicked,
+            ui->spinOpenGLWidget,
+            &SpinOpenGLWidget::setViewAlongZ);
+
+    connect(ui->resetViewButton, &QPushButton::clicked,
+            ui->spinOpenGLWidget,
+            &SpinOpenGLWidget::resetView);
     setWindowFlags(
         (windowFlags() & ~Qt::WindowContextHelpButtonHint)
         | Qt::CustomizeWindowHint

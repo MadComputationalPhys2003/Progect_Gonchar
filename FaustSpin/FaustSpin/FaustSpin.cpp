@@ -6,6 +6,8 @@
 #include <iostream>
 #include<fstream>
 #include <string_view>
+#include <string>
+#include <stdexcept>
 
 namespace {
 
@@ -42,6 +44,35 @@ namespace {
 
 		UrFaustSim::Simulation simulation(config);
 		const UrFaustSim::SimulationResult result = simulation.run();
+		std::ofstream spinFile(
+			"spins_" + std::string(dimensionName(dimension)) + ".csv"
+		);
+
+		if (!spinFile) {
+			throw std::runtime_error("Cannot create spins file.");
+		}
+
+		spinFile << std::setprecision(17);
+		spinFile << "sweep,energy,index,nx,ny,nz\n";
+
+		for (const auto& frame : result.frames) {
+			for (std::size_t i = 0; i < frame.spinDirections.size(); ++i) {
+				const auto& n = frame.spinDirections[i];
+
+				spinFile << frame.sweep << ','
+					<< frame.energy << ','
+					<< i << ','
+					<< n[0] << ','
+					<< n[1] << ','
+					<< n[2] << '\n';
+			}
+		}
+
+		spinFile.close();
+
+		if (!spinFile) {
+			throw std::runtime_error("Cannot save spins file.");
+		}
 		std::ofstream file("energy.csv");
 
 		file << "sweep,energy\n";
