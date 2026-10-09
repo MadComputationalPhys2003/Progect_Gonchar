@@ -130,6 +130,7 @@
     <ClCompile Include="FaustSpin.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Faust math\Faust_Matrix.h" />
     <ClInclude Include="1D\Lattice1D.h" />
     <ClInclude Include="1D\Neighbors_1D.h" />
     <ClInclude Include="2D\Lattice2D.h" />

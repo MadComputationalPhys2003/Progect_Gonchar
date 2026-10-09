@@ -2,7 +2,8 @@ add_library(UrFaustCore INTERFACE)
 
 target_include_directories(UrFaustCore
     INTERFACE
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        "${CMAKE_CURRENT_SOURCE_DIR}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Subprograms"
 )
 
 target_compile_features(UrFaustCore
