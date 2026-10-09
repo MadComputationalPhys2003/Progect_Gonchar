@@ -8,6 +8,15 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QPushButton>
+#include <QDialog>
+#include <QGridLayout>
+#include <QKeySequence>
+#include <QLabel>
+#include <QPixmap>
+#include <QScrollArea>
+#include <QShortcut>
+#include <QVBoxLayout>
+#include <QWidget>
 MainWindow_1::MainWindow_1(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow_1)
@@ -16,32 +25,80 @@ MainWindow_1::MainWindow_1(QWidget *parent)
     connect(ui->setParametersButton, &QPushButton::clicked,
             ui->actionSetParameters, &QAction::trigger);
     setWindowTitle(QStringLiteral("UrFaust, subprogram FaustSpin"));
+    QDialog *catsDialog = new QDialog(this);
+    catsDialog->setWindowTitle(QStringLiteral("Cats"));
+    catsDialog->resize(560, 600);
 
-    const auto showCat = [](QLabel *label,
-                            const QString &resourcePath,
-                            int width,
-                            int height)
+    QVBoxLayout *catsLayout = new QVBoxLayout(catsDialog);
+
+    QScrollArea *catsScroll = new QScrollArea(catsDialog);
+    catsScroll->setWidgetResizable(true);
+    catsLayout->addWidget(catsScroll);
+
+    QWidget *catsContent = new QWidget;
+    QGridLayout *catsGrid = new QGridLayout(catsContent);
+    catsGrid->setSpacing(12);
+
+    const auto addCat =
+        [catsContent, catsGrid](
+            const QString &resourcePath,
+            int row,
+            int column,
+            int width,
+            int height,
+            int columnSpan = 1)
     {
-        const QPixmap picture(resourcePath);
-
+        QLabel *label = new QLabel(catsContent);
         label->setAlignment(Qt::AlignCenter);
         label->setScaledContents(false);
         label->setMinimumSize(width, height);
 
+        const QPixmap picture(resourcePath);
+
         label->setPixmap(
             picture.scaled(
-                width, height,
+                width,
+                height,
                 Qt::KeepAspectRatio,
-                Qt::SmoothTransformation
-                )
-            );
+                Qt::SmoothTransformation));
+
+        catsGrid->addWidget(
+            label,
+            row,
+            column,
+            1,
+            columnSpan);
     };
 
-    showCat(ui->catLabel1, QStringLiteral(":/images/cat_1"), 320, 320);
-    showCat(ui->catLabel2, QStringLiteral(":/images/cat_2"), 320, 320);
-    showCat(ui->catLabel5, QStringLiteral(":/images/cat_3"), 320, 320);
-    showCat(ui->catLabel4, QStringLiteral(":/images/cat_4"), 320, 320);
-    showCat(ui->catLabel3, QStringLiteral(":/images/main_cat"), 320, 240);
+    addCat(QStringLiteral(":/images/cat_1"), 0, 0, 200, 200);
+    addCat(QStringLiteral(":/images/cat_2"), 0, 1, 200, 200);
+    addCat(QStringLiteral(":/images/cat_3"), 1, 0, 200, 200);
+    addCat(QStringLiteral(":/images/cat_4"), 1, 1, 200, 200);
+
+    addCat(
+        QStringLiteral(":/images/main_cat"),
+        2, 0, 360, 240, 2);
+
+    catsScroll->setWidget(catsContent);
+
+    QShortcut *catsShortcut = new QShortcut(
+        QKeySequence(QStringLiteral("Ctrl+Shift+I")),
+        this);
+
+    catsShortcut->setContext(Qt::ApplicationShortcut);
+    catsShortcut->setAutoRepeat(false);
+
+    connect(
+        catsShortcut,
+        &QShortcut::activated,
+        catsDialog,
+        [catsDialog]()
+        {
+            catsDialog->showNormal();
+            catsDialog->raise();
+            catsDialog->activateWindow();
+        });
+
     connect(ui->actionSysten_results, &QAction::triggered,
             this, [this]()
             {

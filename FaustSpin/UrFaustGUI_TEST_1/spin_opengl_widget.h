@@ -45,6 +45,19 @@ private:
     };
 
     std::vector<Vertex> vertices;
+    int spinVertexCount = 0;
+    int coneVertexCount = 0;
+
+    static constexpr int coneSegments = 16;
+
+    void addCone(
+        const QVector3D &tip,
+        const QVector3D &direction,
+        float length,
+        float radius,
+        const QVector3D &color);
+    int latticeVertexCount = 0;
+    int nodeVertexCount = 0;
     QPointF lastMousePosition;
 
     float yaw = -52.0f;
