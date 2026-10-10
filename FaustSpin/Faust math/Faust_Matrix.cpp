@@ -8,10 +8,18 @@ namespace FM {
 		Matrix::Matrix(size_t r, size_t c) :
 			rows(r),cols(c)
 		{
-			if ((rows < 2 && cols < 2)||(rows==0||cols==0)) {
-				throw std::invalid_argument("rows and cols both less 2");
+			if (rows==0||cols==0) {
+				throw std::invalid_argument("rows and cols must be greater than 0");
 			}
 			matrix.resize(rows * cols);
+		};
+		explicit Matrix::operator double() const {
+			if (rows == 1 && cols == 1) {
+				return matrix[0];
+			}
+			else {
+				throw std::runtime_error("Matrix is not 1x1");
+			}
 		};
 		size_t Matrix::get_rows() const {
 			return rows;

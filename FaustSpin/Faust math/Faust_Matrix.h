@@ -11,6 +11,7 @@ namespace FM {
 		std::vector<double> matrix;
 	public:
 		Matrix(size_t r, size_t c);
+		explicit operator double() const;
 		size_t get_rows() const;
 		size_t get_cols() const;
 		const double& operator[](size_t idx) const;
