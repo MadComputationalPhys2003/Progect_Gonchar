@@ -16,10 +16,10 @@ namespace FM {
 		const double& operator[](size_t idx) const;
 		double& operator [](size_t);
 		Matrix operator-( )const ;
-		Matrix& operator*=(const Matrix& rhs);
-		Matrix& operator*=(double scalar);
-		Matrix& operator +=(const Matrix& rhs);
-		Matrix& operator -=(const Matrix& rhs);
+		Matrix operator*=(const Matrix& rhs);
+		Matrix operator*=(double scalar);
+		Matrix operator +=(const Matrix& rhs);
+		Matrix operator -=(const Matrix& rhs);
 	};
 	Matrix operator+(const Matrix& mat1, const Matrix& mat2);
 	Matrix operator-(const Matrix& mat1, const Matrix& mat2);

@@ -5,36 +5,27 @@
 
 
 namespace FM {
-	class Matrix {
-	private:
-		size_t rows;
-		size_t cols;
-		std::vector<double> matrix;
-	public:
-		Matrix(size_t r, size_t c) :
+		Matrix::Matrix(size_t r, size_t c) :
 			rows(r),cols(c)
 		{
-			if (rows < 2 && cols < 2) {
+			if ((rows < 2 && cols < 2)||(rows==0||cols==0)) {
 				throw std::invalid_argument("rows and cols both less 2");
 			}
 			matrix.resize(rows * cols);
 		};
-		size_t get_rows() const {
+		size_t Matrix::get_rows() const {
 			return rows;
 		};
-		size_t get_cols() const {
+		size_t Matrix::get_cols() const {
 			return cols;
 		};
-		size_t size() const {
-			return rows * cols;
-		};
-		const double& operator[](size_t idx) const {
+		const double& Matrix::operator[](size_t idx) const {
 			return matrix[idx];
 		};
-		double& operator [](size_t idx) {
+		double& Matrix::operator [](size_t idx) {
 			return matrix[idx];
 		};
-		Matrix operator-( )const {
+		Matrix Matrix::operator-( )const {
 			Matrix res = *this;
 			size_t k = 0;
 			for (size_t i = 0; i < rows; i++) {
@@ -43,9 +34,9 @@ namespace FM {
 					res[k] = -1 * matrix[k];
 				}
 			}
-			return *this;
+			return res;
 		};
-		Matrix operator*=(const Matrix& rhs) {
+		Matrix Matrix::operator*=(const Matrix& rhs) {
 			Matrix res(rows, rhs.get_cols());
 			double sum = 0.0;
 			for (size_t i = 0; i < rows; i++) {
@@ -59,7 +50,7 @@ namespace FM {
 			}
 			return res;
 		};
-		Matrix operator*=(double scalar) {
+		Matrix Matrix::operator*=(double scalar) {
 			Matrix res = *this;
 			for(size_t i=0;i<res.get_rows();i++) {
 				for(size_t j=0;j<res.get_cols();j++) {
@@ -68,7 +59,7 @@ namespace FM {
 			}
 			return res;
 		};
-		Matrix operator +=(const Matrix& rhs) {
+		Matrix Matrix::operator +=(const Matrix& rhs) {
 			Matrix res = *this;
 			size_t k = 0;
 			for (size_t i = 0; i < res.get_rows(); i++) {
@@ -79,7 +70,7 @@ namespace FM {
 			}
 			return res;
 		};
-		Matrix operator -=(const Matrix& rhs) {
+		Matrix Matrix::operator -=(const Matrix& rhs) {
 			Matrix res = *this;
 			size_t k = 0;
 			for (size_t i = 0; i < res.get_rows(); i++) {
@@ -90,9 +81,8 @@ namespace FM {
 			}
 			return res;
 		};
-	};
 	Matrix operator+(const Matrix& mat1, const Matrix& mat2) {
-		if (mat1.get_cols()!= mat2.get_cols()&&mat1.get_rows()!=mat2.get_rows()) {
+		if (mat1.get_cols()!= mat2.get_cols()||mat1.get_rows()!=mat2.get_rows()) {
 			throw std::runtime_error("Matrix sizes are not equal");
 		} 
 		Matrix res = mat1;
@@ -100,7 +90,7 @@ namespace FM {
 		
 	};
 	Matrix operator-(const Matrix& mat1, const Matrix& mat2) {
-		if (mat1.get_cols() != mat2.get_cols() && mat1.get_rows() != mat2.get_rows()) {
+		if (mat1.get_cols() != mat2.get_cols() || mat1.get_rows() != mat2.get_rows()) {
 			throw std::runtime_error("Matrix sizes are not equal");
 		}
 		Matrix res = mat1;
