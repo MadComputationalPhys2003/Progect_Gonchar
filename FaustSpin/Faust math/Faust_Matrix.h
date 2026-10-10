@@ -30,4 +30,5 @@ namespace FM {
 
 	std::ostream& operator<<(std::ostream& os,const Matrix& mat);
 	std::istream& operator>>(std::istream& is, Matrix& mat);
+	Matrix transpose (const Matrix& mat);
 }

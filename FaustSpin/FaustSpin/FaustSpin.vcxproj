@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Faust math\Faust_Matrix.cpp" />
     <ClCompile Include="FaustSpin.cpp" />
   </ItemGroup>
   <ItemGroup>
