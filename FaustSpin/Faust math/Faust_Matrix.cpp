@@ -44,7 +44,7 @@ namespace FM {
 			}
 			return res;
 		};
-		Matrix Matrix::operator*=(const Matrix& rhs) {
+		Matrix& Matrix::operator*=(const Matrix& rhs) {
 			Matrix res(rows, rhs.get_cols());
 			double sum = 0.0;
 			for (size_t i = 0; i < rows; i++) {
@@ -56,18 +56,20 @@ namespace FM {
 					res[i * rhs.get_cols() + j] = sum;
 				}
 			}
-			return res;
+			*this = res;
+			return *this;
 		};
-		Matrix Matrix::operator*=(double scalar) {
+		Matrix& Matrix::operator*=(double scalar) {
 			Matrix res = *this;
 			for(size_t i=0;i<res.get_rows();i++) {
 				for(size_t j=0;j<res.get_cols();j++) {
 					res[i * res.get_cols() + j] *= scalar;
 				}
 			}
-			return res;
+			*this = res;
+			return *this;
 		};
-		Matrix Matrix::operator +=(const Matrix& rhs) {
+		Matrix& Matrix::operator +=(const Matrix& rhs) {
 			Matrix res = *this;
 			size_t k = 0;
 			for (size_t i = 0; i < res.get_rows(); i++) {
@@ -76,9 +78,10 @@ namespace FM {
 					res[k] += rhs[k];
 				}
 			}
-			return res;
+			*this = res;
+			return *this;
 		};
-		Matrix Matrix::operator -=(const Matrix& rhs) {
+		Matrix& Matrix::operator -=(const Matrix& rhs) {
 			Matrix res = *this;
 			size_t k = 0;
 			for (size_t i = 0; i < res.get_rows(); i++) {
@@ -87,7 +90,8 @@ namespace FM {
 					res[k] -= rhs[k];
 				}
 			}
-			return res;
+			*this = res;
+			return *this;
 		};
 	Matrix operator+(const Matrix& mat1, const Matrix& mat2) {
 		if (mat1.get_cols()!= mat2.get_cols()||mat1.get_rows()!=mat2.get_rows()) {
