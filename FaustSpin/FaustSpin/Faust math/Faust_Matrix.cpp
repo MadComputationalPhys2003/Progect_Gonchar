@@ -13,7 +13,7 @@ namespace FM {
 			}
 			matrix.resize(rows * cols);
 		};
-		explicit Matrix::operator double() const {
+		Matrix::operator double() const {
 			if (rows == 1 && cols == 1) {
 				return matrix[0];
 			}

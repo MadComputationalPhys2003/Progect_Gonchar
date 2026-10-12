@@ -2,6 +2,7 @@
 #include <cmath>
 #include<stdexcept>
 #include<array>
+#include"Faust math/Faust_Matrix.h"
 namespace Vector3D_Decart
 {
 	class Vector3D_Dec
@@ -54,6 +55,19 @@ namespace Vector3D_Decart
 	inline Vector3D_Dec operator*(double scalar,Vector3D_Dec vec) {
 		return vec *= scalar;
 	}
+	inline Vector3D_Dec operator*(const FM::Matrix& mat, const Vector3D_Dec& vec) {
+		if (mat.get_cols() != 3 || mat.get_rows() != 3) {
+			throw std::invalid_argument("Matrix must be 3x3 for multiplication with Vector3D_Dec");
+		};
+		double row1 = 0.0;
+		double row2 = 0.0;
+		double row3 = 0.0;
+		row1 = mat[0] * vec[0] + mat[1] * vec[1] + mat[2] * vec[2];
+		row2 = mat[3] * vec[0] + mat[4] * vec[1] + mat[5] * vec[2];
+		row3 = mat[6] * vec[0] + mat[7] * vec[1] + mat[8] * vec[2];
+		Vector3D_Dec result(row1, row2, row3);
+		return result;
+	};
 	inline double scalar_product(const Vector3D_Dec& vec1, const Vector3D_Dec& vec2) {
 		return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
 	}

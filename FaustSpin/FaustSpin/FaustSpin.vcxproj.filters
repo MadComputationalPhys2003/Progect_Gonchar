@@ -24,6 +24,9 @@
     <ClCompile Include="..\Faust math\Faust_Matrix.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Initialisation Headers\IonFaust.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Urfaust.h">
@@ -66,6 +69,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\Faust math\Faust_Matrix.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Initialisation Headers\IonFaust.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

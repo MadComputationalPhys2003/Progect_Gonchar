@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="..\Faust math\Faust_Matrix.cpp" />
     <ClCompile Include="FaustSpin.cpp" />
+    <ClCompile Include="Initialisation Headers\IonFaust.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Faust math\Faust_Matrix.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="3D\Latice3D.h" />
     <ClInclude Include="3D\Neighbors_3D_Cube.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Initialisation Headers\IonFaust.h" />
     <ClInclude Include="Lattice_Headers.h" />
     <ClInclude Include="Neighbor_Headers.h" />
     <ClInclude Include="UrFaustSimulation_1.h" />
