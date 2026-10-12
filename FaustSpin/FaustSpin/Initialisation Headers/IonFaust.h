@@ -3,6 +3,7 @@
 #include "../Vector3D_Decart.h"
 #include<random>
 #include<vector>
+#include<algorithm>
 #include <variant>
 #include <cmath>
 #include <cstddef>
@@ -62,10 +63,16 @@ namespace InitIons {
 
 			spin_direction = new_direction;
 		};
-		//Phi->Theta
-		double getPhi() const;
-		//Theta->Phi
-		double getTheta() const;
+		double getTheta() const {
+			return std::acos(std::clamp(spin_direction[2], -1.0, 1.0));
+		};
+		double getPhi() const {
+			double phi = std::atan2(spin_direction[1], spin_direction[0]);
+			if (phi < 0.0) {
+				phi += 2.0 * pi;
+			}
+			return phi;
+		};
 
 	};
 
@@ -333,11 +340,28 @@ namespace InitIons {
 
 				return value;
 			}
-			throw std::invalid_argument(
-				"Unknown spin length mode"
-			);
-		}
+			if (mode == SpinLengthInit::different) {
+				std::vector<double> values(count);
 
+				for (double& value : values) {
+					if (!(input >> value)) {
+						throw std::runtime_error(
+							"Cannot read all spin lengths"
+						);
+					}
+
+					if (!std::isfinite(value) || value <= 0.0) {
+						throw std::invalid_argument(
+							"Spin length must be finite and greater than zero"
+						);
+					}
+				}
+
+				return values;
+			}
+
+			throw std::invalid_argument("Unknown spin length mode");
+		}
 
 	};
 
