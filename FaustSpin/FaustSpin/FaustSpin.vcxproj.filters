@@ -74,5 +74,11 @@
     <ClInclude Include="Initialisation Headers\IonFaust.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Initialisation Headers\Header1.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

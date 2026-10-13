@@ -78,7 +78,7 @@ namespace InitIons {
 
 	class Ions
 	{
-		
+
 	private:
 		void random_direction_generator() {
 			std::random_device rd;
@@ -159,18 +159,16 @@ namespace InitIons {
 			SI = SpinDirectionInit::file;
 		}
 	public:
-		enum class SpinLengthInput   { generate,keyboard, file };
-		enum class SpinLengthInit    { constant, different };
+		enum class SpinLengthInit { constant, different };
 		enum class SpinDirectionInit { parallel, random, file };
 		std::vector<Ion> ions;
-		SpinDirectionInit SI; 
+		SpinDirectionInit SI;
 		SpinLengthInit SL;
-		SpinLengthInput SLI;
 		std::string spinfile;
 		std::string directionfile;
 		std::variant<double, std::vector<double>> spin;// Spin for every ion
 
-		std::variant<double, std::vector<double>> set_spin(std::variant<double, std::vector<double>> values,SpinLengthInit mode)
+		std::variant<double, std::vector<double>> set_spin(std::variant<double, std::vector<double>> values, SpinLengthInit mode)
 		{
 			if (mode == SpinLengthInit::constant) {
 				const double* value = std::get_if<double>(&values);
@@ -223,63 +221,14 @@ namespace InitIons {
 			return result;
 		}
 
-		std::variant<double, std::vector<double>> set_spin_keyboard(SpinLengthInit mode,std::istream& input = std::cin)
+		Ions(size_t n,
+			SpinLengthInit sl = SpinLengthInit::constant,
+			SpinDirectionInit si = SpinDirectionInit::parallel,
+			std::string sf = " ", std::string df = " ") :
+			ions(), SI(si), SL(sl), spinfile(sf), directionfile(df)
 		{
 
-			std::variant<double, std::vector<double>> values =
-				read_spin_lengths(input, ions.size(), mode);
-
-			std::variant<double, std::vector<double>> result =
-				set_spin(std::move(values), mode);
-
-			SLI = SpinLengthInput::keyboard;
-			return result;
-		}
-
-		std::variant<double, std::vector<double>> set_spin_file(const std::string& filename,SpinLengthInit mode)
-		{
-			std::ifstream input(filename);
-
-			if (!input) {
-				throw std::runtime_error(
-					"Cannot open spin lengths file"
-				);
-			}
-
-			input.imbue(std::locale::classic());
-
-			std::variant<double, std::vector<double>> values =
-				read_spin_lengths(input, ions.size(), mode);
-
-			input >> std::ws;
-
-			if (input.bad()) {
-				throw std::runtime_error(
-					"Cannot read spin lengths file"
-				);
-			}
-
-			if (!input.eof()) {
-				throw std::runtime_error(
-					"Spin lengths file contains extra data"
-				);
-			}
-
-			std::variant<double, std::vector<double>> result =
-				set_spin(std::move(values), mode);
-
-			SLI = SpinLengthInput::file;
-			return result;
-		}
-		Ions(size_t n, 
-					   SpinLengthInput sli = SpinLengthInput::keyboard,
-					   SpinLengthInit sl=SpinLengthInit::constant,
-					   SpinDirectionInit si = SpinDirectionInit::parallel,
-					   std::string sf=" ",std::string df=" ") :
-		ions(),SI(si),SL(sl),SLI(sli), spinfile(sf),directionfile(df)
-		{
-
-			ions.resize(n,Ion());
+			ions.resize(n, Ion());
 			if (SL == SpinLengthInit::constant) {
 				spin = 1.0;
 			}
@@ -290,15 +239,6 @@ namespace InitIons {
 					res[i] = 1.0;
 				}
 				spin = res;
-			}
-			if (SLI == SpinLengthInput::generate) {
-				set_spin(spin, SL);
-			}
-			else if (SLI == SpinLengthInput::keyboard) {
-				set_spin_keyboard(SL);
-			}
-			else if (SLI == SpinLengthInput::file) {
-				set_spin_file(spinfile, SL);
 			}
 			if (SI == SpinDirectionInit::random) {
 				random_direction_generator();
@@ -316,55 +256,8 @@ namespace InitIons {
 			}
 			return result;
 		};
-	private:
-		static std::variant<double, std::vector<double>>
-			read_spin_lengths(
-				std::istream& input,
-				std::size_t count,
-				SpinLengthInit mode)
-		{
-			if (mode == SpinLengthInit::constant) {
-				double value;
-
-				if (!(input >> value)) {
-					throw std::runtime_error(
-						"Cannot read spin length"
-					);
-				}
-
-				if (!std::isfinite(value) || value <= 0.0) {
-					throw std::invalid_argument(
-						"Spin length must be finite and greater than zero"
-					);
-				}
-
-				return value;
-			}
-			if (mode == SpinLengthInit::different) {
-				std::vector<double> values(count);
-
-				for (double& value : values) {
-					if (!(input >> value)) {
-						throw std::runtime_error(
-							"Cannot read all spin lengths"
-						);
-					}
-
-					if (!std::isfinite(value) || value <= 0.0) {
-						throw std::invalid_argument(
-							"Spin length must be finite and greater than zero"
-						);
-					}
-				}
-
-				return values;
-			}
-
-			throw std::invalid_argument("Unknown spin length mode");
-		}
-
 	};
 
 
-}
+
 

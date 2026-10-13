@@ -140,6 +140,8 @@
     <ClInclude Include="3D\Latice3D.h" />
     <ClInclude Include="3D\Neighbors_3D_Cube.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h" />
+    <ClInclude Include="Initialisation Headers\Header1.h" />
     <ClInclude Include="Initialisation Headers\IonFaust.h" />
     <ClInclude Include="Lattice_Headers.h" />
     <ClInclude Include="Neighbor_Headers.h" />
