@@ -188,10 +188,9 @@ namespace UrFaust {
 						const size_t slot = il.getNeighborCount() * i + a;
 						const size_t j =
 							static_cast<size_t>(il.getNeighborIndices()[slot]);
-						sum += ions.get_spin_length(i) * ions.get_spin_length(j) * Vector3D_Decart::scalar_product
+						sum += 0.5*J*ions.get_spin_length(i) * ions.get_spin_length(j) * Vector3D_Decart::scalar_product
 						(ions.get_direction(i) , ions.get_direction(j));
 					}
-					res += J * sum;
 				}
 			}
 			else {
@@ -201,13 +200,12 @@ namespace UrFaust {
 						const size_t slot = il.getNeighborCount() * i + a;
 						const size_t j =
 							static_cast<size_t>(il.getNeighborIndices()[slot]);
-						sum+=ions.get_spin_length(i)*ions.get_spin_length(j)*
+						sum+=0.5*ions.get_spin_length(i)*ions.get_spin_length(j)*
 							Vector3D_Decart::scalar_product(ions.get_direction(i),J[slot]*ions.get_direction(j));
 					}
-					res += sum;
 				}
 			}
-			return res;
+			return sum;
 		}
 		void relaxation_sweep() {
 			for (uint64_t i = 0; i < il.getN(); i++) {
