@@ -1,0 +1,291 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
+\usepackage{indentfirst}
+\usepackage{tocloft}
+\usepackage{titlesec}
+
+%Колонтитулы
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+% Геометрия
+\usepackage[left=3cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
+\setlength{\parindent}{1.27cm}
+
+% Математика
+\usepackage{amssymb,amsmath,amsfonts,latexsym,amsthm}
+\usepackage{thmtools} % для красивых warning'ов
+% Графика и код
+\usepackage{graphicx, xcolor}
+\usepackage{pgfplots}
+\usepackage{eso-pic}
+\pgfplotsset{compat=1.18}
+\usepackage{wallpaper,pgfpages,tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{positioning}
+%Листинг
+\usepackage{listings}
+\definecolor{codebackground}{rgb}{0.95,0.95,0.95}
+\definecolor{codecomment}{rgb}{0.25,0.5,0.35}
+\definecolor{codestring}{rgb}{0.7,0.2,0.2}
+\definecolor{codekeyword}{rgb}{0.1,0.3,0.8}
+\definecolor{codenumber}{rgb}{0.5,0.5,0.5}
+\lstset{
+	% Язык
+	language=C++,
+	% Базовые настройки шрифта
+	basicstyle=\ttfamily\small,
+	% Размер табуляции
+	tabsize=4,
+	% Показывать пробелы? (опционально)
+	showspaces=false,
+	showtabs=false,
+	% Перенос длинных строк
+	breaklines=true,
+	postbreak=\mbox{$\hookrightarrow$\space},
+	% Номера строк
+	numbers=left,
+	numberstyle=\tiny\color{codenumber},
+	stepnumber=1,
+	numbersep=5pt,
+	% Подсветка ключевых слов (добавлены ключевые слова C++11/14/17/20)
+	keywordstyle=\color{codekeyword}\bfseries,
+	keywordstyle=[2]\color{codekeyword},
+	keywordstyle=[3]\color{codekeyword},
+	morekeywords={nullptr, constexpr, decltype, auto, 
+		noexcept, final, override, alignas, alignof,
+		static_assert, thread_local, 
+		concept, requires, co_await, co_yield, co_return,
+		import, module, export},
+	% Подсветка строк
+	stringstyle=\color{codestring},
+	% Подсветка комментариев
+	commentstyle=\color{codecomment}\itshape,
+	% Подсветка директив препроцессора
+	directivestyle=\color{codekeyword},
+	% Escape внутри комментариев (чтобы можно было вставлять LaTeX)
+	escapeinside={(*@}{@*)},
+	% Чувствительность к регистру
+	sensitive=true,
+	% Обработка кавычек
+	upquote=true,
+	% Обрамление
+	frame=single,
+	framerule=0.5pt,
+	rulecolor=\color{black!30},
+	backgroundcolor=\color{codebackground},
+	% Отступы внутри рамки
+	xleftmargin=2mm,
+	xrightmargin=2mm,
+	framexleftmargin=2mm,
+	framexrightmargin=2mm,
+	% Подпись и метка (обычно задаются в самом листинге)
+	captionpos=t,
+	% Поддержка UTF-8 (особенно для кириллицы)
+	inputencoding=utf8,
+	extendedchars=true,
+}
+%Работа с таблицами
+\usepackage{longtable}
+\usepackage{rotating}
+\usepackage{subcaption} 
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{floatrow}
+\usepackage{caption}
+%Отладка
+\usepackage{mwe}
+%Ссылки
+\usepackage[
+unicode=true,
+bookmarks=true,
+bookmarksopen=true,         % Открывать закладки в PDF
+bookmarksnumbered=true,     % Номера разделов в закладках
+linktoc=all,                % В оглавлении ссылаются и номера, и заголовки
+pdfdisplaydoctitle=true,    % Показывать название документа вместо имени файла
+colorlinks=true,
+linkcolor=blue!60!black,    % Для формул и ссылок \ref
+citecolor=green!50!black,   % Для библиографии \cite
+urlcolor=cyan!70!black,     % Для веб-ссылок \url
+anchorcolor=black,          % Для якорей (обычно не видны)
+menucolor=black,
+filecolor=black,
+]{hyperref}
+%Сноски
+\usepackage{threeparttable}
+
+% ==========================================
+% БЛОК НАСТРОЕК ПО ГОСТ 7.32 (ОТЧЕТЫ О НИР)
+% ==========================================
+
+% 1. Абзацный отступ (красная строка) 1.27 см == 5 знаков
+\setlength{\parindent}{1.27cm}
+
+% 2. Настройка подписей к рисункам и таблицам
+% Переопределяем название для русского языка (если babel этого не сделал)
+\addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
+\addto\captionsrussian{\renewcommand{\tablename}{Таблица}}
+% Создаем разделитель "тире" и применяем настройки
+\DeclareCaptionLabelSeparator{point}{ -- }
+\captionsetup{
+	justification = centering, % Выравнивание подписи по центру
+	labelsep      = point,     % Разделитель "номер -- текст"
+	font          = normalfont % Обычный шрифт
+}
+
+% 3. Настройка заголовков разделов (пакет titlesec)
+% Стиль заголовка: центрированный, жирный, нормального размера
+\titleformat{\section}[block]
+{\centering\normalfont\normalsize\bfseries}
+{\thesection.}{1em}{}
+\titleformat{\subsection}[block]
+{\centering\normalfont\normalsize\bfseries}
+{\thesubsection.}{1em}{}
+% Отступы до и после заголовка
+\titlespacing{\section}{0pt}{14pt}{14pt}
+\titlespacing{\subsection}{0pt}{12pt}{12pt}
+
+% 4. Нумерация рисунков, таблиц и формул по разделам (например, 1.1, 1.2)
+% Достаточно одного способа. \numberwithin — самый лаконичный.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+% 5. Лекарство от невидимого символа U+2061
+\DeclareUnicodeCharacter{2061}{}
+
+
+% 7. КОЛОНТИТУЛЫ: Номер страницы внизу по центру
+
+\pagestyle{fancy}
+\fancyhf{} % Очищаем все колонтитулы
+\fancyfoot[C]{\small\thepage} % Номер страницы по центру внизу
+\renewcommand{\headrulewidth}{0pt}   % Убираем линию сверху
+\renewcommand{\footrulewidth}{0.4pt} % Оставляем вашу линию снизу
+
+% 8. ЗАГОЛОВОК "СОДЕРЖАНИЕ"
+
+
+\renewcommand{\cfttoctitlefont}{\hfill\normalfont\normalsize\bfseries}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\AtBeginDocument{
+	\renewcommand{\contentsname}{СОДЕРЖАНИЕ}
+}
+
+% 9. БИБЛИОГРАФИЯ: ГОСТ-стиль через biblatex/biber
+%Оформление цитат
+\usepackage{csquotes}
+\usepackage[
+parentracker=true,
+hyperref=false,
+bibencoding=utf8,
+backend=biber,
+citestyle=gost-numeric,
+defernumbers=true,
+bibstyle=gost-numeric,
+sorting=none,
+language=auto,
+autolang=other,
+giveninits=true,
+doi=false,
+isbn=false,
+url=true,
+eprint=false
+]{biblatex}
+\addbibresource{GOST.bib}
+
+% Шрифты (правильные Times)
+\usepackage{tempora}
+\usepackage{newtxmath}
+%Титульный лист по ГОСТ
+\NewDocumentCommand{\makegosttitle}{
+	m% Название института
+	m %Кафедра
+	m% Департамент
+	m% Название работы
+	O{}%Направление подготовки
+	O{}%Образовательная программа
+	m% Научный руководитель
+	m%Фамилия исполнителя
+	m%имя отчество
+}
+{ 
+	\clearpage
+	\thispagestyle{empty}
+	\begingroup
+	\centering
+	
+	МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ\\
+	РОССИЙСКОЙ ФЕДЕРАЦИИ\\[0.5em]
+	
+	Федеральное государственное автономное образовательное учреждение\\
+	высшего образования\\
+	
+	#1
+	
+	\vspace{0.5cm}
+	
+	#2\\
+	#3
+	
+	\vfill
+	
+	{\bfseries #4\par}
+	
+	\IfBlankF{#5}{
+		\vspace{0.7cm}
+		Направление подготовки: #5\par
+	}
+	
+	\IfBlankF{#6}{
+		Образовательная программа: #6\par
+	}
+	
+	\vfill
+	
+	\begin{tabular}{p{0.45\textwidth}p{0.45\textwidth}}
+		Научный руководитель & Выполнил \\
+		#7 & #8~#9 \\
+		\rule{0.4\textwidth}{0.4pt} & \rule{0.4\textwidth}{0.4pt} \\
+	\end{tabular}
+	
+	\vfill
+	
+	Екатеринбург\\
+	\the\year
+	
+	\par
+	\endgroup
+	\clearpage
+	
+}
+
+\begin{document}
+% URFAUST_PARAMETERS
+\newpage
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			Iteration&  Index&  Spin length&  \(n_x\)&  \(n_y\)& \(n_z\)\\\hline
+			% URFAUST_SPIN_ROWS
+			
+		\end{tabular}
+		\caption{Table of spin directions}
+		\label{tab:spindirection}
+	\end{table}
+	\newpage
+		\begin{table} [h!]
+		\centering
+		\begin{tabular}{|c|c|}
+			\hline
+			Iteration&  Energy\\\hline
+			% URFAUST_ENERGY_ROWS
+			
+		\end{tabular}
+		\caption{Table of spin directions}
+		\label{tab:energy}
+	\end{table}
+	\printbibliography
+\end{document}
