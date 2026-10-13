@@ -224,7 +224,7 @@ namespace InitIons {
 		Ions(size_t n,
 			SpinLengthInit sl = SpinLengthInit::constant,
 			SpinDirectionInit si = SpinDirectionInit::parallel,
-			std::string df) :
+			std::string df="") :
 			ions(), SI(si), SL(sl), directionfile(df)
 		{
 

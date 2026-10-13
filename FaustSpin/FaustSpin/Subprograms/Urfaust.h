@@ -194,7 +194,8 @@ namespace UrFaust {
 				}
 			}
 			else {
-				std::vector<FM::Matrix> J = std::get<std::vector<FM::Matrix>>(exchange);
+				const std::vector<FM::Matrix>& J =
+					std::get<std::vector<FM::Matrix>>(exchange);
 				for (size_t i = 0; i < il.getN(); ++i) {
 					for (size_t a = 0; a < il.getNeighborCount(); ++a) {
 						const size_t slot = il.getNeighborCount() * i + a;
@@ -209,16 +210,28 @@ namespace UrFaust {
 		}
 		void relaxation_sweep() {
 			for (uint64_t i = 0; i < il.getN(); i++) {
-				Vector3D_Decart::Vector3D_Dec sum_vec(0, 0, 0);
 				Vector3D_Decart::Vector3D_Dec h(0, 0, 0);
 				double h_norm = 1.0;
-				for (size_t a = 0; a < il.getNeighborCount(); ++a) {
-					const size_t slot = il.getNeighborCount() * i + a;
-					const size_t j =
-						static_cast<size_t>(il.getNeighborIndices()[slot]);
-					sum_vec += ions.ions[j].get_direction();
+				const auto& exchange = exchangeIntegral.get_exchange_integral();
+				if (EII == ExchangeIntegral::ExchangeIntegralInit::constant) {
+					double J = std::get<double>(exchange);
+					for (size_t a = 0; a < il.getNeighborCount(); ++a) {
+						const size_t slot = il.getNeighborCount() * i + a;
+						const size_t j =
+							static_cast<size_t>(il.getNeighborIndices()[slot]);
+						h += -J*ions.get_direction(j)*ions.get_spin_length(j);
+					}
 				}
-				h = -S * S * J * sum_vec;
+				else {
+					const std::vector<FM::Matrix>& J =
+						std::get<std::vector<FM::Matrix>>(exchange);
+					for (size_t a = 0; a < il.getNeighborCount(); ++a) {
+						const size_t slot = il.getNeighborCount() * i + a;
+						const size_t j =
+							static_cast<size_t>(il.getNeighborIndices()[slot]);
+						h +=-(J[slot]*ions.get_direction(j)*ions.get_spin_length(j));
+					}
+				}
 				h_norm = Vector3D_Decart::norm(h);
 				if (h_norm > 1.0e-15) {
 					ions.ions[i].set_direction(
