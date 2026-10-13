@@ -12,6 +12,8 @@
 #include <utility>
 #include <variant>
 #include <vector>
+#include <filesystem>
+#include <fstream>
 
 namespace UrFaustSim {
 
@@ -46,7 +48,7 @@ namespace UrFaustSim {
 
         double epsilon{ 1.0e-10 };
         std::size_t maxSweeps{ 1000 };
-
+        std::filesystem::path outputDirectory{ "Output" };
         bool exportSpinTxt{ false };
         bool exportSpinTex{ false };
         bool exportEnergyTxt{ false };
@@ -76,6 +78,7 @@ namespace UrFaustSim {
     class Simulation {
     private:
         SimulationConfig config;
+
         std::size_t count;
         UrFaust::SpinSystem spinSystem;
 
@@ -320,23 +323,48 @@ namespace UrFaustSim {
                 spinSystem.getSpinDirections()
             };
         }
+        std::ofstream prepareTxtFile(
+            const char* filename,
+            const char* columns) const
+        {
+            std::ofstream output = WriteFileUrFaust::open_txt_file(
+                config.outputDirectory / filename
+            );
+
+            WriteFileUrFaust::write_parameters_txt(
+                output,
+                config.dimension,
+                config.lx,
+                config.ly,
+                config.lz,
+                config.spinLengthMode,
+                config.initialization,
+                config.exchangeMode,
+                config.epsilon
+            );
+
+            output << columns << '\n';
+
+            return output;
+        }
 
         void exportFrame(
-            const SimulationFrame& frame) const
+            const SimulationFrame& frame,
+            const std::vector<double>& lengths,
+            std::ostream& spinOutput,
+            std::ostream& energyOutput) const
         {
-            const std::uint64_t iteration =
-                static_cast<std::uint64_t>(frame.sweep);
-
-            if (config.exportSpinTxt ||
-                config.exportSpinTex) {
+            if (config.exportSpinTxt || config.exportSpinTex) {
                 for (std::size_t i = 0;
                     i < frame.spinDirections.size();
                     ++i) {
+
                     if (config.exportSpinTxt) {
                         WriteFileUrFaust::write_spin_txt(
-                            config.dimension,
+                            spinOutput,
                             i,
-                            iteration,
+                            frame.sweep,
+                            lengths[i],
                             frame.spinDirections[i]
                         );
                     }
@@ -345,20 +373,17 @@ namespace UrFaustSim {
                         WriteFileUrFaust::write_spin_tex(
                             config.dimension,
                             i,
-                            iteration,
+                            static_cast<std::uint64_t>(frame.sweep),
                             frame.spinDirections[i]
                         );
                     }
                 }
             }
 
-            // У энергии всей системы нет индекса иона.
-            // В текущей сигнатуре заглушки передаём ноль.
             if (config.exportEnergyTxt) {
                 WriteFileUrFaust::write_energy_txt(
-                    config.dimension,
-                    0,
-                    iteration,
+                    energyOutput,
+                    frame.sweep,
                     frame.energy
                 );
             }
@@ -367,7 +392,7 @@ namespace UrFaustSim {
                 WriteFileUrFaust::write_energy_tex(
                     config.dimension,
                     0,
-                    iteration,
+                    static_cast<std::uint64_t>(frame.sweep),
                     frame.energy
                 );
             }
@@ -439,8 +464,24 @@ namespace UrFaustSim {
 
         SimulationResult run()
         {
-            SimulationResult result;
+            std::ofstream spinOutput;
+            std::ofstream energyOutput;
 
+            if (config.exportSpinTxt) {
+                spinOutput = prepareTxtFile(
+                    "spin.txt",
+                    "Iteration index spinlength nx ny nz"
+                );
+            }
+
+            if (config.exportEnergyTxt) {
+                energyOutput = prepareTxtFile(
+                    "energy.txt",
+                    "Iteration Energy"
+                );
+            }
+
+            SimulationResult result;
             result.config = config;
             result.spinLengths = getSpinLengths();
 
@@ -450,33 +491,49 @@ namespace UrFaustSim {
                 captureFrame(0, previousEnergy)
             );
 
-            exportFrame(result.frames.back());
+            exportFrame(
+                result.frames.back(),
+                result.spinLengths,
+                spinOutput,
+                energyOutput
+            );
 
             for (std::size_t sweep = 0;
                 sweep < config.maxSweeps;
                 ++sweep) {
+
                 spinSystem.relaxation_sweep();
 
                 const double energy = getEnergy();
-
                 result.completedSweeps = sweep + 1;
 
                 result.frames.push_back(
-                    captureFrame(
-                        result.completedSweeps,
-                        energy
-                    )
+                    captureFrame(result.completedSweeps, energy)
                 );
 
-                exportFrame(result.frames.back());
+                exportFrame(
+                    result.frames.back(),
+                    result.spinLengths,
+                    spinOutput,
+                    energyOutput
+                );
 
-                if (std::abs(energy - previousEnergy)
-                    < config.epsilon) {
+                if (std::abs(energy - previousEnergy) < config.epsilon) {
                     result.converged = true;
                     break;
                 }
 
                 previousEnergy = energy;
+            }
+
+            // close() также проверяет сброс буфера записи:
+            // при ошибке потока будет выброшено исключение.
+            if (spinOutput.is_open()) {
+                spinOutput.close();
+            }
+
+            if (energyOutput.is_open()) {
+                energyOutput.close();
             }
 
             return result;
