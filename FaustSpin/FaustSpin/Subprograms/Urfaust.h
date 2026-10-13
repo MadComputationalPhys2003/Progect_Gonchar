@@ -229,7 +229,9 @@ namespace UrFaust {
 						const size_t slot = il.getNeighborCount() * i + a;
 						const size_t j =
 							static_cast<size_t>(il.getNeighborIndices()[slot]);
-						h +=-0.5*((J[slot]+FM::transpose(J[slot])) * ions.get_direction(j) * ions.get_spin_length(j));
+						const std::size_t reverseSlot =
+							il.getNeighborCount() * j + (a ^ std::size_t{ 1 });
+						h +=-0.5*((J[slot]+FM::transpose(J[reverseSlot])) * ions.get_direction(j) * ions.get_spin_length(j));
 					}
 				}
 				h_norm = Vector3D_Decart::norm(h);
