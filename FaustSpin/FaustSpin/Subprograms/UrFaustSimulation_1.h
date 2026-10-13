@@ -1,198 +1,486 @@
 #pragma once
 
 #include "Urfaust.h"
+#include "../Write_To_File.h"
 
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <stdexcept>
+#include <string>
 #include <utility>
+#include <variant>
 #include <vector>
 
 namespace UrFaustSim {
 
-	using SpinDirection = Vector3D_Decart::Vector3D_Dec;
+    struct SimulationConfig {
+        std::uint64_t lx{ 2 };
+        std::uint64_t ly{ 1 };
+        std::uint64_t lz{ 1 };
 
-	struct SimulationConfig {
-		std::uint64_t lx{ 1 };
-		std::uint64_t ly{ 1 };
-		std::uint64_t lz{ 1 };
+        UrFaust::Dimension dimension{
+            UrFaust::Dimension::one
+        };
 
-		double spinLength{ 1.0 };
-		double exchangeIntegral{ -1.0 };
-		double epsilon{ 1.0e-10 };
+        std::variant<double, std::vector<double>>
+            spinLength{ 1.0 };
 
-		std::size_t maxSweeps{ 1000 };
-		UrFaust::Ions::SpinInit initialization{
-			UrFaust::Ions::SpinInit::parallel
-		};
-		UrFaust::Dimension dimension{ UrFaust::Dimension::one };
-	};
+        InitIons::Ions::SpinLengthInit spinLengthMode{
+            InitIons::Ions::SpinLengthInit::constant
+        };
 
-	struct SimulationFrame {
-		std::size_t sweep{};
-		double energy{};
-		std::vector<SpinDirection> spinDirections;
-	};
+        std::variant<double, std::vector<FM::Matrix>>
+            exchangeIntegral{ -1.0 };
 
-	struct SimulationResult {
-		SimulationConfig config;
-		std::vector<SimulationFrame> frames;
-		std::size_t completedSweeps{};
-		bool converged{};
-	};
+        ExchangeIntegral::ExchangeIntegralInit exchangeMode{
+            ExchangeIntegral::ExchangeIntegralInit::constant
+        };
 
-	class Simulation {
-	private:
-		SimulationConfig config;
-		UrFaust::SpinSystem spinSystem;
+        InitIons::Ions::SpinDirectionInit initialization{
+            InitIons::Ions::SpinDirectionInit::parallel
+        };
 
-		static SimulationConfig validateConfig(SimulationConfig newConfig)
-		{
-			if (!std::isfinite(newConfig.spinLength) ||
-				newConfig.spinLength <= 0.0) {
-				throw std::invalid_argument(
-					"Spin length must be finite and greater than zero"
-				);
-			}
+        std::string directionFile;
 
-			if (!std::isfinite(newConfig.exchangeIntegral)) {
-				throw std::invalid_argument(
-					"Exchange integral must be finite"
-				);
-			}
+        double epsilon{ 1.0e-10 };
+        std::size_t maxSweeps{ 1000 };
 
-			if (!std::isfinite(newConfig.epsilon) ||
-				newConfig.epsilon <= 0.0) {
-				throw std::invalid_argument(
-					"Epsilon must be finite and greater than zero"
-				);
-			}
+        bool exportSpinTxt{ false };
+        bool exportSpinTex{ false };
+        bool exportEnergyTxt{ false };
+        bool exportEnergyTex{ false };
+    };
 
-			switch (newConfig.dimension) {
-			case UrFaust::Dimension::one:
-				if (newConfig.lx == 0) {
-					throw std::invalid_argument(
-						"Lx must be greater than zero for a 1D lattice"
-					);
-				}
-				break;
+    struct SimulationFrame {
+        std::size_t sweep{};
+        double energy{};
 
-			case UrFaust::Dimension::two:
-				if (newConfig.lx == 0 || newConfig.ly == 0) {
-					throw std::invalid_argument(
-						"Lx and Ly must be greater than zero for a 2D lattice"
-					);
-				}
-				break;
+        std::vector<Vector3D_Decart::Vector3D_Dec>
+            spinDirections;
+    };
 
-			case UrFaust::Dimension::three:
-				if (newConfig.lx == 0 ||
-					newConfig.ly == 0 ||
-					newConfig.lz == 0) {
-					throw std::invalid_argument(
-						"Lx, Ly and Lz must be greater than zero for a 3D lattice"
-					);
-				}
-				break;
+    struct SimulationResult {
+        SimulationConfig config;
+        std::vector<SimulationFrame> frames;
 
-			default:
-				throw std::invalid_argument("Unknown lattice dimension");
-			}
+        std::size_t completedSweeps{};
+        bool converged{};
 
-			if (newConfig.initialization !=
-				UrFaust::Ions::SpinInit::parallel &&
-				newConfig.initialization !=
-				UrFaust::Ions::SpinInit::random) {
-				throw std::invalid_argument("Unknown spin initialization mode");
-			}
+        // Длины фиксированы во время релаксации.
+        // Поэтому сохраняем их один раз на весь расчёт.
+        std::vector<double> spinLengths;
+    };
 
-			return newConfig;
-		}
+    class Simulation {
+    private:
+        SimulationConfig config;
+        std::size_t count;
+        UrFaust::SpinSystem spinSystem;
 
-		static void validateEnergy(double energy)
-		{
-			if (!std::isfinite(energy)) {
-				throw std::runtime_error("Simulation energy must be finite");
-			}
-		}
+        static std::size_t checkedProduct(
+            std::size_t left,
+            std::uint64_t right)
+        {
+            if (left == 0 || right == 0 ||
+                right >
+                std::numeric_limits<std::size_t>::max() / left) {
+                throw std::invalid_argument(
+                    "Lattice size is zero or exceeds the index range"
+                );
+            }
 
-		[[nodiscard]] SimulationFrame captureFrame(
-			std::size_t sweep,
-			double energy) const
-		{
-			validateEnergy(energy);
+            return left * static_cast<std::size_t>(right);
+        }
 
-			return SimulationFrame{
-				sweep,
-				energy,
-				spinSystem.getSpinDirections()
-			};
-		}
+        static std::size_t spinCount(
+            const SimulationConfig& value)
+        {
+            std::size_t result =
+                checkedProduct(1, value.lx);
 
-	public:
-		explicit Simulation(SimulationConfig newConfig)
-			: config(validateConfig(std::move(newConfig))),
-			spinSystem(
-				config.lx,
-				config.ly,
-				config.lz,
-				0, // x0
-				0, // y0
-				0, // z0
-				config.spinLength,
-				config.exchangeIntegral,
-				config.epsilon,
-				config.initialization,
-				config.dimension)
-		{
-		}
+            result = checkedProduct(result, value.ly);
 
-		[[nodiscard]] const SimulationConfig& getConfig() const
-		{
-			return config;
-		}
+            return checkedProduct(result, value.lz);
+        }
 
-		[[nodiscard]] double getEnergy() const
-		{
-			const double currentEnergy = spinSystem.energy();
-			validateEnergy(currentEnergy);
-			return currentEnergy;
-		}
+        static std::size_t neighborCount(
+            UrFaust::Dimension dimension)
+        {
+            switch (dimension) {
+            case UrFaust::Dimension::one:
+                return 2;
 
-		[[nodiscard]] std::vector<SpinDirection> getSpinDirections() const
-		{
-			return spinSystem.getSpinDirections();
-		}
+            case UrFaust::Dimension::two:
+                return 4;
 
-		[[nodiscard]] SimulationResult run()
-		{
-			SimulationResult result;
-			result.config = config;
+            case UrFaust::Dimension::three:
+                return 6;
 
-			double previousEnergy = getEnergy();
-			result.frames.push_back(captureFrame(0, previousEnergy));
+            default:
+                throw std::invalid_argument(
+                    "Unknown lattice dimension"
+                );
+            }
+        }
 
-			for (std::size_t sweep = 0; sweep < config.maxSweeps; ++sweep) {
-				spinSystem.relaxation_sweep();
+        static void validateLength(double value)
+        {
+            if (!std::isfinite(value) || value <= 0.0) {
+                throw std::invalid_argument(
+                    "Spin length must be finite and greater than zero"
+                );
+            }
+        }
 
-				const double currentEnergy = getEnergy();
-				result.completedSweeps = sweep + 1;
-				result.frames.push_back(captureFrame(
-					result.completedSweeps,
-					currentEnergy
-				));
+        static SimulationConfig validateConfig(
+            SimulationConfig value)
+        {
+            // Неактивные размеры равны единице.
+            // Активные размеры >= 2 исключают связи узла с собой.
+            switch (value.dimension) {
+            case UrFaust::Dimension::one:
+                if (value.lx < 2) {
+                    throw std::invalid_argument(
+                        "Lx must be at least 2"
+                    );
+                }
 
-				if (std::abs(currentEnergy - previousEnergy) < config.epsilon) {
-					result.converged = true;
-					break;
-				}
+                value.ly = 1;
+                value.lz = 1;
+                break;
 
-				previousEnergy = currentEnergy;
-			}
+            case UrFaust::Dimension::two:
+                if (value.lx < 2 || value.ly < 2) {
+                    throw std::invalid_argument(
+                        "Lx and Ly must be at least 2"
+                    );
+                }
 
-			return result;
-		}
-	};
+                value.lz = 1;
+                break;
 
-} // namespace UrFaustSim
+            case UrFaust::Dimension::three:
+                if (value.lx < 2 ||
+                    value.ly < 2 ||
+                    value.lz < 2) {
+                    throw std::invalid_argument(
+                        "Lx, Ly and Lz must be at least 2"
+                    );
+                }
+                break;
+
+            default:
+                throw std::invalid_argument(
+                    "Unknown lattice dimension"
+                );
+            }
+
+            const std::size_t n = spinCount(value);
+
+            const std::size_t bonds = checkedProduct(
+                n,
+                neighborCount(value.dimension)
+            );
+
+            switch (value.spinLengthMode) {
+            case InitIons::Ions::SpinLengthInit::constant: {
+                const double* length =
+                    std::get_if<double>(&value.spinLength);
+
+                if (length == nullptr) {
+                    throw std::invalid_argument(
+                        "Constant spin length requires one number"
+                    );
+                }
+
+                validateLength(*length);
+                break;
+            }
+
+            case InitIons::Ions::SpinLengthInit::different: {
+                const std::vector<double>* lengths =
+                    std::get_if<std::vector<double>>(
+                        &value.spinLength
+                    );
+
+                if (lengths == nullptr ||
+                    lengths->size() != n) {
+                    throw std::invalid_argument(
+                        "Different spin lengths require one value per ion"
+                    );
+                }
+
+                for (double length : *lengths) {
+                    validateLength(length);
+                }
+                break;
+            }
+
+            default:
+                throw std::invalid_argument(
+                    "Unknown spin length mode"
+                );
+            }
+
+            switch (value.exchangeMode) {
+            case ExchangeIntegral::ExchangeIntegralInit::constant: {
+                const double* exchange =
+                    std::get_if<double>(
+                        &value.exchangeIntegral
+                    );
+
+                if (exchange == nullptr ||
+                    !std::isfinite(*exchange)) {
+                    throw std::invalid_argument(
+                        "Constant exchange requires one finite number"
+                    );
+                }
+                break;
+            }
+
+            case ExchangeIntegral::ExchangeIntegralInit::matrix: {
+                const std::vector<FM::Matrix>* matrices =
+                    std::get_if<std::vector<FM::Matrix>>(
+                        &value.exchangeIntegral
+                    );
+
+                if (matrices == nullptr ||
+                    matrices->size() != bonds) {
+                    throw std::invalid_argument(
+                        "Matrix exchange requires one matrix per neighbor-list entry"
+                    );
+                }
+
+                // Размер 3x3 и конечность элементов
+                // проверяет сеттер ExchangeIntegral.
+                break;
+            }
+
+            default:
+                throw std::invalid_argument(
+                    "Unknown exchange mode"
+                );
+            }
+
+            switch (value.initialization) {
+            case InitIons::Ions::SpinDirectionInit::parallel:
+            case InitIons::Ions::SpinDirectionInit::random:
+                break;
+
+            case InitIons::Ions::SpinDirectionInit::file:
+                if (value.directionFile.empty()) {
+                    throw std::invalid_argument(
+                        "Spin directions filename is empty"
+                    );
+                }
+                break;
+
+            default:
+                throw std::invalid_argument(
+                    "Unknown spin direction initialization"
+                );
+            }
+
+            if (!std::isfinite(value.epsilon) ||
+                value.epsilon <= 0.0) {
+                throw std::invalid_argument(
+                    "Epsilon must be finite and greater than zero"
+                );
+            }
+
+            if (value.maxSweeps == 0) {
+                throw std::invalid_argument(
+                    "Maximum iterations must be greater than zero"
+                );
+            }
+
+            return value;
+        }
+
+        static void validateEnergy(double energy)
+        {
+            if (!std::isfinite(energy)) {
+                throw std::runtime_error(
+                    "Simulation energy must be finite"
+                );
+            }
+        }
+
+        SimulationFrame captureFrame(
+            std::size_t sweep,
+            double energy) const
+        {
+            validateEnergy(energy);
+
+            return SimulationFrame{
+                sweep,
+                energy,
+                spinSystem.getSpinDirections()
+            };
+        }
+
+        void exportFrame(
+            const SimulationFrame& frame) const
+        {
+            const std::uint64_t iteration =
+                static_cast<std::uint64_t>(frame.sweep);
+
+            if (config.exportSpinTxt ||
+                config.exportSpinTex) {
+                for (std::size_t i = 0;
+                    i < frame.spinDirections.size();
+                    ++i) {
+                    if (config.exportSpinTxt) {
+                        WriteFileUrFaust::write_spin_txt(
+                            config.dimension,
+                            i,
+                            iteration,
+                            frame.spinDirections[i]
+                        );
+                    }
+
+                    if (config.exportSpinTex) {
+                        WriteFileUrFaust::write_spin_tex(
+                            config.dimension,
+                            i,
+                            iteration,
+                            frame.spinDirections[i]
+                        );
+                    }
+                }
+            }
+
+            // У энергии всей системы нет индекса иона.
+            // В текущей сигнатуре заглушки передаём ноль.
+            if (config.exportEnergyTxt) {
+                WriteFileUrFaust::write_energy_txt(
+                    config.dimension,
+                    0,
+                    iteration,
+                    frame.energy
+                );
+            }
+
+            if (config.exportEnergyTex) {
+                WriteFileUrFaust::write_energy_tex(
+                    config.dimension,
+                    0,
+                    iteration,
+                    frame.energy
+                );
+            }
+        }
+
+    public:
+        explicit Simulation(SimulationConfig value)
+            : config(validateConfig(std::move(value))),
+            count(spinCount(config)),
+            spinSystem(
+                config.lx,
+                config.ly,
+                config.lz,
+                0,
+                0,
+                0,
+                config.spinLength,
+                config.exchangeIntegral,
+                config.spinLengthMode,
+                config.initialization,
+                config.exchangeMode,
+                config.dimension,
+                config.epsilon,
+                config.directionFile)
+        {
+        }
+
+        const SimulationConfig& getConfig() const
+        {
+            return config;
+        }
+
+        std::size_t getSpinCount() const
+        {
+            return count;
+        }
+
+        double getEnergy() const
+        {
+            const double energy = spinSystem.energy();
+
+            validateEnergy(energy);
+
+            return energy;
+        }
+
+        std::vector<Vector3D_Decart::Vector3D_Dec>
+            getSpinDirections() const
+        {
+            return spinSystem.getSpinDirections();
+        }
+
+        std::vector<double> getSpinLengths() const
+        {
+            if (const double* length =
+                std::get_if<double>(
+                    &config.spinLength
+                )) {
+                return std::vector<double>(
+                    count,
+                    *length
+                );
+            }
+
+            return std::get<std::vector<double>>(
+                config.spinLength
+            );
+        }
+
+        SimulationResult run()
+        {
+            SimulationResult result;
+
+            result.config = config;
+            result.spinLengths = getSpinLengths();
+
+            double previousEnergy = getEnergy();
+
+            result.frames.push_back(
+                captureFrame(0, previousEnergy)
+            );
+
+            exportFrame(result.frames.back());
+
+            for (std::size_t sweep = 0;
+                sweep < config.maxSweeps;
+                ++sweep) {
+                spinSystem.relaxation_sweep();
+
+                const double energy = getEnergy();
+
+                result.completedSweeps = sweep + 1;
+
+                result.frames.push_back(
+                    captureFrame(
+                        result.completedSweeps,
+                        energy
+                    )
+                );
+
+                exportFrame(result.frames.back());
+
+                if (std::abs(energy - previousEnergy)
+                    < config.epsilon) {
+                    result.converged = true;
+                    break;
+                }
+
+                previousEnergy = energy;
+            }
+
+            return result;
+        }
+    };
+
+}
