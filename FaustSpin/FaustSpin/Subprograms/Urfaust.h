@@ -134,6 +134,7 @@ namespace UrFaust {
 		InitLattice il;
 		InitIons::Ions ions;
 		ExchangeIntegral exchangeIntegral;
+		ExchangeIntegral::ExchangeIntegralInit EII;
 		double eps;
 		static InitLattice makeInitLattice(Dimension dim, uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0) {
@@ -168,7 +169,7 @@ namespace UrFaust {
 			Dimension d,double ee,
 			std::string df = " "):
 			il(makeInitLattice(d,lx,ly,lz,x0,y0,z0)),
-			ions(makeInitIons(il.getN(),sli,sdi,df)),exchangeIntegral(il.getNeighborCount(),il.getN(),eii), eps(ee)
+			ions(makeInitIons(il.getN(),sli,sdi,df)),exchangeIntegral(il.getNeighborCount(),il.getN(),eii),EII(eii), eps(ee)
 		{
 			ions.set_spin(std::move(spin), sli);
 			exchangeIntegral.set_eexchange_integral(std::move(j), eii);
@@ -179,15 +180,34 @@ namespace UrFaust {
 		double energy() const {
 			double sum = 0.0;
 			double res = 0.0;
-			for (size_t i = 0; i < il.getN(); ++i) {
-				for (size_t a = 0; a < il.getNeighborCount(); ++a) {
-					const size_t slot = il.getNeighborCount() * i + a;
-					const size_t j =
-						static_cast<size_t>(il.getNeighborIndices()[slot]);
-					ions.
+			const auto& exchange = exchangeIntegral.get_exchange_integral();
+			if (EII == ExchangeIntegral::ExchangeIntegralInit::constant) {
+				double J = std::get<double>(exchange);
+				for (size_t i = 0; i < il.getN(); ++i) {
+					for (size_t a = 0; a < il.getNeighborCount(); ++a) {
+						const size_t slot = il.getNeighborCount() * i + a;
+						const size_t j =
+							static_cast<size_t>(il.getNeighborIndices()[slot]);
+						sum += ions.get_spin_length(i) * ions.get_spin_length(j) * Vector3D_Decart::scalar_product
+						(ions.get_direction(i) , ions.get_direction(j));
+					}
+					res += J * sum;
 				}
 			}
-			
+			else {
+				std::vector<FM::Matrix> J = std::get<std::vector<FM::Matrix>>(exchange);
+				for (size_t i = 0; i < il.getN(); ++i) {
+					for (size_t a = 0; a < il.getNeighborCount(); ++a) {
+						const size_t slot = il.getNeighborCount() * i + a;
+						const size_t j =
+							static_cast<size_t>(il.getNeighborIndices()[slot]);
+						sum+=ions.get_spin_length(i)*ions.get_spin_length(j)*
+							Vector3D_Decart::scalar_product(ions.get_direction(i),J[slot]*ions.get_direction(j));
+					}
+					res += sum;
+				}
+			}
+			return res;
 		}
 		void relaxation_sweep() {
 			for (uint64_t i = 0; i < il.getN(); i++) {

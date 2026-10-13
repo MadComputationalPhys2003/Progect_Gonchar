@@ -16,7 +16,7 @@ private:
 	std::variant<double,std::vector<FM::Matrix>> exint;
 	uint64_t count;
 public:
-	enum class ExchangeIntegralInit{constant, different};
+	enum class ExchangeIntegralInit{constant, matrix};
 	ExchangeIntegralInit EI;
 	ExchangeIntegral(uint8_t neighbor_count,size_t n,
 	ExchangeIntegralInit ei=ExchangeIntegralInit::constant):
@@ -25,7 +25,7 @@ public:
 		if (EI == ExchangeIntegralInit::constant) {
 			exint = -1.0;
 		}
-		else if (EI == ExchangeIntegralInit::different) {
+		else if (EI == ExchangeIntegralInit::matrix) {
 			std::vector<FM::Matrix> res(count, FM::Matrix(3, 3));
 			exint = res;
 		}
@@ -50,7 +50,7 @@ public:
                 );
             }
         }
-        else if (mode == ExchangeIntegralInit::different) {
+        else if (mode == ExchangeIntegralInit::matrix) {
             const std::vector<FM::Matrix>* matrices =
                 std::get_if<std::vector<FM::Matrix>>(&values);
 
@@ -90,9 +90,11 @@ public:
 
         return result;
     }
-    std::variant<double , std::vector<FM::Matrix>> get_exchange_integral() const{
+    const std::variant<double, std::vector<FM::Matrix>>&
+        get_exchange_integral() const
+    {
         return exint;
-	}
+    }
    
 };
 
