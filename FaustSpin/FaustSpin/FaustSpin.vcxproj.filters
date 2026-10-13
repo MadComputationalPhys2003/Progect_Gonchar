@@ -21,15 +21,12 @@
     <ClCompile Include="FaustSpin.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="..\Faust math\Faust_Matrix.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Initialisation Headers\IonFaust.cpp">
+    <ClCompile Include="Faust math\Faust_Matrix.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Urfaust.h">
+    <ClInclude Include="Subprograms\Urfaust.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Vector3D_Decart.h">
@@ -53,7 +50,7 @@
     <ClInclude Include="3D\Neighbors_3D_Cube.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="UrFaustSimulation_1.h">
+    <ClInclude Include="Subprograms\UrFaustSimulation_1.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Lattice_Headers.h">
@@ -68,13 +65,10 @@
     <ClInclude Include="Write_To_File.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\Faust math\Faust_Matrix.h">
+    <ClInclude Include="Faust math\Faust_Matrix.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Initialisation Headers\IonFaust.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Initialisation Headers\Header1.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h">

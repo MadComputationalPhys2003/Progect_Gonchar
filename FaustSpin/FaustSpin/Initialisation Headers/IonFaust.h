@@ -224,8 +224,8 @@ namespace InitIons {
 		Ions(size_t n,
 			SpinLengthInit sl = SpinLengthInit::constant,
 			SpinDirectionInit si = SpinDirectionInit::parallel,
-			std::string sf = " ", std::string df = " ") :
-			ions(), SI(si), SL(sl), spinfile(sf), directionfile(df)
+			std::string df) :
+			ions(), SI(si), SL(sl), directionfile(df)
 		{
 
 			ions.resize(n, Ion());
@@ -256,7 +256,20 @@ namespace InitIons {
 			}
 			return result;
 		};
+		Vector3D_Decart::Vector3D_Dec get_direction(size_t index) const {
+			if (index >= ions.size()) {
+				throw std::out_of_range("Index out of range");
+			}
+			return ions[index].get_direction();
+		};
+		double get_spin_length(size_t index) const {
+			if (index >= ions.size()) {
+				throw std::out_of_range("Index out of range");
+			}
+			return ions[index].get_ion_spin_length();
+		};
 	};
+}
 
 
 

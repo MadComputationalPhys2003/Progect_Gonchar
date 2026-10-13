@@ -18,9 +18,9 @@ private:
 public:
 	enum class ExchangeIntegralInit{constant, different};
 	ExchangeIntegralInit EI;
-	ExchangeIntegral(uint8_t neighbor_count,uint64_t lx,uint64_t ly,uint64_t lz,
+	ExchangeIntegral(uint8_t neighbor_count,size_t n,
 	ExchangeIntegralInit ei=ExchangeIntegralInit::constant):
-		count(neighbor_count*lx*ly*lz), EI(ei)
+		count(neighbor_count+n), EI(ei)
 	{
 		if (EI == ExchangeIntegralInit::constant) {
 			exint = -1.0;
@@ -95,3 +95,4 @@ public:
 	}
    
 };
+

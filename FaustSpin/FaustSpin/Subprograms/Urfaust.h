@@ -2,6 +2,8 @@
 #include"Vector3D_Decart.h"
 #include"Lattice_Headers.h"
 #include"Neighbor_Headers.h"
+#include"Initialisation Headers/IonFaust.h"
+#include"Initialisation Headers/Faust_Exchange_Integral.h"
 #include<random>
 #include <variant>
 #include<numbers>
@@ -127,103 +129,11 @@ namespace UrFaust {
 			return neighbors.getCount();
 		}
 	};
-	struct Ion {
-	private:
-		Vector3D_Decart::Vector3D_Dec direction;
-	public:
-		Ion(double x, double y, double z) : direction(x, y, z)
-		{
-			if (std::abs(Vector3D_Decart::norm(direction) - 1) > 1e-12) {
-				throw std::invalid_argument("Ion's norma doesn't equal one");
-			}
-			if (!std::isfinite(Vector3D_Decart::norm(direction))) {
-				throw std::runtime_error("Ion's norma must be finite");
-			}
-		}
-		const Vector3D_Decart::Vector3D_Dec& get_direction() const {
-			return direction;
-		}
-		void set_direction(
-			const Vector3D_Decart::Vector3D_Dec& new_direction
-		) {
-			const double newNorm = Vector3D_Decart::norm(new_direction);
-
-			if (!std::isfinite(newNorm) ||
-				std::abs(newNorm - 1.0) > 1.0e-12) {
-				throw std::invalid_argument(
-					"Ion direction must be a finite unit vector"
-				);
-			}
-
-			direction = new_direction;
-		}
-		//Phi->Theta
-		double getPhi() const
-		{
-			return std::acos(
-				std::clamp(direction[2], -1.0, 1.0)
-			);
-		}
-		//Theta->Phi
-		double getTheta() const
-		{
-			double theta = std::atan2(direction[1], direction[0]);
-			if (theta < 0.0) {
-				theta += 2.0 * pi;
-			}
-			return theta;
-		}
-	};
-	class Ions {
-	public:
-		enum class SpinInit {
-			parallel,
-			random
-		};
-		std::vector<Ion> ions;
-		SpinInit SI;
-		Ions(size_t n, SpinInit si = SpinInit::parallel)
-			:ions(), SI(si)
-		{
-			ions.resize(n,
-				Ion(1.0, 0.0, 0.0)
-			);
-			if (SI == SpinInit::random) {
-				direction_generator();
-			}
-		}
-		std::vector<Vector3D_Decart::Vector3D_Dec> get_Directions() const {
-			std::vector<Vector3D_Decart::Vector3D_Dec> result;
-			result.reserve(ions.size());
-			for (const Ion& ion : ions) {
-				result.push_back(ion.get_direction());
-			}
-			return result;
-		};
-	private:
-		void direction_generator() {
-			std::random_device rd;
-			std::mt19937 gen(rd());
-			std::uniform_real_distribution<> dist_angle(0, 2 * pi);
-			std::uniform_real_distribution<> dist_z(-1, 1);
-			double x, y, z,theta;
-			double rho;
-			for (size_t i = 0; i < ions.size(); i++) {
-				z = dist_z(gen);
-				theta = dist_angle(gen);
-				rho = std::sqrt(1 - z * z);
-				x = rho * std::cos(theta);
-				y = rho * std::sin(theta);
-				ions[i] = Ion(x, y, z);
-			}
-		}
-	};
 	class SpinSystem {
 	private:
 		InitLattice il;
-		Ions ions;
-		double S;
-		double J;
+		InitIons::Ions ions;
+		ExchangeIntegral exchangeIntegral;
 		double eps;
 		static InitLattice makeInitLattice(Dimension dim, uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0) {
@@ -238,29 +148,46 @@ namespace UrFaust {
 			}
 			throw std::logic_error("Unknown dimension");
 		}
+		static InitIons::Ions makeInitIons(size_t n, InitIons::Ions::SpinLengthInit sli, InitIons::Ions::SpinDirectionInit sdi,
+			std::string df) {
+			if (sdi == InitIons::Ions::SpinDirectionInit::random ||
+				sdi == InitIons::Ions::SpinDirectionInit::parallel) {
+				return InitIons::Ions(n, sli, sdi);
+			}
+			else {
+				return InitIons::Ions(n, sli, sdi, df);
+			}
+		}
 	public:
 		SpinSystem(uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0,
-			double ss, double j, double ee,
-			Ions::SpinInit mode,Dimension d):
+			std::variant<double, std::vector<double>> spin,
+			std::variant<double, std::vector<FM::Matrix>> j,
+			InitIons::Ions::SpinLengthInit sli,InitIons::Ions::SpinDirectionInit sdi,
+			ExchangeIntegral::ExchangeIntegralInit eii,
+			Dimension d,double ee,
+			std::string df = " "):
 			il(makeInitLattice(d,lx,ly,lz,x0,y0,z0)),
-			ions(il.getN(),mode), S(ss), J(j),eps(ee)
+			ions(makeInitIons(il.getN(),sli,sdi,df)),exchangeIntegral(il.getNeighborCount(),il.getN(),eii), eps(ee)
 		{
+			ions.set_spin(std::move(spin), sli);
+			exchangeIntegral.set_eexchange_integral(std::move(j), eii);
 		}
 		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
 			return ions.get_Directions();
 		};
 		double energy() const {
 			double sum = 0.0;
+			double res = 0.0;
 			for (size_t i = 0; i < il.getN(); ++i) {
 				for (size_t a = 0; a < il.getNeighborCount(); ++a) {
 					const size_t slot = il.getNeighborCount() * i + a;
 					const size_t j =
 						static_cast<size_t>(il.getNeighborIndices()[slot]);
-					sum += Vector3D_Decart::scalar_product(ions.ions[i].get_direction(),ions.ions[j].get_direction());
+					ions.
 				}
 			}
-			return 0.5 * J * S * S * sum;
+			
 		}
 		void relaxation_sweep() {
 			for (uint64_t i = 0; i < il.getN(); i++) {

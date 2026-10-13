@@ -127,12 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Faust math\Faust_Matrix.cpp" />
+    <ClCompile Include="Faust math\Faust_Matrix.cpp" />
     <ClCompile Include="FaustSpin.cpp" />
-    <ClCompile Include="Initialisation Headers\IonFaust.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Faust math\Faust_Matrix.h" />
+    <ClInclude Include="Faust math\Faust_Matrix.h" />
     <ClInclude Include="1D\Lattice1D.h" />
     <ClInclude Include="1D\Neighbors_1D.h" />
     <ClInclude Include="2D\Lattice2D.h" />
@@ -141,13 +140,12 @@
     <ClInclude Include="3D\Neighbors_3D_Cube.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h" />
-    <ClInclude Include="Initialisation Headers\Header1.h" />
     <ClInclude Include="Initialisation Headers\IonFaust.h" />
     <ClInclude Include="Lattice_Headers.h" />
     <ClInclude Include="Neighbor_Headers.h" />
-    <ClInclude Include="UrFaustSimulation_1.h" />
+    <ClInclude Include="Subprograms\UrFaustSimulation_1.h" />
     <ClInclude Include="Vector3D_Decart.h" />
-    <ClInclude Include="Urfaust.h" />
+    <ClInclude Include="Subprograms\Urfaust.h" />
     <ClInclude Include="Write_To_File.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
