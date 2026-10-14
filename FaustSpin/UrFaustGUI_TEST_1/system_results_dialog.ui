@@ -95,7 +95,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>21</x>
@@ -126,6 +126,22 @@
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QPlainTextEdit" name="exchangeIntegralPlainTextEdit">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>250</y>
+     <width>104</width>
+     <height>75</height>
+    </rect>
+   </property>
+   <property name="lineWrapMode">
+    <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
   </widget>
  </widget>
  <resources/>

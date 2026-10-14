@@ -133,6 +133,9 @@
     </item>
     <item row="0" column="1">
      <widget class="QComboBox" name="InitialDirectionComboBox">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
       <item>
        <property name="text">
         <string>Parallel</string>
@@ -156,60 +159,7 @@
      <height>55</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Spin length</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QDoubleSpinBox" name="SpinLengthDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>60</y>
-     <width>120</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>Exchange integral</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QDoubleSpinBox" name="ExchangeIntegralDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-      <property name="minimum">
-       <double>-99.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>99.000000000000000</double>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <layout class="QGridLayout" name="gridLayout_4"/>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -340,6 +290,162 @@
      <widget class="QPushButton" name="spinVisualizationButton">
       <property name="text">
        <string>Spin Visualization</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>120</y>
+     <width>209</width>
+     <height>88</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_10">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Spin length</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Spin length min</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" colspan="2">
+     <widget class="QDoubleSpinBox" name="SpinLengthMinDoubleSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="decimals">
+       <number>6</number>
+      </property>
+      <property name="minimum">
+       <double>0.000001000000000</double>
+      </property>
+      <property name="maximum">
+       <double>1000.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QLabel" name="label_12">
+      <property name="text">
+       <string>Spin length max</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QDoubleSpinBox" name="SpinLengthMaxDoubleSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="decimals">
+       <number>6</number>
+      </property>
+      <property name="minimum">
+       <double>0.000001000000000</double>
+      </property>
+      <property name="maximum">
+       <double>1000.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>221</y>
+     <width>303</width>
+     <height>88</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="0" colspan="2">
+     <widget class="QLabel" name="label_7">
+      <property name="text">
+       <string>Exchange integral</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_13">
+      <property name="text">
+       <string>Exchange matrix element min</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QDoubleSpinBox" name="ExchangeIntegralMinDoubleSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="decimals">
+       <number>6</number>
+      </property>
+      <property name="minimum">
+       <double>-1000.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>1000.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>Exchange matrix element max</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QDoubleSpinBox" name="ExchangeIntegralMaxDoubleSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="decimals">
+       <number>6</number>
+      </property>
+      <property name="minimum">
+       <double>-1000.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>1000.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>140</y>
+     <width>95</width>
+     <height>67</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_11">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="saveTxtButton">
+      <property name="text">
+       <string>Save TXT</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="saveTexButton">
+      <property name="text">
+       <string>Save LaTeX</string>
       </property>
      </widget>
     </item>

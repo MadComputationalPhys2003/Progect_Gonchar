@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Urfaust.h"
-#include "../Write_To_File.h"
+
 
 #include <cmath>
 #include <cstddef>
@@ -329,60 +329,7 @@ namespace UrFaustSim {
                 spinSystem.getSpinDirections()
             };
         }
-        std::ofstream prepareTxtFile(
-            const char* filename,
-            const char* columns) const
-        {
-            std::ofstream output = WriteFileUrFaust::open_txt_file(
-                config.outputDirectory / filename
-            );
 
-            WriteFileUrFaust::write_parameters_txt(
-                output,
-                config.dimension,
-                config.lx,
-                config.ly,
-                config.lz,
-                config.spinLengthMode,
-                config.initialization,
-                config.exchangeMode,
-                config.epsilon
-            );
-
-            output << columns << '\n';
-
-            return output;
-        }
-
-        void exportFrame(
-            const SimulationFrame& frame,
-            const std::vector<double>& lengths,
-            std::ostream& spinOutput,
-            std::ostream& energyOutput) const
-        {
-            if (config.exportSpinTxt) {
-                for (std::size_t i = 0;
-                    i < frame.spinDirections.size();
-                    ++i) {
-
-                    WriteFileUrFaust::write_spin_txt(
-                        spinOutput,
-                        i,
-                        frame.sweep,
-                        lengths[i],
-                        frame.spinDirections[i]
-                    );
-                }
-            }
-
-            if (config.exportEnergyTxt) {
-                WriteFileUrFaust::write_energy_txt(
-                    energyOutput,
-                    frame.sweep,
-                    frame.energy
-                );
-            }
-        }
 
     public:
         explicit Simulation(SimulationConfig value)
@@ -450,23 +397,6 @@ namespace UrFaustSim {
 
         SimulationResult run()
         {
-            std::ofstream spinOutput;
-            std::ofstream energyOutput;
-
-            if (config.exportSpinTxt) {
-                spinOutput = prepareTxtFile(
-                    "spin.txt",
-                    "Iteration index spinlength nx ny nz"
-                );
-            }
-
-            if (config.exportEnergyTxt) {
-                energyOutput = prepareTxtFile(
-                    "energy.txt",
-                    "Iteration Energy"
-                );
-            }
-
             SimulationResult result;
             result.config = config;
             result.spinLengths = getSpinLengths();
@@ -475,13 +405,6 @@ namespace UrFaustSim {
 
             result.frames.push_back(
                 captureFrame(0, previousEnergy)
-            );
-
-            exportFrame(
-                result.frames.back(),
-                result.spinLengths,
-                spinOutput,
-                energyOutput
             );
 
             for (std::size_t sweep = 0;
@@ -497,13 +420,6 @@ namespace UrFaustSim {
                     captureFrame(result.completedSweeps, energy)
                 );
 
-                exportFrame(
-                    result.frames.back(),
-                    result.spinLengths,
-                    spinOutput,
-                    energyOutput
-                );
-
                 if (std::abs(energy - previousEnergy) < config.epsilon) {
                     result.converged = true;
                     break;
@@ -512,25 +428,8 @@ namespace UrFaustSim {
                 previousEnergy = energy;
             }
 
-            // close() также проверяет сброс буфера записи:
-            // при ошибке потока будет выброшено исключение.
-            if (spinOutput.is_open()) {
-                spinOutput.close();
-            }
-
-            if (energyOutput.is_open()) {
-                energyOutput.close();
-            }
-            if (config.exportResultTex) {
-                WriteFileUrFaust::write_result_tex(
-                    result,
-                    config.texTemplatePath,
-                    config.outputDirectory / "UrFaustResult.tex",
-                    config.texRowsPerPage
-                );
-            }
             return result;
         }
     };
 
-}
+};

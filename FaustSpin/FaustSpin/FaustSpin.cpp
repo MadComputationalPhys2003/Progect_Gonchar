@@ -39,7 +39,7 @@ namespace {
 		config.exchangeIntegral = -1.0;
 		config.epsilon = 1.0e-10;
 		config.maxSweeps = 1000;
-		config.initialization = UrFaust::Ions::SpinInit::random;
+        config.initialization = InitIons::Ions::SpinDirectionInit::random;
 		config.dimension = dimension;
 
 		UrFaustSim::Simulation simulation(config);

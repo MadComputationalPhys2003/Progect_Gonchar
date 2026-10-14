@@ -2,7 +2,12 @@
 #define PARAMETERS_DIALOG_H
 #include "UrFaustSimulation_1.h"
 #include <QDialog>
-
+#include <QString>
+#include <cmath>
+#include <limits>
+#include <random>
+#include <stdexcept>
+#include <vector>
 namespace Ui {
 class ParametersDialog;
 }
@@ -26,6 +31,10 @@ private:
     void startSimulation();
 
     UrFaustSim::SimulationResult simulationResult;
+    void saveTxtResults();
+    void saveTexResult();
+
+    QString lastExportDirectory;
 };
 
 #endif // PARAMETERS_DIALOG_H
