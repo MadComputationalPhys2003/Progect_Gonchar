@@ -143,6 +143,7 @@
     <ClInclude Include="Initialisation Headers\IonFaust.h" />
     <ClInclude Include="Lattice_Headers.h" />
     <ClInclude Include="Neighbor_Headers.h" />
+    <ClInclude Include="Subprograms\Header1.h" />
     <ClInclude Include="Subprograms\UrFaustSimulation_1.h" />
     <ClInclude Include="Vector3D_Decart.h" />
     <ClInclude Include="Subprograms\Urfaust.h" />

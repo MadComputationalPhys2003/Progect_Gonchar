@@ -262,30 +262,43 @@ eprint=false
 }
 
 \begin{document}
-% URFAUST_PARAMETERS
-\newpage
-	\begin{table}[h!]
-		\centering
-		\begin{tabular}{|c|c|c|c|c|c|}
-			\hline
-			Iteration&  Index&  Spin length&  \(n_x\)&  \(n_y\)& \(n_z\)\\\hline
-			% URFAUST_SPIN_ROWS
-			
-		\end{tabular}
+	
+	% URFAUST_PARAMETERS
+	
+	\clearpage
+	
+	\begin{longtable}{|c|c|c|c|c|c|}
 		\caption{Table of spin directions}
-		\label{tab:spindirection}
-	\end{table}
-	\newpage
-		\begin{table} [h!]
-		\centering
-		\begin{tabular}{|c|c|}
-			\hline
-			Iteration&  Energy\\\hline
-			% URFAUST_ENERGY_ROWS
-			
-		\end{tabular}
-		\caption{Table of spin directions}
-		\label{tab:energy}
-	\end{table}
-	\printbibliography
+		\label{tab:spindirection}\\
+		\hline
+		Iteration & Index & Spin length & \(n_x\) & \(n_y\) & \(n_z\)\\
+		\hline
+		\endfirsthead
+		
+		\hline
+		Iteration & Index & Spin length & \(n_x\) & \(n_y\) & \(n_z\)\\
+		\hline
+		\endhead
+		
+		% URFAUST_SPIN_ROWS
+	\end{longtable}
+	
+	\clearpage
+	
+	\begin{longtable}{|c|c|}
+		\caption{Table of system energies}
+		\label{tab:energy}\\
+		\hline
+		Iteration & Energy\\
+		\hline
+		\endfirsthead
+		
+		\hline
+		Iteration & Energy\\
+		\hline
+		\endhead
+		
+		% URFAUST_ENERGY_ROWS
+	\end{longtable}
+	
 \end{document}

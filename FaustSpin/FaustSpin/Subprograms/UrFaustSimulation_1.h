@@ -49,10 +49,16 @@ namespace UrFaustSim {
         double epsilon{ 1.0e-10 };
         std::size_t maxSweeps{ 1000 };
         std::filesystem::path outputDirectory{ "Output" };
+
         bool exportSpinTxt{ false };
-        bool exportSpinTex{ false };
         bool exportEnergyTxt{ false };
-        bool exportEnergyTex{ false };
+        bool exportResultTex{ false };
+
+        std::filesystem::path texTemplatePath{
+            "Latex templates/UrFaustResult.tex"
+        };
+
+        std::size_t texRowsPerPage{ 30 };
     };
 
     struct SimulationFrame {
@@ -354,29 +360,18 @@ namespace UrFaustSim {
             std::ostream& spinOutput,
             std::ostream& energyOutput) const
         {
-            if (config.exportSpinTxt || config.exportSpinTex) {
+            if (config.exportSpinTxt) {
                 for (std::size_t i = 0;
                     i < frame.spinDirections.size();
                     ++i) {
 
-                    if (config.exportSpinTxt) {
-                        WriteFileUrFaust::write_spin_txt(
-                            spinOutput,
-                            i,
-                            frame.sweep,
-                            lengths[i],
-                            frame.spinDirections[i]
-                        );
-                    }
-
-                    if (config.exportSpinTex) {
-                        WriteFileUrFaust::write_spin_tex(
-                            config.dimension,
-                            i,
-                            static_cast<std::uint64_t>(frame.sweep),
-                            frame.spinDirections[i]
-                        );
-                    }
+                    WriteFileUrFaust::write_spin_txt(
+                        spinOutput,
+                        i,
+                        frame.sweep,
+                        lengths[i],
+                        frame.spinDirections[i]
+                    );
                 }
             }
 
@@ -384,15 +379,6 @@ namespace UrFaustSim {
                 WriteFileUrFaust::write_energy_txt(
                     energyOutput,
                     frame.sweep,
-                    frame.energy
-                );
-            }
-
-            if (config.exportEnergyTex) {
-                WriteFileUrFaust::write_energy_tex(
-                    config.dimension,
-                    0,
-                    static_cast<std::uint64_t>(frame.sweep),
                     frame.energy
                 );
             }
@@ -535,7 +521,14 @@ namespace UrFaustSim {
             if (energyOutput.is_open()) {
                 energyOutput.close();
             }
-
+            if (config.exportResultTex) {
+                WriteFileUrFaust::write_result_tex(
+                    result,
+                    config.texTemplatePath,
+                    config.outputDirectory / "UrFaustResult.tex",
+                    config.texRowsPerPage
+                );
+            }
             return result;
         }
     };
