@@ -7,7 +7,7 @@
 #include<random>
 #include <variant>
 #include<numbers>
-
+#include <optional>
 constexpr const double pi = std::numbers::pi;
 
 namespace UrFaust {
@@ -149,30 +149,52 @@ namespace UrFaust {
 			}
 			throw std::logic_error("Unknown dimension");
 		}
-		static InitIons::Ions makeInitIons(size_t n, InitIons::Ions::SpinLengthInit sli, InitIons::Ions::SpinDirectionInit sdi,
-			std::string df) {
-			if (sdi == InitIons::Ions::SpinDirectionInit::random ||
-				sdi == InitIons::Ions::SpinDirectionInit::parallel) {
-				return InitIons::Ions(n, sli, sdi);
-			}
-			else {
-				return InitIons::Ions(n, sli, sdi, df);
-			}
+		static InitIons::Ions makeInitIons(
+			std::size_t n,
+			InitIons::Ions::SpinLengthInit sli,
+			InitIons::Ions::SpinDirectionInit sdi,
+			const std::string& df,
+			std::optional<int> directionSeed)
+		{
+			return InitIons::Ions(n, sli, sdi, df, directionSeed);
 		}
 	public:
-		SpinSystem(uint64_t lx, uint64_t ly, uint64_t lz,
+		SpinSystem(
+			uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0,
 			std::variant<double, std::vector<double>> spin,
 			std::variant<double, std::vector<FM::Matrix>> j,
-			InitIons::Ions::SpinLengthInit sli,InitIons::Ions::SpinDirectionInit sdi,
+			InitIons::Ions::SpinLengthInit sli,
+			InitIons::Ions::SpinDirectionInit sdi,
 			ExchangeIntegral::ExchangeIntegralInit eii,
-			Dimension d,double ee,
-			std::string df = " "):
-			il(makeInitLattice(d,lx,ly,lz,x0,y0,z0)),
-			ions(makeInitIons(il.getN(),sli,sdi,df)),exchangeIntegral(il.getNeighborCount(),il.getN(),eii),EII(eii), eps(ee)
+			Dimension d,
+			double ee,
+			std::string df = " ",
+			std::optional<int> directionSeed = std::nullopt)
+			: il(makeInitLattice(d, lx, ly, lz, x0, y0, z0))
+			, ions(makeInitIons(
+				il.getN(), sli, sdi, df, directionSeed))
+			, exchangeIntegral(il.getNeighborCount(), il.getN(), eii)
+			, EII(eii)
+			, eps(ee)
 		{
 			ions.set_spin(std::move(spin), sli);
 			exchangeIntegral.set_eexchange_integral(std::move(j), eii);
+		}
+		void setParallelDirection(
+			const Vector3D_Decart::Vector3D_Dec& direction)
+		{
+			const double length = Vector3D_Decart::norm(direction);
+
+			if (!std::isfinite(length) ||
+				std::abs(length - 1.0) > 1.0e-12) {
+				throw std::invalid_argument(
+					"Parallel direction must be a finite unit vector");
+			}
+
+			for (InitIons::Ion& ion : ions.ions) {
+				ion.set_direction(direction);
+			}
 		}
 		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
 			return ions.get_Directions();

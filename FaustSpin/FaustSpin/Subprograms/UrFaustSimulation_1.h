@@ -2,7 +2,7 @@
 
 #include "Urfaust.h"
 
-
+#include <optional>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -43,7 +43,10 @@ namespace UrFaustSim {
         InitIons::Ions::SpinDirectionInit initialization{
             InitIons::Ions::SpinDirectionInit::parallel
         };
-
+        Vector3D_Decart::Vector3D_Dec parallelDirection{
+         1.0, 0.0, 0.0
+        };
+        std::optional<int> directionSeed;
         std::string directionFile;
 
         double epsilon{ 1.0e-10 };
@@ -274,9 +277,25 @@ namespace UrFaustSim {
             }
 
             switch (value.initialization) {
-            case InitIons::Ions::SpinDirectionInit::parallel:
-            case InitIons::Ions::SpinDirectionInit::random:
+            case InitIons::Ions::SpinDirectionInit::parallel: {
+                const double length =
+                    Vector3D_Decart::norm(value.parallelDirection);
+
+                if (!std::isfinite(length) ||
+                    std::abs(length - 1.0) > 1.0e-12) {
+                    throw std::invalid_argument(
+                        "Parallel direction must be a finite unit vector");
+                }
+
                 break;
+            }
+            case InitIons::Ions::SpinDirectionInit::random:
+                if (value.directionSeed.has_value() &&
+                    *value.directionSeed < 0) {
+                    throw std::invalid_argument(
+                        "Direction seed must be nonnegative");
+                }
+            break;
 
             case InitIons::Ions::SpinDirectionInit::file:
                 if (value.directionFile.empty()) {
@@ -349,8 +368,16 @@ namespace UrFaustSim {
                 config.exchangeMode,
                 config.dimension,
                 config.epsilon,
-                config.directionFile)
+                config.directionFile,
+                config.directionSeed
+            )
         {
+            {
+                if (config.initialization ==
+                    InitIons::Ions::SpinDirectionInit::parallel) {
+                    spinSystem.setParallelDirection(config.parallelDirection);
+                }
+            }
         }
 
         const SimulationConfig& getConfig() const

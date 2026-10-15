@@ -349,3 +349,190 @@ namespace WriteFileUrFaust {
    
 
 }
+namespace WriteFileUrFaust {
+
+    template <typename ResultType>
+    inline void write_result_tex(
+        const ResultType& result,
+        const std::filesystem::path& templatePath,
+        const std::filesystem::path& outputPath,
+        std::size_t rowsPerPage = 30)
+    {
+        std::ifstream input(
+            templatePath,
+            std::ios::in | std::ios::binary
+        );
+
+        if (!input) {
+            throw std::runtime_error("Cannot open TeX template");
+        }
+
+        input.exceptions(std::ios::badbit);
+
+        if (std::filesystem::exists(outputPath) &&
+            std::filesystem::equivalent(templatePath, outputPath)) {
+            throw std::invalid_argument(
+                "TeX template and output must be different files"
+            );
+        }
+
+        for (const auto& frame : result.frames) {
+            if (frame.spinDirections.size() != result.spinLengths.size()) {
+                throw std::invalid_argument(
+                    "Spin directions and lengths have different sizes"
+                );
+            }
+        }
+
+        if (!outputPath.parent_path().empty()) {
+            std::filesystem::create_directories(
+                outputPath.parent_path()
+            );
+        }
+
+        std::ofstream output;
+        output.exceptions(std::ios::failbit | std::ios::badbit);
+
+        output.open(
+            outputPath,
+            std::ios::out | std::ios::trunc | std::ios::binary
+        );
+
+        output.imbue(std::locale::classic());
+
+        const auto& config = result.config;
+        std::string line;
+        int stage = 0;
+
+        while (std::getline(input, line)) {
+            if (!line.empty() && line.back() == '\r') {
+                line.pop_back();
+            }
+
+            const std::size_t first =
+                line.find_first_not_of(" \t");
+
+            const std::size_t last =
+                line.find_last_not_of(" \t");
+
+            const std::string marker =
+                first == std::string::npos
+                ? std::string{}
+            : line.substr(first, last - first + 1);
+
+            if (marker == "% URFAUST_PARAMETERS") {
+                if (stage != 0) {
+                    throw std::runtime_error(
+                        "Wrong TeX template marker order"
+                    );
+                }
+
+                output
+                    << "Dimension: "
+                    << dimension_name(config.dimension)
+                    << "\\par\n"
+
+                    << "\\[\n"
+                    << "L_x = " << config.lx << ",\\qquad "
+                    << "L_y = " << config.ly << ",\\qquad "
+                    << "L_z = " << config.lz
+                    << "\n\\]\n"
+
+                    << "Spin length mode: "
+                    << spin_length_mode_name(config.spinLengthMode)
+                    << "\\par\n"
+
+                    << "Spin direction mode: "
+                    << spin_direction_mode_name(config.initialization)
+                    << "\\par\n"
+
+                    << "Exchange Integral mode: "
+                    << exchange_mode_name(config.exchangeMode)
+                    << "\\par\n"
+
+                    << "Energy Error: "
+                    << tex_number(config.epsilon)
+                    << "\\par\n";
+
+                stage = 1;
+            }
+            else if (marker == "% URFAUST_SPIN_ROWS") {
+                if (stage != 1) {
+                    throw std::runtime_error(
+                        "Wrong TeX template marker order"
+                    );
+                }
+
+                std::size_t rows = 0;
+
+                for (const auto& frame : result.frames) {
+                    for (std::size_t i = 0;
+                        i < frame.spinDirections.size();
+                        ++i) {
+
+                        if (rowsPerPage != 0 && rows == rowsPerPage) {
+                            output << "\\pagebreak\n";
+                            rows = 0;
+                        }
+
+                        const auto& n = frame.spinDirections[i];
+
+                        output
+                            << frame.sweep << " & "
+                            << i << " & "
+                            << tex_number(result.spinLengths[i]) << " & "
+                            << tex_number(n[0]) << " & "
+                            << tex_number(n[1]) << " & "
+                            << tex_number(n[2])
+                            << " \\\\ \\hline\n";
+
+                        ++rows;
+                    }
+                }
+
+                stage = 2;
+            }
+            else if (marker == "% URFAUST_ENERGY_ROWS") {
+                if (stage != 2) {
+                    throw std::runtime_error(
+                        "Wrong TeX template marker order"
+                    );
+                }
+
+                std::size_t rows = 0;
+
+                for (const auto& frame : result.frames) {
+                    if (rowsPerPage != 0 && rows == rowsPerPage) {
+                        output << "\\pagebreak\n";
+                        rows = 0;
+                    }
+
+                    output
+                        << frame.sweep << " & "
+                        << tex_number(frame.energy)
+                        << " \\\\ \\hline\n";
+
+                    ++rows;
+                }
+
+                stage = 3;
+            }
+            else {
+                output << line << '\n';
+            }
+        }
+
+        if (!input.eof()) {
+            throw std::runtime_error("Cannot read TeX template");
+        }
+
+        if (stage != 3) {
+            throw std::runtime_error(
+                "TeX template must contain all three URFAUST markers"
+            );
+        }
+
+        output.close();
+    }
+
+}

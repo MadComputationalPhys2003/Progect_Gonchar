@@ -2,11 +2,25 @@
 #include "ui_system_results_dialog.h"
 #include <cmath>
 #include <QString>
+#include "Write_To_File.h"
+#include <QFontDatabase>
+#include <QPlainTextEdit>
+#include <exception>
+#include <sstream>
 SystemResultsDialog::SystemResultsDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::SystemResultsDialog)
 {
     ui->setupUi(this);
+    ui->exchangeIntegralPlainTextEdit->setReadOnly(true);
+
+    ui->exchangeIntegralPlainTextEdit->setLineWrapMode(
+        QPlainTextEdit::NoWrap
+        );
+
+    ui->exchangeIntegralPlainTextEdit->setFont(
+        QFontDatabase::systemFont(QFontDatabase::FixedFont)
+        );
     setWindowFlags(
         (windowFlags() & ~Qt::WindowContextHelpButtonHint)
         | Qt::CustomizeWindowHint
@@ -28,6 +42,7 @@ SystemResultsDialog::~SystemResultsDialog()
 void SystemResultsDialog::setResult(
     const UrFaustSim::SimulationResult &result)
 {
+    ui->exchangeIntegralPlainTextEdit->clear();
     ui->finalSpinDirectionValueLabel->setText(QStringLiteral("-"));
     if (result.frames.empty()) {
         ui->initialEnergyValueLabel->setText(QStringLiteral("-"));
@@ -37,7 +52,20 @@ void SystemResultsDialog::setResult(
         ui->convergenceValueLabel->setText(QStringLiteral("-"));
         return;
     }
+    try {
+        std::ostringstream text;
 
+        WriteFileUrFaust::write_exchange_txt(text, result);
+
+        ui->exchangeIntegralPlainTextEdit->setPlainText(
+            QString::fromStdString(text.str())
+            );
+    }
+    catch (const std::exception& error) {
+        ui->exchangeIntegralPlainTextEdit->setPlainText(
+            QString::fromUtf8(error.what())
+            );
+    }
     ui->initialEnergyValueLabel->setText(
         QString::number(result.frames.front().energy, 'g', 12)
         );

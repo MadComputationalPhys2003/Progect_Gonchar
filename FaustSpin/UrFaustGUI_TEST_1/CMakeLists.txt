@@ -17,6 +17,34 @@ qt_add_executable(UrFaustGUI_TEST_1
     spin_visualization_dialog.h spin_visualization_dialog.cpp spin_visualization_dialog.ui
     spin_opengl_widget.h spin_opengl_widget.cpp
     cats.qrc
+    parallel_direction_dialog.h parallel_direction_dialog.cpp parallel_direction_dialog.ui
+    parallel_direction_dialog.h
+    parallel_direction_dialog.cpp
+    parallel_direction_dialog.ui
+    random_direction_dialog.h random_direction_dialog.cpp random_direction_dialog.ui
+    random_direction_dialog.h
+    random_direction_dialog.cpp
+    random_direction_dialog.ui
+    manual_direction_dialog.h manual_direction_dialog.cpp manual_direction_dialog.ui
+    manual_direction_dialog.h
+    manual_direction_dialog.cpp
+    manual_direction_dialog.ui
+    manual_spin_length_dialog.h manual_spin_length_dialog.cpp manual_spin_length_dialog.ui
+    manual_spin_length_dialog.h
+    manual_spin_length_dialog.cpp
+    manual_spin_length_dialog.ui
+    random_spin_length_dialog.h random_spin_length_dialog.cpp random_spin_length_dialog.ui
+    random_spin_length_dialog.h
+    random_spin_length_dialog.cpp
+    random_spin_length_dialog.ui
+    manual_exchange_integral_dialog.h manual_exchange_integral_dialog.cpp manual_exchange_integral_dialog.ui
+    manual_exchange_integral_dialog.cpp
+    manual_exchange_integral_dialog.h
+    manual_exchange_integral_dialog.ui
+    random_exchange_integral_dialog.h random_exchange_integral_dialog.cpp random_exchange_integral_dialog.ui
+    random_exchange_integral_dialog.cpp
+    random_exchange_integral_dialog.h
+    random_exchange_integral_dialog.ui
 )
 set_target_properties(UrFaustGUI_TEST_1 PROPERTIES
     AUTORCC ON

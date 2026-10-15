@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <string>
 #include<numbers>
+#include <optional>
 
 namespace InitIons {
 	const double pi = std::numbers::pi;
@@ -80,24 +81,43 @@ namespace InitIons {
 	{
 
 	private:
-		void random_direction_generator() {
-			std::random_device rd;
-			std::mt19937 gen(rd());
-			std::uniform_real_distribution<> dist_angle(0, 2 * pi);
-			std::uniform_real_distribution<> dist_z(-1, 1);
-			double x, y, z, theta;
-			double rho;
-			for (size_t i = 0; i < ions.size(); i++) {
-				z = dist_z(gen);
-				theta = dist_angle(gen);
-				rho = std::sqrt(1 - z * z);
-				x = rho * std::cos(theta);
-				y = rho * std::sin(theta);
-				ions[i].set_direction(
-					Vector3D_Decart::Vector3D_Dec(x, y, z)
-				);
+		void random_direction_generator(
+			std::optional<int> seed = std::nullopt)
+		{
+			std::mt19937 gen;
+
+			if (seed.has_value()) {
+				if (*seed < 0) {
+					throw std::invalid_argument(
+						"Direction seed must be nonnegative");
+				}
+
+				gen.seed(
+					static_cast<std::mt19937::result_type>(*seed));
 			}
-		};
+			else {
+				std::random_device rd;
+				gen.seed(rd());
+			}
+
+			std::uniform_real_distribution<double> dist_angle(
+				0.0, 2.0 * pi);
+
+			std::uniform_real_distribution<double> dist_z(
+				-1.0, 1.0);
+
+			for (Ion& ion : ions) {
+				const double z = dist_z(gen);
+				const double phi = dist_angle(gen);
+				const double rho = std::sqrt(1.0 - z * z);
+
+				ion.set_direction(
+					Vector3D_Decart::Vector3D_Dec(
+						rho * std::cos(phi),
+						rho * std::sin(phi),
+						z));
+			}
+		}
 		void import_direction_from_file(const std::string& filename)
 		{
 			std::ifstream input(filename);
@@ -221,11 +241,13 @@ namespace InitIons {
 			return result;
 		}
 
-		Ions(size_t n,
+		Ions(
+			std::size_t n,
 			SpinLengthInit sl = SpinLengthInit::constant,
 			SpinDirectionInit si = SpinDirectionInit::parallel,
-			std::string df="") :
-			ions(), SI(si), SL(sl), directionfile(df)
+			std::string df = "",
+			std::optional<int> directionSeed = std::nullopt)
+			: ions(), SI(si), SL(sl), directionfile(df)
 		{
 
 			ions.resize(n, Ion());
@@ -241,7 +263,7 @@ namespace InitIons {
 				spin = res;
 			}
 			if (SI == SpinDirectionInit::random) {
-				random_direction_generator();
+				random_direction_generator(directionSeed);
 			}
 			if (SI == SpinDirectionInit::file) {
 				import_direction_from_file(directionfile);
