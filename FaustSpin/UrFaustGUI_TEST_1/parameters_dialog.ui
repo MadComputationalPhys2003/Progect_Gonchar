@@ -192,8 +192,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>290</y>
+     <x>10</x>
+     <y>160</y>
      <width>107</width>
      <height>55</height>
     </rect>
@@ -355,7 +355,7 @@
     <string>No file selected</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -388,137 +388,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>120</y>
-     <width>181</width>
-     <height>88</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_10">
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Spin length</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_11">
-      <property name="text">
-       <string>Spin length min</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="SpinLengthMinDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-      <property name="minimum">
-       <double>0.500000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>3.000000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_12">
-      <property name="text">
-       <string>Spin length max</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QDoubleSpinBox" name="SpinLengthMaxDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-      <property name="minimum">
-       <double>0.500000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>3.000000000000000</double>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>290</y>
-     <width>428</width>
-     <height>88</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_5">
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_13">
-      <property name="text">
-       <string>Exchange matrix element min</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_14">
-      <property name="text">
-       <string>Exchange matrix element max</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QDoubleSpinBox" name="ExchangeIntegralMaxDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-      <property name="minimum">
-       <double>-1000.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>1000.000000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="ExchangeIntegralMinDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>6</number>
-      </property>
-      <property name="minimum">
-       <double>-1000.000000000000000</double>
-      </property>
-      <property name="maximum">
-       <double>1000.000000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QLabel" name="label_7">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Exchange integral&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>191</x>
@@ -573,7 +443,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>190</x>
@@ -583,23 +453,6 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_14">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_18">
-      <property name="text">
-       <string>Exchange integral input mode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="exchangeIntegralFileLineEdit">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="placeholderText">
-       <string>No file selected</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="1">
      <widget class="QComboBox" name="exchangeInputComboBox">
       <item>
@@ -626,9 +479,26 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_18">
+      <property name="text">
+       <string>Exchange integral input mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="exchangeIntegralFileLineEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>No file selected</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>190</x>
