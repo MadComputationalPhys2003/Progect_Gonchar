@@ -11,6 +11,19 @@
 #include <QString>
 #include <algorithm>
 #include <cmath>
+#include <QByteArray>
+#include <QComboBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QImage>
+#include <QImageWriter>
+#include <QMessageBox>
+#include <QPaintDevice>
+#include <QPushButton>
+#include <QSaveFile>
+#include <QSize>
+#include <QSizeF>
+#include <QSvgGenerator>
 EnergyPlotDialog::EnergyPlotDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::EnergyPlotDialog)
@@ -28,6 +41,10 @@ EnergyPlotDialog::EnergyPlotDialog(QWidget *parent)
     ui->energyGraphicsView->setScene(scene);
     ui->energyGraphicsView->setRenderHint(QPainter::Antialiasing);
     ui->energyGraphicsView->setBackgroundBrush(QBrush(Qt::white));
+    ui->savePlotButton->setAutoDefault(false);
+
+    connect(ui->savePlotButton, &QPushButton::clicked,
+            this, &EnergyPlotDialog::savePlot);
 }
 
 EnergyPlotDialog::~EnergyPlotDialog()
@@ -179,4 +196,204 @@ void EnergyPlotDialog::setResult(
     ui->energyGraphicsView->fitInView(
         scene->sceneRect(), Qt::KeepAspectRatio
         );
+}
+void EnergyPlotDialog::savePlot()
+{
+    if (!scene || scene->items().isEmpty()) {
+        QMessageBox::information(
+            this,
+            QStringLiteral("Save energy plot"),
+            QStringLiteral("Run a simulation first.")
+            );
+        return;
+    }
+
+    const auto showError = [this](const QString &message) {
+        QMessageBox::critical(
+            this,
+            QStringLiteral("Save energy plot"),
+            message
+            );
+    };
+
+    const int formatIndex =
+        ui->savePlotFormatComboBox->currentIndex();
+
+    QString suffix;
+    QString filter;
+
+    switch (formatIndex) {
+    case 0:
+        suffix = QStringLiteral("svg");
+        filter = QStringLiteral("SVG image (*.svg)");
+        break;
+
+    case 1:
+        suffix = QStringLiteral("png");
+        filter = QStringLiteral("PNG image (*.png)");
+        break;
+
+    case 2:
+        suffix = QStringLiteral("jpg");
+        filter = QStringLiteral("JPEG image (*.jpg *.jpeg)");
+        break;
+
+    default:
+        return;
+    }
+
+    QFileDialog dialog(
+        this,
+        QStringLiteral("Save energy plot")
+        );
+
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setNameFilter(filter);
+    dialog.setDefaultSuffix(suffix);
+
+    dialog.selectFile(
+        QStringLiteral("energy_plot.%1").arg(suffix)
+        );
+
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+
+    const QString fileName =
+        dialog.selectedFiles().first();
+
+    const QString extension =
+        QFileInfo(fileName).suffix().toLower();
+
+    const bool correctExtension =
+        extension == suffix ||
+        (formatIndex == 2 &&
+         extension == QStringLiteral("jpeg"));
+
+    if (!correctExtension) {
+        showError(
+            QStringLiteral(
+                "Use the .%1 extension for the selected format."
+                ).arg(suffix)
+            );
+        return;
+    }
+
+    const QRectF source = scene->sceneRect();
+
+    if (!source.isValid()) {
+        showError(QStringLiteral("The plot has an invalid size."));
+        return;
+    }
+
+    const QSize baseSize(
+        std::max(
+            1,
+            static_cast<int>(std::ceil(source.width()))
+            ),
+        std::max(
+            1,
+            static_cast<int>(std::ceil(source.height()))
+            )
+        );
+
+    // Для PNG и JPEG увеличиваем разрешение в три раза.
+    const QSize outputSize =
+        formatIndex == 0 ? baseSize : baseSize * 3;
+
+    const QRectF target(
+        QPointF(0.0, 0.0),
+        QSizeF(outputSize)
+        );
+
+    // Одинаковая отрисовка для всех трёх форматов.
+    const auto drawPlot =
+        [this, &source, &target](QPaintDevice *device) {
+            QPainter painter;
+
+            if (!painter.begin(device)) {
+                return false;
+            }
+
+            painter.setRenderHints(
+                QPainter::Antialiasing |
+                QPainter::TextAntialiasing
+                );
+
+            painter.fillRect(target, Qt::white);
+
+            scene->render(
+                &painter,
+                target,
+                source,
+                Qt::KeepAspectRatio
+                );
+
+            return painter.end();
+        };
+
+    QSaveFile output(fileName);
+
+    if (!output.open(QIODevice::WriteOnly)) {
+        showError(output.errorString());
+        return;
+    }
+
+    if (formatIndex == 0) {
+        QSvgGenerator generator(
+            QSvgGenerator::SvgVersion::Svg11
+            );
+
+        generator.setOutputDevice(&output);
+        generator.setSize(outputSize);
+        generator.setViewBox(target);
+        generator.setResolution(96);
+        generator.setTitle(QStringLiteral("Energy Plot"));
+
+        if (!drawPlot(&generator)) {
+            showError(
+                QStringLiteral("Cannot render the SVG plot.")
+                );
+            return;
+        }
+    }
+    else {
+        QImage image(outputSize, QImage::Format_RGB32);
+
+        if (image.isNull()) {
+            showError(
+                QStringLiteral("Cannot create the plot image.")
+                );
+            return;
+        }
+
+        image.fill(Qt::white);
+
+        if (!drawPlot(&image)) {
+            showError(
+                QStringLiteral("Cannot render the plot image.")
+                );
+            return;
+        }
+
+        const QByteArray imageFormat =
+            formatIndex == 1
+                ? QByteArray("png")
+                : QByteArray("jpeg");
+
+        QImageWriter writer(&output, imageFormat);
+
+        if (formatIndex == 2) {
+            writer.setQuality(95);
+        }
+
+        if (!writer.write(image)) {
+            showError(writer.errorString());
+            return;
+        }
+    }
+
+    if (!output.commit()) {
+        showError(output.errorString());
+    }
 }

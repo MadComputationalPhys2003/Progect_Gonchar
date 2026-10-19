@@ -16,265 +16,17 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>20</y>
-     <width>174</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>System dimension</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="SystemDimentionComboBox">
-      <item>
-       <property name="text">
-        <string>1D</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>2D</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>3D</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>60</y>
-     <width>171</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Lx&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Ly&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Lz&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QSpinBox" name="LxSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="minimum">
-       <number>2</number>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QSpinBox" name="LySpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="minimum">
-       <number>2</number>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QSpinBox" name="LzSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="minimum">
-       <number>2</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>20</y>
-     <width>221</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_3">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Initial direction</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="InitialDirectionComboBox">
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <item>
-       <property name="text">
-        <string>Parallel</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Random</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>File</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Manual</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>220</y>
-     <width>134</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_6">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Maximum iterations</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QSpinBox" name="spinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="maximum">
-       <number>1000000000</number>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>160</y>
-     <width>107</width>
-     <height>55</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_7">
-    <item row="2" column="0">
-     <widget class="QDoubleSpinBox" name="EnergyErrorDoubleSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="decimals">
-       <number>10</number>
-      </property>
-      <property name="maximum">
-       <double>2.000000000000000</double>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Energy error</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>520</y>
-     <width>266</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_8">
-    <item row="0" column="0">
-     <widget class="QPushButton" name="calculateButton">
-      <property name="text">
-       <string>Calculate</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QProgressBar" name="simulationProgressBar">
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLabel" name="calculationStatusLabel">
-      <property name="text">
-       <string>Ready</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>670</x>
-     <y>0</y>
-     <width>128</width>
+     <x>270</x>
+     <y>360</y>
+     <width>319</width>
      <height>130</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_9">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_10">
+    <item row="3" column="0">
+     <widget class="QPushButton" name="spinVisualizationButton">
       <property name="text">
-       <string>Show results</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QPushButton" name="systemResultsButton">
-      <property name="text">
-       <string>System Results</string>
+       <string>Spin Visualization</string>
       </property>
      </widget>
     </item>
@@ -285,41 +37,29 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="spinVisualizationButton">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="systemResultsButton">
       <property name="text">
-       <string>Spin Visualization</string>
+       <string>System Results</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>Show results</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="initialDirectionSettingsButton">
-   <property name="geometry">
-    <rect>
-     <x>420</x>
-     <y>20</y>
-     <width>150</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>150</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="text">
-    <string>Set parallel...</string>
-   </property>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>690</x>
-     <y>140</y>
-     <width>95</width>
-     <height>67</height>
+     <x>590</x>
+     <y>360</y>
+     <width>156</width>
+     <height>130</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_11">
@@ -339,195 +79,392 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLineEdit" name="initialDirectionFileLineEdit">
+  <widget class="QProgressBar" name="simulationProgressBar">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>50</y>
-     <width>113</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="placeholderText">
-    <string>No file selected</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>80</y>
-     <width>211</width>
+     <x>420</x>
+     <y>510</y>
+     <width>116</width>
      <height>28</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_15">
+   <property name="value">
+    <number>0</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="calculateButton">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>510</y>
+     <width>129</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Calculate</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="calculationStatusLabel">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>510</y>
+     <width>264</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ready</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>3</x>
+     <y>3</y>
+     <width>174</width>
+     <height>88</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_5">
+    <item row="0" column="0" colspan="3">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Spin length mode</string>
+       <string>System dimension</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="spinLengthModeComboBox">
+    <item row="0" column="3">
+     <widget class="QComboBox" name="SystemDimentionComboBox">
       <item>
        <property name="text">
-        <string>Constant</string>
+        <string>1D</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Different</string>
+        <string>2D</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>3D</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Lx&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Ly&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Lz&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QSpinBox" name="LxSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>2</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QSpinBox" name="LySpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>2</number>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QSpinBox" name="LzSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>2</number>
+      </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>191</x>
-     <y>121</y>
-     <width>347</width>
-     <height>64</height>
+     <x>3</x>
+     <y>100</y>
+     <width>134</width>
+     <height>115</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout_13">
+   <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="0">
-     <widget class="QLabel" name="label_16">
+     <widget class="QLabel" name="label_9">
       <property name="text">
-       <string>Spin length input mode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="spinLengthInputComboBox">
-      <item>
-       <property name="text">
-        <string>Manual</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>File</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Random</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="spinLengthSettingsButton">
-      <property name="text">
-       <string>Set Manual…</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="QLineEdit" name="spinLengthFileLineEdit">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="placeholderText">
-       <string>No file selected</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>220</y>
-     <width>392</width>
-     <height>64</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_14">
-    <item row="0" column="1">
-     <widget class="QComboBox" name="exchangeInputComboBox">
-      <item>
-       <property name="text">
-        <string>Manual</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Random </string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>File</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="exchangeSettingsButton">
-      <property name="text">
-       <string>Set random...</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_18">
-      <property name="text">
-       <string>Exchange integral input mode</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Energy error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QLineEdit" name="exchangeIntegralFileLineEdit">
-      <property name="readOnly">
-       <bool>true</bool>
+     <widget class="QDoubleSpinBox" name="EnergyErrorDoubleSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
       </property>
-      <property name="placeholderText">
-       <string>No file selected</string>
+      <property name="decimals">
+       <number>10</number>
+      </property>
+      <property name="maximum">
+       <double>2.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Maximum iterations</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QSpinBox" name="spinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="maximum">
+       <number>1000000000</number>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>190</y>
-     <width>254</width>
-     <height>28</height>
+     <x>180</x>
+     <y>10</y>
+     <width>527</width>
+     <height>324</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout_12">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_17">
-      <property name="text">
-       <string>Exchange integral mode</string>
-      </property>
-     </widget>
-    </item>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SizeConstraint::SetMinAndMaxSize</enum>
+    </property>
     <item row="0" column="1">
-     <widget class="QComboBox" name="exchangeModeComboBox">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <property name="text">
-        <string>Constant</string>
-       </property>
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Spin length mode</string>
+        </property>
+       </widget>
       </item>
       <item>
-       <property name="text">
-        <string>Matrix</string>
-       </property>
+       <widget class="QComboBox" name="spinLengthModeComboBox">
+        <item>
+         <property name="text">
+          <string>Constant</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Different</string>
+         </property>
+        </item>
+       </widget>
       </item>
-     </widget>
+      <item>
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Spin length input mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="spinLengthInputComboBox">
+        <item>
+         <property name="text">
+          <string>Manual</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Random</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>File</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="spinLengthSettingsButton">
+        <property name="text">
+         <string>Set Manual…</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="spinLengthFileLineEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>No file selected</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="2">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Exchange integral mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="exchangeModeComboBox">
+        <item>
+         <property name="text">
+          <string>Constant</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Matrix</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Exchange integral input mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="exchangeInputComboBox">
+        <item>
+         <property name="text">
+          <string>Manual</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Random </string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>File</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="exchangeSettingsButton">
+        <property name="text">
+         <string>Set random...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="exchangeIntegralFileLineEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>No file selected</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item alignment="Qt::AlignmentFlag::AlignHCenter|Qt::AlignmentFlag::AlignVCenter">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Initial direction&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="InitialDirectionComboBox">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>Parallel</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Random</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>File</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Manual</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="initialDirectionSettingsButton">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Set parallel...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="initialDirectionFileLineEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="placeholderText">
+         <string>No file selected</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

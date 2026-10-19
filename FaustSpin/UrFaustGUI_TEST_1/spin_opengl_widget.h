@@ -9,7 +9,8 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLShaderProgram>
 #include <QVector3D>
-
+#include <QMatrix4x4>
+#include <QString>
 #include <memory>
 #include <vector>
 class QMouseEvent;
@@ -32,6 +33,10 @@ public:
     void setViewAlongY();
     void setViewAlongZ();
     void resetView();
+    bool saveSvg(
+        const QString &fileName,
+        QString &errorMessage
+        );
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -79,6 +84,8 @@ private:
     void drawOrientationAxes(
         QPainter &painter,
         const QMatrix4x4 &view);
+    QMatrix4x4 svgProjection;
+    QMatrix4x4 svgView;
 };
 
 #endif // SPIN_OPENGL_WIDGET_H

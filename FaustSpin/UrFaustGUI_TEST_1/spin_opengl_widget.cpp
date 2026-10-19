@@ -16,6 +16,11 @@
 #include <QPen>
 #include <QFont>
 #include <QColor>
+#include <QSvgGenerator>
+#include <QSaveFile>
+#include <QPolygonF>
+#include <QVector4D>
+#include <utility>
 SpinOpenGLWidget::SpinOpenGLWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
@@ -472,6 +477,8 @@ void SpinOpenGLWidget::paintGL()
         eye,
         QVector3D(0.0f, 0.0f, 0.0f),
         cameraUp);
+    svgProjection = projection;
+    svgView = view;
 
     QPainter painter(this);
     painter.beginNativePainting();
@@ -723,4 +730,226 @@ void SpinOpenGLWidget::mousePressEvent(QMouseEvent *event)
     }
 
     QOpenGLWidget::mousePressEvent(event);
+}
+bool SpinOpenGLWidget::saveSvg(
+    const QString &fileName,
+    QString &errorMessage)
+{
+    errorMessage.clear();
+
+    // Обновляем изображение и матрицы текущей камеры.
+    repaint();
+
+    if (!ready || vertices.empty()) {
+        errorMessage =
+            QStringLiteral("There is no rendered frame to save.");
+        return false;
+    }
+
+    struct SvgPrimitive {
+        QPolygonF points;
+        QColor color;
+        float depth = 0.0f;
+    };
+
+    std::vector<SvgPrimitive> primitives;
+
+    primitives.reserve(
+        static_cast<std::size_t>(
+            (spinVertexCount + latticeVertexCount) / 2
+            + coneVertexCount / 3
+            + nodeVertexCount
+            )
+        );
+
+    const QMatrix4x4 transform =
+        svgProjection * svgView;
+
+    const qreal imageWidth = width();
+    const qreal imageHeight = height();
+
+    const auto appendPrimitives =
+        [&](int start, int count, int verticesPerPrimitive)
+    {
+        for (int first = start;
+             first < start + count;
+             first += verticesPerPrimitive) {
+
+            SvgPrimitive primitive;
+            bool visible = true;
+
+            const Vertex &firstVertex =
+                vertices[static_cast<std::size_t>(first)];
+
+            primitive.color = QColor::fromRgbF(
+                firstVertex.color[0],
+                firstVertex.color[1],
+                firstVertex.color[2]
+                );
+
+            for (int offset = 0;
+                 offset < verticesPerPrimitive;
+                 ++offset) {
+
+                const Vertex &vertex = vertices[
+                    static_cast<std::size_t>(first + offset)
+                ];
+
+                const QVector4D clip = transform * QVector4D(
+                                           vertex.position[0],
+                                           vertex.position[1],
+                                           vertex.position[2],
+                                           1.0f
+                                           );
+
+                if (clip.w() <= 0.0f) {
+                    visible = false;
+                    break;
+                }
+
+                const float inverseW = 1.0f / clip.w();
+
+                const qreal x =
+                    (clip.x() * inverseW + 1.0f)
+                    * imageWidth * 0.5;
+
+                const qreal y =
+                    (1.0f - clip.y() * inverseW)
+                    * imageHeight * 0.5;
+
+                primitive.points.append(QPointF(x, y));
+                primitive.depth += clip.z() * inverseW;
+            }
+
+            if (visible) {
+                primitive.depth /=
+                    static_cast<float>(verticesPerPrimitive);
+
+                primitives.push_back(std::move(primitive));
+            }
+        }
+    };
+
+    // Линии решётки.
+    appendPrimitives(
+        spinVertexCount,
+        latticeVertexCount,
+        2
+        );
+
+    // Стержни стрелок.
+    appendPrimitives(0, spinVertexCount, 2);
+
+    // Треугольные грани конусов.
+    appendPrimitives(
+        spinVertexCount + latticeVertexCount + nodeVertexCount,
+        coneVertexCount,
+        3
+        );
+
+    // Узлы решётки.
+    appendPrimitives(
+        spinVertexCount + latticeVertexCount,
+        nodeVertexCount,
+        1
+        );
+
+    // Сначала рисуем удалённые элементы.
+    std::stable_sort(
+        primitives.begin(),
+        primitives.end(),
+        [](const SvgPrimitive &left,
+           const SvgPrimitive &right)
+        {
+            return left.depth > right.depth;
+        }
+        );
+
+    QSaveFile output(fileName);
+
+    if (!output.open(QIODevice::WriteOnly)) {
+        errorMessage = output.errorString();
+        return false;
+    }
+
+    QSvgGenerator generator(
+        QSvgGenerator::SvgVersion::Svg11
+        );
+
+    generator.setOutputDevice(&output);
+    generator.setSize(size());
+    generator.setViewBox(
+        QRect(0, 0, width(), height())
+        );
+    generator.setResolution(logicalDpiX());
+    generator.setTitle(
+        QStringLiteral("FaustSpin — current view")
+        );
+
+    QPainter painter;
+
+    if (!painter.begin(&generator)) {
+        errorMessage =
+            QStringLiteral("Cannot start SVG export.");
+        return false;
+    }
+
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.fillRect(
+        QRectF(0.0, 0.0, imageWidth, imageHeight),
+        QColor::fromRgbF(0.08, 0.10, 0.14)
+        );
+
+    const qreal lineWidth =
+        1.0 / devicePixelRatioF();
+
+    for (const SvgPrimitive &primitive : primitives) {
+        if (primitive.points.size() == 1) {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(primitive.color);
+
+            painter.drawEllipse(
+                primitive.points[0],
+                3.0,
+                3.0
+                );
+        }
+        else if (primitive.points.size() == 2) {
+            painter.setBrush(Qt::NoBrush);
+            painter.setPen(
+                QPen(
+                    primitive.color,
+                    lineWidth,
+                    Qt::SolidLine,
+                    Qt::FlatCap
+                    )
+                );
+
+            painter.drawLine(
+                primitive.points[0],
+                primitive.points[1]
+                );
+        }
+        else {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(primitive.color);
+            painter.drawPolygon(primitive.points);
+        }
+    }
+
+    drawOrientationAxes(painter, svgView);
+
+    if (!painter.end()) {
+        errorMessage =
+            QStringLiteral("Cannot finish SVG export.");
+        return false;
+    }
+
+    if (!output.commit()) {
+        errorMessage = output.errorString();
+        return false;
+    }
+
+    return true;
 }

@@ -19,6 +19,7 @@ public:
 private:
     Ui::EnergyPlotDialog *ui;
     QGraphicsScene *scene = nullptr;
+    void savePlot();
 };
 
 #endif // ENERGY_PLOT_DIALOG_H

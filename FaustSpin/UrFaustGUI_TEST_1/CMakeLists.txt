@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(UrFaustGUI_TEST_1 LANGUAGES CXX)
 
-find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets OpenGL)
+find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets OpenGL Svg)
 
 qt_standard_project_setup()
 
@@ -56,6 +56,7 @@ target_link_libraries(UrFaustGUI_TEST_1
         Qt6::OpenGLWidgets
         Qt6::OpenGL
         UrFaustCore
+        Qt6::Svg
 )
 
 install(TARGETS UrFaustGUI_TEST_1

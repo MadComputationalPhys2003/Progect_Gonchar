@@ -6,18 +6,74 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>896</width>
+    <width>850</width>
     <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Energy Plot</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <widget class="QGraphicsView" name="energyGraphicsView">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>11</y>
+     <width>831</width>
+     <height>401</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>440</y>
+     <width>101</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save to...</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="savePlotFormatComboBox">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>440</y>
+     <width>76</width>
+     <height>26</height>
+    </rect>
+   </property>
    <item>
-    <widget class="QGraphicsView" name="energyGraphicsView"/>
+    <property name="text">
+     <string>.svg</string>
+    </property>
    </item>
-  </layout>
+   <item>
+    <property name="text">
+     <string>.png</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>.jpg</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="savePlotButton">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>440</y>
+     <width>93</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save…</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -48,6 +48,7 @@ private:
 
     void updateMatrixCell(int row);
     void editMatrix(int row, int column);
+    void findMatrix(bool nextMatch);
 };
 
 #endif // MANUAL_EXCHANGE_INTEGRAL_DIALOG_H

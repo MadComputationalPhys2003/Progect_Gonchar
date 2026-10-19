@@ -6,60 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1143</width>
-    <height>821</height>
+    <width>914</width>
+    <height>930</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>21</x>
-     <y>11</y>
-     <width>44</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Frame:</string>
-   </property>
-  </widget>
-  <widget class="QSpinBox" name="frameSpinBox">
-   <property name="geometry">
-    <rect>
-     <x>72</x>
-     <y>11</y>
-     <width>51</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>0</number>
-   </property>
-  </widget>
-  <widget class="QLabel" name="frameInfoLabel">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>101</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>No results</string>
-   </property>
-   <property name="wordWrap">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>200</y>
+     <x>640</x>
+     <y>670</y>
      <width>95</width>
      <height>139</height>
     </rect>
@@ -95,25 +53,163 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="playbackPanel" native="true">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>440</y>
-     <width>881</width>
-     <height>80</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="SpinOpenGLWidget" name="spinOpenGLWidget">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>190</x>
      <y>0</y>
      <width>951</width>
-     <height>761</height>
+     <height>661</height>
     </rect>
    </property>
+  </widget>
+  <widget class="QPushButton" name="saveSvgButton">
+   <property name="geometry">
+    <rect>
+     <x>820</x>
+     <y>720</y>
+     <width>93</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save…</string>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>690</y>
+     <width>91</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save frame to</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="saveFramtocomboBox">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>720</y>
+     <width>76</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>.svg</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>.png</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>.jpg</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>680</y>
+     <width>521</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Frame:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QSlider" name="frameSlider">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QSlider::groove:horizontal {
+    height: 6px;
+    background: #d5dce5;
+    border-radius: 3px;
+}
+
+QSlider::sub-page:horizontal {
+    background: #2979e8;
+    border-radius: 3px;
+}
+
+QSlider::add-page:horizontal {
+    background: #d5dce5;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    background: #ffffff;
+    border: 2px solid #2979e8;
+    width: 14px;
+    margin: -6px 0;
+    border-radius: 9px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: #dceaff;
+    border-color: #165fc2;
+}
+
+QSlider::handle:horizontal:pressed {
+    background: #2979e8;
+}
+
+QSlider::groove:horizontal:disabled,
+QSlider::sub-page:horizontal:disabled,
+QSlider::add-page:horizontal:disabled {
+    background: #dcdcdc;
+}
+
+QSlider::handle:horizontal:disabled {
+    background: #eeeeee;
+    border-color: #aaaaaa;
+}</string>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QSpinBox" name="frameSpinBox">
+      <property name="maximum">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="frameInfoLabel">
+      <property name="text">
+       <string>No results</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <customwidgets>

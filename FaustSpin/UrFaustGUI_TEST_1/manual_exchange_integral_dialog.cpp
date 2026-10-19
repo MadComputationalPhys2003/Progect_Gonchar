@@ -23,7 +23,10 @@
 #include <QTableWidgetItem>
 #include <QVariant>
 #include <QVBoxLayout>
-
+#include <QComboBox>
+#include <QSpinBox>
+#include <QPushButton>
+#include <QItemSelectionModel>
 #include <cmath>
 #include <limits>
 #include <stdexcept>
@@ -195,6 +198,31 @@ ManualExchangeIntegralDialog::ManualExchangeIntegralDialog(
         &QTableWidget::cellDoubleClicked,
         this,
         &ManualExchangeIntegralDialog::editMatrix
+        );
+    ui->matrixSearchValueSpinBox->setRange(
+        0,
+        std::numeric_limits<int>::max()
+        );
+
+    ui->findMatrixButton->setAutoDefault(false);
+    ui->findNextMatrixButton->setAutoDefault(false);
+
+    connect(
+        ui->findMatrixButton,
+        &QPushButton::clicked,
+        this,
+        [this]() {
+            findMatrix(false);
+        }
+        );
+
+    connect(
+        ui->findNextMatrixButton,
+        &QPushButton::clicked,
+        this,
+        [this]() {
+            findMatrix(true);
+        }
         );
 }
 
@@ -580,4 +608,77 @@ void ManualExchangeIntegralDialog::accept()
     }
 
     QDialog::accept();
+}
+void ManualExchangeIntegralDialog::findMatrix(bool nextMatch)
+{
+    QTableWidget* table = ui->exchangeMatricesTableWidget;
+    const int rowCount = table->rowCount();
+
+    if (rowCount == 0) {
+        QMessageBox::information(
+            this,
+            QStringLiteral("Find matrix"),
+            QStringLiteral("The matrix list is empty.")
+            );
+        return;
+    }
+
+    const int column =
+        ui->matrixSearchFieldComboBox->currentIndex();
+
+    if (column < 0 || column > 2) {
+        return;
+    }
+
+    ui->matrixSearchValueSpinBox->interpretText();
+
+    const QString target = QString::number(
+        ui->matrixSearchValueSpinBox->value()
+        );
+
+    int row = 0;
+
+    if (nextMatch && table->currentRow() >= 0) {
+        row = table->currentRow() + 1;
+
+        if (row >= rowCount) {
+            row = 0;
+        }
+    }
+
+    for (int checked = 0; checked < rowCount; ++checked) {
+        const QTableWidgetItem* item =
+            table->item(row, column);
+
+        if (item != nullptr && item->text() == target) {
+            table->setCurrentCell(
+                row,
+                3,
+                QItemSelectionModel::ClearAndSelect |
+                    QItemSelectionModel::Rows
+                );
+
+            table->scrollToItem(
+                table->item(row, 3),
+                QAbstractItemView::PositionAtCenter
+                );
+
+            table->setFocus();
+            return;
+        }
+
+        ++row;
+
+        if (row >= rowCount) {
+            row = 0;
+        }
+    }
+
+    QMessageBox::information(
+        this,
+        QStringLiteral("Find matrix"),
+        QStringLiteral("No matrix found for %1 = %2.")
+            .arg(ui->matrixSearchFieldComboBox->currentText())
+            .arg(target)
+        );
 }

@@ -42,7 +42,7 @@
     <number>1</number>
    </property>
    <widget class="QWidget" name="constantExchangePage">
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>290</x>
@@ -129,6 +129,61 @@
      </column>
     </widget>
    </widget>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>360</y>
+     <width>441</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="matrixSearchLabel">
+      <property name="text">
+       <string>Find by</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="matrixSearchFieldComboBox">
+      <item>
+       <property name="text">
+        <string>Index</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Ion</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Slot</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="matrixSearchValueSpinBox"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="findMatrixButton">
+      <property name="text">
+       <string>Find</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="findNextMatrixButton">
+      <property name="text">
+       <string>Next</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
