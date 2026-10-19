@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1117</width>
+    <width>1143</width>
     <height>821</height>
    </rect>
   </property>
@@ -95,16 +95,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="SpinOpenGLWidget" name="spinOpenGLWidget">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>-220</y>
-     <width>881</width>
-     <height>661</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QWidget" name="playbackPanel" native="true">
    <property name="geometry">
     <rect>
@@ -112,6 +102,16 @@
      <y>440</y>
      <width>881</width>
      <height>80</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="SpinOpenGLWidget" name="spinOpenGLWidget">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>0</y>
+     <width>951</width>
+     <height>761</height>
     </rect>
    </property>
   </widget>
