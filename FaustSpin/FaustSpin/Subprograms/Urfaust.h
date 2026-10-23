@@ -210,8 +210,11 @@ namespace UrFaust {
 						const size_t slot = il.getNeighborCount() * i + a;
 						const size_t j =
 							static_cast<size_t>(il.getNeighborIndices()[slot]);
-						sum += 0.5*J*ions.get_spin_length(i) * ions.get_spin_length(j) * Vector3D_Decart::scalar_product
-						(ions.get_direction(i) , ions.get_direction(j));
+						if (i < j) {
+							sum += J * ions.get_spin_length(i) * ions.get_spin_length(j) * Vector3D_Decart::scalar_product
+							(ions.get_direction(i), ions.get_direction(j));
+						}
+						else continue;
 					}
 				}
 			}
@@ -223,8 +226,11 @@ namespace UrFaust {
 						const size_t slot = il.getNeighborCount() * i + a;
 						const size_t j =
 							static_cast<size_t>(il.getNeighborIndices()[slot]);
-						sum+=0.5*ions.get_spin_length(i)*ions.get_spin_length(j)*
-							Vector3D_Decart::scalar_product(ions.get_direction(i),J[slot]*ions.get_direction(j));
+						if (i < j) {
+							sum += ions.get_spin_length(i) * ions.get_spin_length(j) *
+								Vector3D_Decart::scalar_product(ions.get_direction(i), J[slot] * ions.get_direction(j));
+						}
+						else continue;
 					}
 				}
 			}

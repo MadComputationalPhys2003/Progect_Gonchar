@@ -20,7 +20,7 @@ public:
 	ExchangeIntegralInit EI;
 	ExchangeIntegral(uint8_t neighbor_count,size_t n,
 	ExchangeIntegralInit ei=ExchangeIntegralInit::constant):
-		count(neighbor_count*n), EI(ei)
+		count(neighbor_count*n/2), EI(ei)
 	{
 		if (EI == ExchangeIntegralInit::constant) {
 			exint = -1.0;

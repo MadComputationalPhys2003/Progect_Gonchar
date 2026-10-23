@@ -1,10 +1,11 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="main_cat">Cats_Main_Window/photo_2026-10-04_20-25-02.jpg</file>
-        <file alias="cat_1">Cats_Main_Window/Pizdisik_1.png</file>
-        <file alias="cat_2">Cats_Main_Window/Pizdisik_2.png</file>
-        <file alias="cat_3">Cats_Main_Window/Pizdisik_3.png</file>
-        <file alias="cat_4">Cats_Main_Window/Pizdisik_4.png</file>
+        <file alias="main_cat">Main_Window/cat0.png</file>
+        <file alias="cat_1">Main_Window/cat1.jpg</file>
+        <file alias="cat_2">Main_Window/cat2.png</file>
+        <file alias="cat_3">Main_Window/cat3.png</file>
+        <file alias="cat_4">Main_Window/cat4.png</file>
+	<file alias="cat_5">Main_Window/cat5.png</file>
     </qresource>
 </RCC>
 

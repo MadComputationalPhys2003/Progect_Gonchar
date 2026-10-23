@@ -45,6 +45,10 @@ qt_add_executable(UrFaustGUI_TEST_1
     random_exchange_integral_dialog.cpp
     random_exchange_integral_dialog.h
     random_exchange_integral_dialog.ui
+    creator_dialog.h creator_dialog.cpp creator_dialog.ui
+    creator_dialog.h
+    creator_dialog.cpp
+    creator_dialog.ui
 )
 set_target_properties(UrFaustGUI_TEST_1 PROPERTIES
     AUTORCC ON
