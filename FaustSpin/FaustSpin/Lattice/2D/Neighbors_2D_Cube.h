@@ -1,6 +1,6 @@
 #pragma once
 #include "Lattice2D.h"
-#include "../Lattice/Pair_Indeces_Fill.h"
+#include "../Pair_Indeces_Fill.h"
 #include <cstddef>
 #include <cstdint>
 #include <utility>

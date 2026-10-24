@@ -1,0 +1,6 @@
+# One matrix for the pair (0, 1), 1D lattice of two ions.
+# Select Matrix + File in Set Parameters.
+1 0 0
+0 1 0
+0 0 1
+

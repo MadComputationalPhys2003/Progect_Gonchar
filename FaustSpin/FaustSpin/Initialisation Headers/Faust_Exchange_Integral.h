@@ -14,23 +14,27 @@
 class ExchangeIntegral {
 private:
 	std::variant<double,std::vector<FM::Matrix>> exint;
-	uint64_t count;
+    std::size_t count;
 public:
 	enum class ExchangeIntegralInit{constant, matrix};
 	ExchangeIntegralInit EI;
-	ExchangeIntegral(uint8_t neighbor_count,size_t n,
-	ExchangeIntegralInit ei=ExchangeIntegralInit::constant):
-		count(neighbor_count*n/2), EI(ei)
-	{
-		if (EI == ExchangeIntegralInit::constant) {
-			exint = -1.0;
-		}
-		else if (EI == ExchangeIntegralInit::matrix) {
-			std::vector<FM::Matrix> res(count, FM::Matrix(3, 3));
-			exint = res;
-		}
-       
-	}
+    ExchangeIntegral(
+        std::size_t pairCount,
+        ExchangeIntegralInit ei = ExchangeIntegralInit::constant)
+        : count(pairCount), EI(ei)
+    {
+        if (EI == ExchangeIntegralInit::constant) {
+            exint = -1.0;
+        }
+        else if (EI == ExchangeIntegralInit::matrix) {
+            std::vector<FM::Matrix> res(
+                count,
+                FM::Matrix(3, 3)
+            );
+
+            exint = res;
+        }
+    }
     std::variant<double, std::vector<FM::Matrix>> set_eexchange_integral(
         std::variant<double, std::vector<FM::Matrix>> values,
         ExchangeIntegralInit mode)

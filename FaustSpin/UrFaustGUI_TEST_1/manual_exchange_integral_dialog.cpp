@@ -135,7 +135,7 @@ ManualExchangeIntegralDialog::ManualExchangeIntegralDialog(
 
     ui->matrixInstructionLabel->setText(
         QStringLiteral(
-            "Double-click a matrix to edit its elements. "
+            "One matrix per ion pair. Double-click to edit. "
             "Use a decimal point."
             )
         );
@@ -147,8 +147,8 @@ ManualExchangeIntegralDialog::ManualExchangeIntegralDialog(
     table->setHorizontalHeaderLabels(
         QStringList{
             QStringLiteral("Index"),
-            QStringLiteral("Ion"),
-            QStringLiteral("Slot"),
+            QStringLiteral("Ion i"),
+            QStringLiteral("Ion j"),
             QStringLiteral("Matrix")
         }
         );
@@ -255,29 +255,23 @@ double ManualExchangeIntegralDialog::getExchangeIntegral() const
 }
 
 void ManualExchangeIntegralDialog::setMatrices(
-    std::size_t ionCount,
-    std::size_t neighborCount,
+    const std::vector<std::pair<std::size_t, std::size_t>>& pairs,
     const std::vector<FM::Matrix>& previous,
     double defaultExchange)
 {
-    if (ionCount == 0 ||
-        (neighborCount != 2 &&
-         neighborCount != 4 &&
-         neighborCount != 6)) {
-        throw std::invalid_argument(
-            "Invalid ion or neighbor count"
-            );
+    if (pairs.empty()) {
+        throw std::invalid_argument("The ion pair list is empty");
     }
 
-    if (ionCount >
-        std::numeric_limits<std::size_t>::max() / neighborCount) {
-        throw std::length_error(
-            "Exchange matrix count is too large"
+    for (const auto& pair : pairs) {
+        if (pair.first >= pair.second) {
+            throw std::invalid_argument(
+                "Each exchange pair must satisfy i < j"
             );
+        }
     }
 
-    const std::size_t matrixCount =
-        ionCount * neighborCount;
+    const std::size_t matrixCount = pairs.size();
 
     if (matrixCount >
         static_cast<std::size_t>(
@@ -329,8 +323,11 @@ void ManualExchangeIntegralDialog::setMatrices(
         }
     }
 
+    std::vector<std::pair<std::size_t, std::size_t>>
+        preparedPairs = pairs;
+
     matricesValue = std::move(prepared);
-    neighborCountValue = neighborCount;
+    pairsValue.swap(preparedPairs);
 
     QTableWidget* table = ui->exchangeMatricesTableWidget;
 
@@ -344,8 +341,8 @@ void ManualExchangeIntegralDialog::setMatrices(
 
         const std::size_t identifiers[] = {
             index,
-            index / neighborCountValue,
-            index % neighborCountValue
+            pairsValue[index].first,
+            pairsValue[index].second
         };
 
         for (int column = 0; column < 3; ++column) {
@@ -428,13 +425,13 @@ void ManualExchangeIntegralDialog::editMatrix(
         static_cast<std::size_t>(row);
 
     dialog->setWindowTitle(
-        QStringLiteral("Matrix %1 — Ion %2, Slot %3")
+        QStringLiteral("Matrix %1 — Ions %2, %3")
             .arg(static_cast<qulonglong>(index))
             .arg(static_cast<qulonglong>(
-                index / neighborCountValue
+                pairsValue[index].first
                 ))
             .arg(static_cast<qulonglong>(
-                index % neighborCountValue
+                pairsValue[index].second
                 ))
         );
 

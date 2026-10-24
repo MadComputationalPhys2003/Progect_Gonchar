@@ -262,24 +262,22 @@ namespace WriteFileUrFaust {
             }
             }();
 
-        const auto& neighbors = lattice.getNeighborIndices();
-        const std::size_t neighborCount = lattice.getNeighborCount();
+        const auto& pairs = lattice.getUniquePairs();
 
-        if (matrices.size() != neighbors.size()) {
+        if (matrices.size() != pairs.size()) {
             throw std::invalid_argument("Exchange matrix count mismatch");
         }
 
-        for (std::size_t slot = 0; slot < matrices.size(); ++slot) {
-            const FM::Matrix& matrix = matrices[slot];
+        for (std::size_t index = 0; index < matrices.size(); ++index) {
+            const FM::Matrix& matrix = matrices[index];
 
             if (matrix.get_rows() != 3 || matrix.get_cols() != 3) {
                 throw std::invalid_argument("Exchange matrix must be 3x3");
             }
 
-            output << "# Matrix " << slot
-                << ": i=" << slot / neighborCount
-                << " j=" << neighbors[slot]
-                << " a=" << slot % neighborCount << '\n';
+            output << "# Matrix " << index
+                << ": i=" << pairs[index].first
+                << " j=" << pairs[index].second << '\n';
 
             for (std::size_t row = 0; row < 3; ++row) {
                 for (std::size_t column = 0; column < 3; ++column) {

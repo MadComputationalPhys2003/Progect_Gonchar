@@ -6,6 +6,7 @@
 #include "../FaustSpin/Faust math/Faust_Matrix.h"
 
 #include <cstddef>
+#include <utility>
 #include <vector>
 
 QT_BEGIN_NAMESPACE
@@ -29,8 +30,7 @@ public:
     double getExchangeIntegral() const;
 
     void setMatrices(
-        std::size_t ionCount,
-        std::size_t neighborCount,
+        const std::vector<std::pair<std::size_t, std::size_t>>& pairs,
         const std::vector<FM::Matrix>& previous,
         double defaultExchange = -1.0
         );
@@ -44,7 +44,7 @@ private:
     Ui::ManualExchangeIntegralDialog* ui;
 
     std::vector<FM::Matrix> matricesValue;
-    std::size_t neighborCountValue{0};
+    std::vector<std::pair<std::size_t, std::size_t>> pairsValue;
 
     void updateMatrixCell(int row);
     void editMatrix(int row, int column);

@@ -79,8 +79,8 @@ namespace UrFaustSim {
         std::size_t completedSweeps{};
         bool converged{};
 
-        // Длины фиксированы во время релаксации.
-        // Поэтому сохраняем их один раз на весь расчёт.
+        // Г„Г«ГЁГ­Г» ГґГЁГЄГ±ГЁГ°Г®ГўГ Г­Г» ГўГ® ГўГ°ГҐГ¬Гї Г°ГҐГ«Г ГЄГ±Г Г¶ГЁГЁ.
+        // ГЏГ®ГЅГІГ®Г¬Гі Г±Г®ГµГ°Г Г­ГїГҐГ¬ ГЁГµ Г®Г¤ГЁГ­ Г°Г Г§ Г­Г  ГўГҐГ±Гј Г°Г Г±Г·ВёГІ.
         std::vector<double> spinLengths;
     };
 
@@ -137,6 +137,28 @@ namespace UrFaustSim {
             }
         }
 
+        static std::size_t uniquePairCount(
+            const SimulationConfig& value)
+        {
+            switch (value.dimension) {
+            case UrFaust::Dimension::one:
+                return UrFaust::InitLattice(value.lx, 0)
+                    .getUniquePairs().size();
+
+            case UrFaust::Dimension::two:
+                return UrFaust::InitLattice(value.lx, value.ly, 0, 0)
+                    .getUniquePairs().size();
+
+            case UrFaust::Dimension::three:
+                return UrFaust::InitLattice(
+                    value.lx, value.ly, value.lz, 0, 0, 0
+                ).getUniquePairs().size();
+
+            default:
+                throw std::invalid_argument("Unknown lattice dimension");
+            }
+        }
+
         static void validateLength(double value)
         {
             if (!std::isfinite(value) || value <= 0.0) {
@@ -149,8 +171,8 @@ namespace UrFaustSim {
         static SimulationConfig validateConfig(
             SimulationConfig value)
         {
-            // Неактивные размеры равны единице.
-            // Активные размеры >= 2 исключают связи узла с собой.
+            // ГЌГҐГ ГЄГІГЁГўГ­Г»ГҐ Г°Г Г§Г¬ГҐГ°Г» Г°Г ГўГ­Г» ГҐГ¤ГЁГ­ГЁГ¶ГҐ.
+            // ГЂГЄГІГЁГўГ­Г»ГҐ Г°Г Г§Г¬ГҐГ°Г» >= 2 ГЁГ±ГЄГ«ГѕГ·Г ГѕГІ Г±ГўГїГ§ГЁ ГіГ§Г«Г  Г± Г±Г®ГЎГ®Г©.
             switch (value.dimension) {
             case UrFaust::Dimension::one:
                 if (value.lx < 2) {
@@ -191,10 +213,8 @@ namespace UrFaustSim {
 
             const std::size_t n = spinCount(value);
 
-            const std::size_t bonds = checkedProduct(
-                n,
-                neighborCount(value.dimension)
-            );
+            // Check neighbor-list size before allocating the lattice.
+            checkedProduct(n, neighborCount(value.dimension));
 
             switch (value.spinLengthMode) {
             case InitIons::Ions::SpinLengthInit::constant: {
@@ -259,14 +279,14 @@ namespace UrFaustSim {
                     );
 
                 if (matrices == nullptr ||
-                    matrices->size() != bonds) {
+                    matrices->size() != uniquePairCount(value)) {
                     throw std::invalid_argument(
-                        "Matrix exchange requires one matrix per neighbor-list entry"
+                        "Matrix exchange requires one matrix per unique ion pair"
                     );
                 }
 
-                // Размер 3x3 и конечность элементов
-                // проверяет сеттер ExchangeIntegral.
+                // ГђГ Г§Г¬ГҐГ° 3x3 ГЁ ГЄГ®Г­ГҐГ·Г­Г®Г±ГІГј ГЅГ«ГҐГ¬ГҐГ­ГІГ®Гў
+                // ГЇГ°Г®ГўГҐГ°ГїГҐГІ Г±ГҐГІГІГҐГ° ExchangeIntegral.
                 break;
             }
 
@@ -460,3 +480,4 @@ namespace UrFaustSim {
     };
 
 };
+

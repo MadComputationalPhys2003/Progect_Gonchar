@@ -41,6 +41,67 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+namespace {
+
+UrFaust::InitLattice exchangeLatticeFor(
+    const UrFaustSim::SimulationConfig& config)
+{
+    const int dimensionIndex = static_cast<int>(config.dimension);
+
+    if (dimensionIndex < 0 || dimensionIndex > 2) {
+        throw std::invalid_argument("Unknown lattice dimension");
+    }
+
+    if (config.lx < 2 ||
+        (dimensionIndex >= 1 && config.ly < 2) ||
+        (dimensionIndex >= 2 && config.lz < 2)) {
+        throw std::invalid_argument(
+            "Active lattice sizes must be at least 2"
+        );
+    }
+
+    const std::uint64_t sizes[] = {
+        config.lx,
+        dimensionIndex >= 1 ? config.ly : 1,
+        dimensionIndex >= 2 ? config.lz : 1
+    };
+
+    std::size_t ionCount = 1;
+
+    for (const std::uint64_t size : sizes) {
+        if (size > std::numeric_limits<std::size_t>::max() / ionCount) {
+            throw std::length_error("Lattice size is too large");
+        }
+        ionCount *= static_cast<std::size_t>(size);
+    }
+
+    const std::size_t neighborCount =
+        2 * (static_cast<std::size_t>(dimensionIndex) + 1);
+
+    if (ionCount >
+        std::numeric_limits<std::size_t>::max() / neighborCount) {
+        throw std::length_error("Neighbor list is too large");
+    }
+
+    switch (config.dimension) {
+    case UrFaust::Dimension::one:
+        return UrFaust::InitLattice(config.lx, 0);
+
+    case UrFaust::Dimension::two:
+        return UrFaust::InitLattice(config.lx, config.ly, 0, 0);
+
+    case UrFaust::Dimension::three:
+        return UrFaust::InitLattice(
+            config.lx, config.ly, config.lz, 0, 0, 0
+        );
+
+    default:
+        throw std::invalid_argument("Unknown lattice dimension");
+    }
+}
+
+} // namespace
+
 ParametersDialog::ParametersDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::ParametersDialog)
@@ -610,29 +671,8 @@ void ParametersDialog::startSimulation()
                     config.spinLength = std::move(lengths);
                 }
                 if (randomExchangeMatrices) {
-                    std::size_t neighborCount = 0;
-
-                    switch (config.dimension) {
-                    case UrFaust::Dimension::one:
-                        neighborCount = 2;
-                        break;
-
-                    case UrFaust::Dimension::two:
-                        neighborCount = 4;
-                        break;
-
-                    case UrFaust::Dimension::three:
-                        neighborCount = 6;
-                        break;
-
-                    default:
-                        throw std::invalid_argument(
-                            "Unknown lattice dimension"
-                            );
-                    }
-
                     const std::size_t matrixCount =
-                        checkedProduct(count, neighborCount);
+                        exchangeLatticeFor(config).getUniquePairs().size();
 
                     std::vector<FM::Matrix> exchangeMatrices(
                         matrixCount,
@@ -1359,7 +1399,22 @@ void ParametersDialog::chooseSpinLengthFile()
             contents.remove(0, 3);
         }
 
-        std::istringstream input(contents.toStdString());
+        // Ignore comment lines, including metadata from exchange_integrals.txt.
+        std::istringstream source(contents.toStdString());
+        std::ostringstream numericData;
+        std::string line;
+
+        while (std::getline(source, line)) {
+            const std::size_t comment = line.find('#');
+
+            if (comment != std::string::npos) {
+                line.erase(comment);
+            }
+
+            numericData << line << '\n';
+        }
+
+        std::istringstream input(numericData.str());
         input.imbue(std::locale::classic());
 
         std::vector<double> lengths;
@@ -1539,31 +1594,7 @@ void ParametersDialog::configureExchangeIntegral()
                     );
             }
 
-            const std::size_t neighborCount =
-                2 * (
-                    static_cast<std::size_t>(dimensionIndex) + 1
-                    );
-
-            std::size_t ionCount = 1;
-
-            const std::uint64_t latticeSizes[] = {
-                config.lx,
-                config.ly,
-                config.lz
-            };
-
-            for (const std::uint64_t size : latticeSizes) {
-                if (size == 0 ||
-                    size >
-                        std::numeric_limits<std::size_t>::max()
-                            / ionCount) {
-                    throw std::invalid_argument(
-                        "Invalid lattice size"
-                        );
-                }
-
-                ionCount *= static_cast<std::size_t>(size);
-            }
+            const auto lattice = exchangeLatticeFor(config);
 
             latticeKey = {
                 static_cast<std::uint64_t>(dimensionIndex),
@@ -1580,8 +1611,7 @@ void ParametersDialog::configureExchangeIntegral()
                     : noPrevious;
 
             dialog->setMatrices(
-                ionCount,
-                neighborCount,
+                lattice.getUniquePairs(),
                 previous,
                 constantExchangeIntegral
                 );
@@ -1709,29 +1739,8 @@ void ParametersDialog::chooseExchangeIntegralFile()
                     );
             }
 
-            std::size_t matrixCount =
-                2 * (
-                    static_cast<std::size_t>(dimensionIndex) + 1
-                    );
-
-            const std::uint64_t latticeSizes[] = {
-                config.lx,
-                config.ly,
-                config.lz
-            };
-
-            for (const std::uint64_t size : latticeSizes) {
-                if (size == 0 ||
-                    size >
-                        std::numeric_limits<std::size_t>::max()
-                            / matrixCount) {
-                    throw std::invalid_argument(
-                        "Invalid lattice size"
-                        );
-                }
-
-                matrixCount *= static_cast<std::size_t>(size);
-            }
+            const std::size_t matrixCount =
+                exchangeLatticeFor(config).getUniquePairs().size();
 
             std::vector<FM::Matrix> matrices;
             matrices.reserve(matrixCount);

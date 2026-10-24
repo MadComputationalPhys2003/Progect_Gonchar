@@ -89,7 +89,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Enter one 3x3 exchange matrix per neighbor slot.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;Enter one 3x3 exchange matrix per unique ion pair.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -114,12 +114,12 @@
      </column>
      <column>
       <property name="text">
-       <string>Ion</string>
+       <string>Ion i</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Slot</string>
+       <string>Ion j</string>
       </property>
      </column>
      <column>
@@ -156,12 +156,12 @@
       </item>
       <item>
        <property name="text">
-        <string>Ion</string>
+        <string>Ion i</string>
        </property>
       </item>
       <item>
        <property name="text">
-        <string>Slot</string>
+        <string>Ion j</string>
        </property>
       </item>
      </widget>
@@ -222,3 +222,4 @@
   </connection>
  </connections>
 </ui>
+
