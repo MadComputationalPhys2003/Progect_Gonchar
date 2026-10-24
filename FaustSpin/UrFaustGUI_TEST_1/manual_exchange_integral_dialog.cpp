@@ -146,7 +146,7 @@ ManualExchangeIntegralDialog::ManualExchangeIntegralDialog(
 
     table->setHorizontalHeaderLabels(
         QStringList{
-            QStringLiteral("Index"),
+            QStringLiteral("Matrix number"),
             QStringLiteral("Ion i"),
             QStringLiteral("Ion j"),
             QStringLiteral("Matrix")

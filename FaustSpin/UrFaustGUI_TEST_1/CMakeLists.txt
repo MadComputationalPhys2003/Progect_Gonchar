@@ -49,6 +49,9 @@ qt_add_executable(UrFaustGUI_TEST_1
     creator_dialog.h
     creator_dialog.cpp
     creator_dialog.ui
+    save_frame_dialog.h
+    save_frame_dialog.cpp
+    save_frame_dialog.ui
 )
 set_target_properties(UrFaustGUI_TEST_1 PROPERTIES
     AUTORCC ON

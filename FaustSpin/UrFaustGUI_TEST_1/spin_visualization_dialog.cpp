@@ -1,5 +1,6 @@
 #include "spin_visualization_dialog.h"
 #include "ui_spin_visualization_dialog.h"
+#include "save_frame_dialog.h"
 #include "spin_opengl_widget.h"
 #include <QSignalBlocker>
 #include <QSpinBox>
@@ -75,144 +76,7 @@ SpinVisualizationDialog::SpinVisualizationDialog(QWidget *parent)
         ui->saveSvgButton,
         &QPushButton::clicked,
         this,
-        [this]()
-        {
-            if (!simulationResult ||
-                simulationResult->frames.empty()) {
-                QMessageBox::information(
-                    this,
-                    QStringLiteral("Save frame"),
-                    QStringLiteral("Run a simulation first.")
-                    );
-                return;
-            }
-
-            const auto showError =
-                [this](const QString &message)
-            {
-                QMessageBox::critical(
-                    this,
-                    QStringLiteral("Save frame"),
-                    message
-                    );
-            };
-
-            const int formatIndex =
-                ui->saveFramtocomboBox->currentIndex();
-
-            QString suffix;
-            QString filter;
-
-            switch (formatIndex) {
-            case 0:
-                suffix = QStringLiteral("svg");
-                filter = QStringLiteral("SVG image (*.svg)");
-                break;
-
-            case 1:
-                suffix = QStringLiteral("png");
-                filter = QStringLiteral("PNG image (*.png)");
-                break;
-
-            case 2:
-                suffix = QStringLiteral("jpg");
-                filter = QStringLiteral("JPEG image (*.jpg *.jpeg)");
-                break;
-
-            default:
-                return;
-            }
-
-            QFileDialog dialog(
-                this,
-                QStringLiteral("Save current frame")
-                );
-
-            dialog.setAcceptMode(QFileDialog::AcceptSave);
-            dialog.setNameFilter(filter);
-            dialog.setDefaultSuffix(suffix);
-
-            dialog.selectFile(
-                QStringLiteral("spin_frame_%1.%2")
-                    .arg(ui->frameSpinBox->value())
-                    .arg(suffix)
-                );
-
-            if (dialog.exec() != QDialog::Accepted) {
-                return;
-            }
-
-            const QString fileName =
-                dialog.selectedFiles().first();
-
-            const QString extension =
-                QFileInfo(fileName).suffix().toLower();
-
-            const bool correctExtension =
-                extension == suffix ||
-                (formatIndex == 2 &&
-                 extension == QStringLiteral("jpeg"));
-
-            if (!correctExtension) {
-                showError(
-                    QStringLiteral(
-                        "Use the .%1 extension for the selected format."
-                        ).arg(suffix)
-                    );
-                return;
-            }
-
-            // Векторный экспорт.
-            if (formatIndex == 0) {
-                QString errorMessage;
-
-                if (!ui->spinOpenGLWidget->saveSvg(
-                        fileName,
-                        errorMessage)) {
-                    showError(errorMessage);
-                }
-
-                return;
-            }
-
-            // Снимок текущего изображения OpenGL.
-            const QImage image =
-                ui->spinOpenGLWidget->grabFramebuffer();
-
-            if (image.isNull()) {
-                showError(
-                    QStringLiteral("Cannot capture the current view.")
-                    );
-                return;
-            }
-
-            QSaveFile output(fileName);
-
-            if (!output.open(QIODevice::WriteOnly)) {
-                showError(output.errorString());
-                return;
-            }
-
-            const QByteArray imageFormat =
-                formatIndex == 1
-                    ? QByteArray("png")
-                    : QByteArray("jpeg");
-
-            QImageWriter writer(&output, imageFormat);
-
-            if (formatIndex == 2) {
-                writer.setQuality(95);
-            }
-
-            if (!writer.write(image)) {
-                showError(writer.errorString());
-                return;
-            }
-
-            if (!output.commit()) {
-                showError(output.errorString());
-            }
-        }
+        &SpinVisualizationDialog::openSaveFrameDialog
         );
 }
 
@@ -281,4 +145,27 @@ void SpinVisualizationDialog::updateFrame(int frameIndex)
             .arg(static_cast<qulonglong>(
                 frame.spinDirections.size()))
         );
+}
+void SpinVisualizationDialog::openSaveFrameDialog()
+{
+    if (!simulationResult ||
+        simulationResult->frames.empty()) {
+        QMessageBox::information(
+            this,
+            QStringLiteral("Save frame"),
+            QStringLiteral("Run a simulation first.")
+            );
+        return;
+    }
+
+    if (saveFrameDialog == nullptr) {
+        saveFrameDialog = new SaveFrameDialog(this);
+    }
+
+    saveFrameDialog->setFrameSource(
+        ui->spinOpenGLWidget,
+        ui->frameSpinBox->value()
+        );
+
+    saveFrameDialog->open();
 }

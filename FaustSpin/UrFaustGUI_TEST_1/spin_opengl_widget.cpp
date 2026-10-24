@@ -21,6 +21,7 @@
 #include <QPolygonF>
 #include <QVector4D>
 #include <utility>
+#include <QScopedValueRollback>
 SpinOpenGLWidget::SpinOpenGLWidget(QWidget *parent)
     : QOpenGLWidget(parent)
 {
@@ -483,7 +484,12 @@ void SpinOpenGLWidget::paintGL()
     QPainter painter(this);
     painter.beginNativePainting();
 
-    glClearColor(0.08f, 0.10f, 0.14f, 1.0f);
+    glClearColor(
+        frameBackgroundColor.redF(),
+        frameBackgroundColor.greenF(),
+        frameBackgroundColor.blueF(),
+        1.0f
+        );
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -732,8 +738,9 @@ void SpinOpenGLWidget::mousePressEvent(QMouseEvent *event)
     QOpenGLWidget::mousePressEvent(event);
 }
 bool SpinOpenGLWidget::saveSvg(
-    const QString &fileName,
-    QString &errorMessage)
+    const QString& fileName,
+    QString& errorMessage,
+    const QColor& backgroundColor)
 {
     errorMessage.clear();
 
@@ -898,9 +905,8 @@ bool SpinOpenGLWidget::saveSvg(
 
     painter.fillRect(
         QRectF(0.0, 0.0, imageWidth, imageHeight),
-        QColor::fromRgbF(0.08, 0.10, 0.14)
+        backgroundColor
         );
-
     const qreal lineWidth =
         1.0 / devicePixelRatioF();
 
@@ -952,4 +958,25 @@ bool SpinOpenGLWidget::saveSvg(
     }
 
     return true;
+}
+QImage SpinOpenGLWidget::captureFrame(
+    const QColor& backgroundColor)
+{
+    if (!backgroundColor.isValid()) {
+        return QImage();
+    }
+
+    QImage image;
+
+    {
+        const QScopedValueRollback<QColor> restoreColor(
+            frameBackgroundColor,
+            backgroundColor
+            );
+
+        image = grabFramebuffer();
+    }
+
+    update();
+    return image;
 }

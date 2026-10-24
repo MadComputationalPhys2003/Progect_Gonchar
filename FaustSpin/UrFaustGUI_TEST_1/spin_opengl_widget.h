@@ -13,6 +13,8 @@
 #include <QString>
 #include <memory>
 #include <vector>
+#include <QColor>
+#include <QImage>
 class QMouseEvent;
 class QWheelEvent;
 class QPainter;
@@ -34,9 +36,13 @@ public:
     void setViewAlongZ();
     void resetView();
     bool saveSvg(
-        const QString &fileName,
-        QString &errorMessage
+        const QString& fileName,
+        QString& errorMessage,
+        const QColor& backgroundColor =
+        QColor::fromRgbF(0.08, 0.10, 0.14)
         );
+
+    QImage captureFrame(const QColor& backgroundColor);
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -86,6 +92,8 @@ private:
         const QMatrix4x4 &view);
     QMatrix4x4 svgProjection;
     QMatrix4x4 svgView;
+    QColor frameBackgroundColor =
+        QColor::fromRgbF(0.08, 0.10, 0.14);
 };
 
 #endif // SPIN_OPENGL_WIDGET_H

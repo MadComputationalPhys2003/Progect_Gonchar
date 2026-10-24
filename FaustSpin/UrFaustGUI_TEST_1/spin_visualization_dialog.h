@@ -8,7 +8,7 @@ namespace Ui {
 class SpinVisualizationDialog;
 }
 QT_END_NAMESPACE
-
+class SaveFrameDialog;
 class SpinVisualizationDialog : public QDialog
 {
     Q_OBJECT
@@ -25,6 +25,9 @@ private:
     const UrFaustSim::SimulationResult *simulationResult = nullptr;
 
     void updateFrame(int frameIndex);
+    SaveFrameDialog* saveFrameDialog = nullptr;
+
+    void openSaveFrameDialog();
 };
 
 #endif // SPIN_VISUALIZATION_DIALOG_H

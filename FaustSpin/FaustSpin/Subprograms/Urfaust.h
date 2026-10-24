@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 constexpr const double pi = std::numbers::pi;
-
+//using std::numbers::pi;
 namespace UrFaust {
 	enum class Dimension {
 		one,
@@ -91,7 +91,7 @@ namespace UrFaust {
 			throw std::logic_error("Unknown dimension");
 		}
 	};
-	struct InitLattice{
+	struct InitLattice{//попробовать с помощью интерфейса
 	private:
 		Dimension dim;
 		Lattice1D::Lattice1D_Data lattice1D;
@@ -204,8 +204,8 @@ namespace UrFaust {
 		}
 	public:
 		SpinSystem(
-			uint64_t lx, uint64_t ly, uint64_t lz,
-			uint64_t x0, uint64_t y0, uint64_t z0,
+			const uint64_t lx, const uint64_t ly, const uint64_t lz,
+			const uint64_t x0, const uint64_t y0, const uint64_t z0,
 			std::variant<double, std::vector<double>> spin,
 			std::variant<double, std::vector<FM::Matrix>> j,
 			InitIons::Ions::SpinLengthInit sli,

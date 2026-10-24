@@ -109,7 +109,7 @@
      </property>
      <column>
       <property name="text">
-       <string>Index</string>
+       <string>Matrix number</string>
       </property>
      </column>
      <column>
@@ -151,7 +151,7 @@
      <widget class="QComboBox" name="matrixSearchFieldComboBox">
       <item>
        <property name="text">
-        <string>Index</string>
+        <string>Matrix number</string>
        </property>
       </item>
       <item>
@@ -222,4 +222,3 @@
   </connection>
  </connections>
 </ui>
-
