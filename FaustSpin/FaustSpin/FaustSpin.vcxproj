@@ -141,6 +141,7 @@
     <ClInclude Include="Header.h" />
     <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h" />
     <ClInclude Include="Initialisation Headers\IonFaust.h" />
+    <ClInclude Include="Lattice\Pair_Indeces_Fill.h" />
     <ClInclude Include="Lattice_Headers.h" />
     <ClInclude Include="Neighbor_Headers.h" />
     <ClInclude Include="Subprograms\Header1.h" />

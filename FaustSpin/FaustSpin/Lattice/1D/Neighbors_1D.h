@@ -1,11 +1,17 @@
 #pragma once
 #include "Lattice1D.h"
-
+#include "../Lattice/Pair_Indeces_Fill.h"
+#include <cstddef>
+#include <cstdint>
+#include <utility>
+#include <vector>
 namespace Neighbors1D {
 
 	struct NeighborData {
 		std::vector<uint64_t> indices;
-		std::uint8_t count;
+		std::uint8_t count{};
+		std::vector<std::pair<std::size_t, std::size_t>> unique_pairs;
+		std::vector<std::size_t> matrixIndexBySlot;
 	};
 
 	inline NeighborData get_neighbors_periodic_BC_1D(
@@ -29,7 +35,12 @@ namespace Neighbors1D {
 			nd.indices[2 * i] = left;
 			nd.indices[2 * i + 1] = right;
 		}
-
+		NeighborPairs::fill(
+			nd.indices,
+			nd.count,
+			nd.unique_pairs,
+			nd.matrixIndexBySlot
+		);
 		return nd;
 	}
 	inline std::vector<uint64_t> open_BC_1D(const Lattice1D::Lattice1D_Data& ld, uint64_t x) {

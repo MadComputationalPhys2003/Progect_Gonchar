@@ -1,11 +1,16 @@
 #pragma once
 #include "Latice3D.h"
-
+#include "../Lattice/Pair_Indeces_Fill.h"
+#include <cstddef>
+#include <cstdint>
+#include <utility>
+#include <vector>
 namespace Neighbors3D {
     struct NeighborData {
         std::vector<uint64_t> indices;
         std::uint8_t count{};
 		std::vector<std::pair<std::size_t, std::size_t>> unique_pairs;
+        std::vector<std::size_t> matrixIndexBySlot;
     };
     inline NeighborData get_neighbors_periodic_BC_3D(
         const Lattice3D::Lattice3D_Data& ld
@@ -91,6 +96,13 @@ namespace Neighbors3D {
                 }
             }
         }
+
+        NeighborPairs::fill(
+            nd.indices,
+            nd.count,
+            nd.unique_pairs,
+            nd.matrixIndexBySlot
+        );
 
         return nd;
     }

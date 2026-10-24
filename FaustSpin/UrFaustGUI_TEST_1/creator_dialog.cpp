@@ -38,17 +38,17 @@ CreatorDialog::CreatorDialog(QWidget *parent)
     // cat1.jpg.
     setImage(ui->label_3, QStringLiteral(":/images/cat_1"));
 
-    // cat2.png.
-    setImage(ui->label, QStringLiteral(":/images/cat_2"));
-
-    // cat3.png.
-    setImage(ui->label_6, QStringLiteral(":/images/cat_3"));
-
     // cat4.png.
-    setImage(ui->label_4, QStringLiteral(":/images/cat_4"));
+    setImage(ui->label, QStringLiteral(":/images/cat_4"));
 
     // cat5.png.
-    setImage(ui->label_5, QStringLiteral(":/images/cat_5"));
+    setImage(ui->label_6, QStringLiteral(":/images/cat_5"));
+
+    // cat2.png.
+    setImage(ui->label_4, QStringLiteral(":/images/cat_2"));
+
+    // cat3.png.
+    setImage(ui->label_5, QStringLiteral(":/images/cat_3"));
 }
 
 CreatorDialog::~CreatorDialog()

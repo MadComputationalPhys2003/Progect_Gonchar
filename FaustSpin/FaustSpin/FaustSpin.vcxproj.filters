@@ -74,5 +74,11 @@
     <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Subprograms\Header1.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Lattice\Pair_Indeces_Fill.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
