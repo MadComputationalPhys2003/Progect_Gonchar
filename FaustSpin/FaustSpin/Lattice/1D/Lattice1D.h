@@ -49,7 +49,7 @@ namespace Lattice1D {
 			return static_cast<uint64_t>(idx);
 		}
 		size_t get_index(uint64_t x) const {
-			if (x < 0 || x >= static_cast<int64_t>(Lx)) {
+			if (x >=Lx) {
 				throw std::out_of_range("Coordinates out of range");
 			}
 			return static_cast<size_t>(x);

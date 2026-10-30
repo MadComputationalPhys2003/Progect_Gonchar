@@ -35,7 +35,7 @@ namespace {
 		config.lx = lx;
 		config.ly = ly;
 		config.lz = lz;
-		config.spinLength = 1.0;
+		config.spinLength = 5.0;
 		config.exchangeIntegral = -1.0;
 		config.epsilon = 1.0e-10;
 		config.maxSweeps = 1000;
