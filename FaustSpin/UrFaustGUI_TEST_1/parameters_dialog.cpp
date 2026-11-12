@@ -26,8 +26,16 @@
 #include <QTextStream>
 #include <QByteArray>
 #include <QFile>
-#include <QFileDevice>
 #include <QFileDialog>
+#include <QHeaderView>
+#include <QTableWidget>
+#include <QSpinBox>
+#include <QLabel>
+#include <QGridLayout>
+#include <QEvent>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <exception>
@@ -107,6 +115,109 @@ ParametersDialog::ParametersDialog(QWidget *parent)
     , ui(new Ui::ParametersDialog)
 {
     ui->setupUi(this);
+    // Убираем прежние подписи: теперь они находятся в заголовке таблицы.
+    QLabel* oldLabels[] = {
+        ui->label_2,
+        ui->label_3,
+        ui->label_4
+    };
+
+    for (QLabel* label : oldLabels) {
+        ui->gridLayout_5->removeWidget(label);
+        label->hide();
+    }
+
+    // Настраиваем таблицу размеров решётки.
+    ui->latticeSizeTableWidget->setRowCount(1);
+    ui->latticeSizeTableWidget->setColumnCount(3);
+    ui->latticeSizeTableWidget->setHorizontalHeaderLabels(
+        {QStringLiteral("Lx"), QStringLiteral("Ly"), QStringLiteral("Lz")}
+        );
+
+    ui->latticeSizeTableWidget->verticalHeader()->hide();
+
+    ui->latticeSizeTableWidget->horizontalHeader()->setSectionResizeMode(
+        QHeaderView::Stretch
+        );
+    ui->latticeSizeTableWidget->horizontalHeader()->setHighlightSections(false);
+
+    ui->latticeSizeTableWidget->setSelectionMode(
+        QAbstractItemView::NoSelection
+        );
+    ui->latticeSizeTableWidget->setHorizontalScrollBarPolicy(
+        Qt::ScrollBarAlwaysOff
+        );
+    ui->latticeSizeTableWidget->setVerticalScrollBarPolicy(
+        Qt::ScrollBarAlwaysOff
+        );
+
+    // Переносим существующие поля в ячейки.
+    QSpinBox* sizeEditors[] = {
+        ui->LxSpinBox,
+        ui->LySpinBox,
+        ui->LzSpinBox
+    };
+
+    for (int column = 0; column < 3; ++column) {
+        QSpinBox* editor = sizeEditors[column];
+
+        ui->gridLayout_5->removeWidget(editor);
+
+        editor->setAlignment(Qt::AlignCenter);
+        editor->setFrame(false);
+
+        ui->latticeSizeTableWidget->setCellWidget(0, column, editor);
+
+        editor->installEventFilter(this);
+
+        if (QLineEdit* lineEdit = editor->findChild<QLineEdit*>()) {
+            lineEdit->installEventFilter(this);
+        }
+
+        editor->show();
+    }
+
+    // Высота — только заголовок и одна строка ввода.
+    const int rowHeight = std::max({
+        ui->LxSpinBox->sizeHint().height(),
+        ui->LySpinBox->sizeHint().height(),
+        ui->LzSpinBox->sizeHint().height()
+    });
+
+    ui->latticeSizeTableWidget->verticalHeader()->setMinimumSectionSize(
+        rowHeight
+        );
+    ui->latticeSizeTableWidget->setRowHeight(0, rowHeight);
+
+    ui->latticeSizeTableWidget->setFixedHeight(
+        ui->latticeSizeTableWidget->horizontalHeader()->sizeHint().height()
+        + rowHeight
+        + 2 * ui->latticeSizeTableWidget->frameWidth()
+        );
+
+    // Помещаем таблицу под выбором размерности.
+    // Она займёт ширину прежнего блока, а не исходные 391 пиксель.
+    ui->gridLayout_5->addWidget(
+        ui->latticeSizeTableWidget, 1, 0, 1, 4
+        );
+
+    // Включаем только используемые размеры.
+    const auto updateLatticeSizeControls = [this](int dimensionIndex) {
+        ui->LxSpinBox->setEnabled(true);
+        ui->LySpinBox->setEnabled(dimensionIndex >= 1);
+        ui->LzSpinBox->setEnabled(dimensionIndex >= 2);
+    };
+
+    connect(
+        ui->SystemDimentionComboBox,
+        &QComboBox::currentIndexChanged,
+        this,
+        updateLatticeSizeControls
+        );
+
+    updateLatticeSizeControls(
+        ui->SystemDimentionComboBox->currentIndex()
+        );
     connect(
         ui->exchangeSettingsButton,
         &QPushButton::clicked,
@@ -1609,7 +1720,17 @@ void ParametersDialog::configureExchangeIntegral()
                 latticeKey == manualExchangeLatticeKey
                     ? manualExchangeMatrices
                     : noPrevious;
+            dialog->setLatticeSize(
+                config.lx,
+                config.ly,
+                config.lz
+                );
 
+            dialog->setMatrices(
+                lattice.getUniquePairs(),
+                previous,
+                constantExchangeIntegral
+                );
             dialog->setMatrices(
                 lattice.getUniquePairs(),
                 previous,
@@ -1811,4 +1932,56 @@ void ParametersDialog::chooseExchangeIntegralFile()
             QString::fromUtf8(error.what())
             );
     }
+
+}
+bool ParametersDialog::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() != QEvent::KeyPress) {
+        return QDialog::eventFilter(watched, event);
+    }
+
+    const QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+
+    if (keyEvent->modifiers() != Qt::NoModifier ||
+        (keyEvent->key() != Qt::Key_Left &&
+         keyEvent->key() != Qt::Key_Right)) {
+        return QDialog::eventFilter(watched, event);
+    }
+
+    QSpinBox* editors[] = {
+        ui->LxSpinBox,
+        ui->LySpinBox,
+        ui->LzSpinBox
+    };
+
+    for (int current = 0; current < 3; ++current) {
+        if (watched != editors[current] &&
+            watched != editors[current]->findChild<QLineEdit*>()) {
+            continue;
+        }
+
+        const int step =
+            keyEvent->key() == Qt::Key_Right ? 1 : -1;
+
+        for (int next = current + step;
+             next >= 0 && next < 3;
+             next += step) {
+
+            if (!editors[next]->isEnabled()) {
+                continue;
+            }
+
+            ui->latticeSizeTableWidget->setCurrentCell(0, next);
+
+            editors[next]->setFocus(Qt::OtherFocusReason);
+            editors[next]->selectAll();
+
+            return true;
+        }
+
+        // На краю таблицы остаёмся в текущем поле.
+        return true;
+    }
+
+    return QDialog::eventFilter(watched, event);
 }

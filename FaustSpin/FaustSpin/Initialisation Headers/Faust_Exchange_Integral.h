@@ -39,6 +39,7 @@ public:
         std::variant<double, std::vector<FM::Matrix>> values,
         ExchangeIntegralInit mode)
     {
+        //исправить вложенность
         if (mode == ExchangeIntegralInit::constant) {
             const double* value = std::get_if<double>(&values);
 
@@ -52,6 +53,7 @@ public:
                 throw std::invalid_argument(
                     "Exchange integral must be finite"
                 );
+
             }
         }
         else if (mode == ExchangeIntegralInit::matrix) {

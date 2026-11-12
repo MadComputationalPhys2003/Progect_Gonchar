@@ -1,6 +1,7 @@
 #include "manual_exchange_integral_dialog.h"
 #include "ui_manual_exchange_integral_dialog.h"
-
+#include "exchange_cheat_sheet_dialog.h"
+#include <QPushButton>
 #include <QAbstractItemView>
 #include <QApplication>
 #include <QDialogButtonBox>
@@ -124,7 +125,39 @@ ManualExchangeIntegralDialog::ManualExchangeIntegralDialog(
     , ui(new Ui::ManualExchangeIntegralDialog)
 {
     ui->setupUi(this);
+    ui->cheatSheetButton->setEnabled(false);
+    connect(
+        ui->cheatSheetButton,
+        &QPushButton::clicked,
+        this,
+        [this]() {
+            ExchangeCheatSheetDialog* dialog = nullptr;
 
+            try {
+                dialog = new ExchangeCheatSheetDialog(this);
+
+                dialog->setData(
+                    latticeSize[0],
+                    latticeSize[1],
+                    latticeSize[2],
+                    pairsValue,
+                    matricesValue
+                    );
+
+                dialog->setAttribute(Qt::WA_DeleteOnClose);
+                dialog->open();
+            }
+            catch (const std::exception& error) {
+                delete dialog;
+
+                QMessageBox::warning(
+                    this,
+                    QStringLiteral("Exchange cheat sheet"),
+                    QString::fromUtf8(error.what())
+                    );
+            }
+        }
+        );
     ui->exchangeIntegralDoubleSpinBox->setLocale(
         QLocale::c()
         );
@@ -247,6 +280,7 @@ void ManualExchangeIntegralDialog::setExchangeIntegral(
     ui->exchangeStackedWidget->setCurrentWidget(
         ui->constantExchangePage
         );
+    ui->cheatSheetButton->setEnabled(false);
 }
 
 double ManualExchangeIntegralDialog::getExchangeIntegral() const
@@ -370,6 +404,7 @@ void ManualExchangeIntegralDialog::setMatrices(
     ui->exchangeStackedWidget->setCurrentWidget(
         ui->matrixExchangePage
         );
+    ui->cheatSheetButton->setEnabled(true);
 }
 
 const std::vector<FM::Matrix>&
@@ -678,4 +713,11 @@ void ManualExchangeIntegralDialog::findMatrix(bool nextMatch)
             .arg(ui->matrixSearchFieldComboBox->currentText())
             .arg(target)
         );
+}
+void ManualExchangeIntegralDialog::setLatticeSize(
+    std::uint64_t lx,
+    std::uint64_t ly,
+    std::uint64_t lz)
+{
+    latticeSize = {{lx, ly, lz}};
 }

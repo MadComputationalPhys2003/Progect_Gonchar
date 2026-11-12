@@ -78,6 +78,7 @@ QString exchangeIntegralFileName;
 std::array<std::uint64_t, 4> exchangeFileLatticeKey{};
 
 void chooseExchangeIntegralFile();
+bool eventFilter(QObject* watched, QEvent* event) override;
 };
 
 #endif // PARAMETERS_DIALOG_H

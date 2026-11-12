@@ -8,7 +8,8 @@
 #include <cstddef>
 #include <utility>
 #include <vector>
-
+#include <array>
+#include <cstdint>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class ManualExchangeIntegralDialog;
@@ -36,7 +37,11 @@ public:
         );
 
     const std::vector<FM::Matrix>& getMatrices() const;
-
+    void setLatticeSize(
+        std::uint64_t lx,
+        std::uint64_t ly,
+        std::uint64_t lz
+        );
 public slots:
     void accept() override;
 
@@ -45,7 +50,7 @@ private:
 
     std::vector<FM::Matrix> matricesValue;
     std::vector<std::pair<std::size_t, std::size_t>> pairsValue;
-
+std::array<std::uint64_t, 3> latticeSize{{0, 0, 0}};
     void updateMatrixCell(int row);
     void editMatrix(int row, int column);
     void findMatrix(bool nextMatch);

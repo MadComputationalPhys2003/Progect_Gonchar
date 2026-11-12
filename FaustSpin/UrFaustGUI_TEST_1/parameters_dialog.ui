@@ -118,13 +118,13 @@
     <string>Ready</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>3</x>
      <y>3</y>
      <width>174</width>
-     <height>88</height>
+     <height>110</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_5">
@@ -161,6 +161,16 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="1">
+     <widget class="QSpinBox" name="LySpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>2</number>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="1">
      <widget class="QLabel" name="label_3">
       <property name="text">
@@ -175,26 +185,6 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QSpinBox" name="LxSpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="minimum">
-       <number>2</number>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QSpinBox" name="LySpinBox">
-      <property name="buttonSymbols">
-       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
-      </property>
-      <property name="minimum">
-       <number>2</number>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="2">
      <widget class="QSpinBox" name="LzSpinBox">
       <property name="buttonSymbols">
@@ -205,9 +195,19 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QSpinBox" name="LxSpinBox">
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::ButtonSymbols::NoButtons</enum>
+      </property>
+      <property name="minimum">
+       <number>2</number>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>3</x>
@@ -256,7 +256,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -467,6 +467,44 @@
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QTableWidget" name="latticeSizeTableWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>220</y>
+     <width>75</width>
+     <height>75</height>
+    </rect>
+   </property>
+   <property name="lineWidth">
+    <number>0</number>
+   </property>
+   <row>
+    <property name="text">
+     <string/>
+    </property>
+   </row>
+   <column>
+    <property name="text">
+     <string>Lx</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Ly</string>
+    </property>
+    <property name="font">
+     <font>
+      <fontweight>Light</fontweight>
+     </font>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Lz</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>
