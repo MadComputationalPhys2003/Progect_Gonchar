@@ -1,5 +1,5 @@
 #pragma once
-#include "../Vector3D_Decart.h"
+#include "../Faust math/Vector3D_Decart.h"
 #include "../Lattice_Headers.h"
 #include "../Neighbor_Headers.h"
 #include "../Initialisation Headers/IonFaust.h"
@@ -243,7 +243,7 @@ namespace UrFaust {
 		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
 			return ions.get_Directions();
 		};
-		double energy() const
+		double Exchange_interaction_term() const
 		{
 			double sum = 0.0;
 
@@ -294,7 +294,7 @@ namespace UrFaust {
 
 			return sum;
 		}
-		void relaxation_sweep()
+		void Iterative_minimization_step()
 		{
 			const auto& indices = il.getNeighborIndices();
 			const auto& mapping = il.getMatrixIndexBySlot();

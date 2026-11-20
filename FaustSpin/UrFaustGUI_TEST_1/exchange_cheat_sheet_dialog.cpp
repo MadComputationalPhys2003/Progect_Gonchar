@@ -354,7 +354,7 @@ void ExchangeCheatSheetDialog::drawScene()
         bond->setZValue(-1.0);
 
         bond->setToolTip(
-            QStringLiteral("Matrix %1: J(%2, %3)")
+            QStringLiteral("Matrix %1: J(%2 %3)")
                 .arg(static_cast<qulonglong>(k))
                 .arg(static_cast<qulonglong>(pair.first))
                 .arg(static_cast<qulonglong>(pair.second))
@@ -368,7 +368,7 @@ void ExchangeCheatSheetDialog::drawScene()
         label->setHtml(
             QStringLiteral(
                 "<span style=\"background-color:white;\">"
-                "J<sub>%1,%2</sub></span>"
+                "J<sub>%1%2</sub></span>"
                 )
                 .arg(static_cast<qulonglong>(pair.first))
                 .arg(static_cast<qulonglong>(pair.second))
@@ -506,7 +506,7 @@ void ExchangeCheatSheetDialog::showMatrix(int number)
     }
 
     ui->pairInfoLabel->setText(
-        QStringLiteral("J<sub>%1,%2</sub>")
+        QStringLiteral("J<sub>%1%2</sub>")
             .arg(static_cast<qulonglong>(pair.first))
             .arg(static_cast<qulonglong>(pair.second))
         );

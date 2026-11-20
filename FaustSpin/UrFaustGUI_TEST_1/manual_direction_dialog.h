@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "../FaustSpin/Vector3D_Decart.h"
+#include "../FaustSpin/Faust math/Vector3D_Decart.h"
 
 namespace Ui {
 class ManualDirectionDialog;

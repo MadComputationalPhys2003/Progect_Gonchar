@@ -29,7 +29,7 @@
     <ClInclude Include="Subprograms\Urfaust.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Vector3D_Decart.h">
+    <ClInclude Include="Faust math\Vector3D_Decart.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="1D\Neighbors_1D.h">
@@ -72,6 +72,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Lattice\3D\Latice3D.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Faust math\Exchange_Hamiltonian.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

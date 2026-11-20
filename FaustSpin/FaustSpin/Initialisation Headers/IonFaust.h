@@ -1,6 +1,6 @@
 #pragma once
 #include "../Faust math/Faust_Matrix.h"
-#include "../Vector3D_Decart.h"
+#include "../Faust math/Vector3D_Decart.h"
 #include<random>
 #include<vector>
 #include<algorithm>

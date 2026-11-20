@@ -132,6 +132,7 @@
     <ClCompile Include="FaustSpin.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Faust math\Exchange_Hamiltonian.h" />
     <ClInclude Include="Faust math\Faust_Matrix.h" />
     <ClInclude Include="1D\Neighbors_1D.h" />
     <ClInclude Include="2D\Neighbors_2D_Cube.h" />
@@ -145,7 +146,7 @@
     <ClInclude Include="Neighbor_Headers.h" />
     <ClInclude Include="Subprograms\Header1.h" />
     <ClInclude Include="Subprograms\UrFaustSimulation_1.h" />
-    <ClInclude Include="Vector3D_Decart.h" />
+    <ClInclude Include="Faust math\Vector3D_Decart.h" />
     <ClInclude Include="Subprograms\Urfaust.h" />
     <ClInclude Include="Write_To_File.h" />
   </ItemGroup>

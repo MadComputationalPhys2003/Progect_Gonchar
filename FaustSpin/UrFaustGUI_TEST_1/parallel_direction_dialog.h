@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QDialog>
-#include "Vector3D_Decart.h"
+#include "Faust math/Vector3D_Decart.h"
 
 namespace Ui {
 class ParallelDirectionDialog;

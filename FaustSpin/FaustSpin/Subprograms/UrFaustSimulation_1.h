@@ -412,7 +412,7 @@ namespace UrFaustSim {
 
         double getEnergy() const
         {
-            const double energy = spinSystem.energy();
+            const double energy = spinSystem.Exchange_interaction_term();
 
             validateEnergy(energy);
 
@@ -458,7 +458,7 @@ namespace UrFaustSim {
                 sweep < config.maxSweeps;
                 ++sweep) {
 
-                spinSystem.relaxation_sweep();
+                spinSystem.Iterative_minimization_step();
 
                 const double energy = getEnergy();
                 result.completedSweeps = sweep + 1;
