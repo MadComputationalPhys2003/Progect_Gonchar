@@ -243,130 +243,148 @@ namespace UrFaust {
 		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
 			return ions.get_Directions();
 		};
-		double Exchange_interaction_term() const
-		{
-			double sum = 0.0;
-
-			const auto& pairs = il.getUniquePairs();
-			const auto& exchange =
-				exchangeIntegral.get_exchange_integral();
-
-			if (EII == ExchangeIntegral::ExchangeIntegralInit::constant) {
-				const double J = std::get<double>(exchange);
-
-				for (const auto& pair : pairs) {
-					const std::size_t i = pair.first;
-					const std::size_t j = pair.second;
-
-					if (i == j) {
-						continue;
-					}
-
-					sum += J
-						* ions.get_spin_length(i)
-						* ions.get_spin_length(j)
-						* Vector3D_Decart::scalar_product(
-							ions.get_direction(i),
-							ions.get_direction(j)
-						);
-				}
-			}
-			else {
-				const auto& J =
-					std::get<std::vector<FM::Matrix>>(exchange);
-
-				for (std::size_t k = 0; k < pairs.size(); ++k) {
-					const std::size_t i = pairs[k].first;
-					const std::size_t j = pairs[k].second;
-
-					if (i == j) {
-						continue;
-					}
-
-					sum += ions.get_spin_length(i)
-						* ions.get_spin_length(j)
-						* Vector3D_Decart::scalar_product(
-							ions.get_direction(i),
-							J[k] * ions.get_direction(j)
-						);
-				}
-			}
-
-			return sum;
+		InitLattice getLattice()const {
+			return il;
 		}
-		void Iterative_minimization_step()
-		{
-			const auto& indices = il.getNeighborIndices();
-			const auto& mapping = il.getMatrixIndexBySlot();
-			const auto& exchange =
-				exchangeIntegral.get_exchange_integral();
-
-			const std::size_t neighborCount =
-				il.getNeighborCount();
-
-			std::vector<std::size_t> processedPairs;
-			processedPairs.reserve(neighborCount);
-
-			for (std::size_t i = 0; i < il.getN(); ++i) {
-				Vector3D_Decart::Vector3D_Dec h(0.0, 0.0, 0.0);
-				processedPairs.clear();
-
-				for (std::size_t a = 0; a < neighborCount; ++a) {
-					const std::size_t slot =
-						neighborCount * i + a;
-
-					const std::size_t j =
-						static_cast<std::size_t>(indices[slot]);
-
-					if (i == j) {
-						continue;
-					}
-
-					const std::size_t k = mapping[slot];
-
-					// Coincident periodic neighbors contribute only once.
-					if (std::find(
-						processedPairs.begin(),
-						processedPairs.end(),
-						k
-					) != processedPairs.end()) {
-						continue;
-					}
-
-					processedPairs.push_back(k);
-
-					const double Sj = ions.get_spin_length(j);
-
-					if (EII ==
-						ExchangeIntegral::ExchangeIntegralInit::constant) {
-						const double J = std::get<double>(exchange);
-
-						h -= ions.get_direction(j) * (J * Sj);
-					}
-					else {
-						const auto& J =
-							std::get<std::vector<FM::Matrix>>(exchange);
-
-						if (i < j) {
-							h -= (J[k] * ions.get_direction(j)) * Sj;
-						}
-						else {
-							h -= (
-								FM::transpose(J[k])
-								* ions.get_direction(j)
-								) * Sj;
-						}
-					}
-				}
-
-				const double hNorm = Vector3D_Decart::norm(h);
-
-				if (hNorm > 1.0e-15) {
-					ions.ions[i].set_direction(
-						h * (1.0 / hNorm)
-					);
-				}
-			}
+		InitIons::Ions getIons() const {
+			return ions;
+		}
+		ExchangeIntegral getExchangeIntegral() const {
+			return exchangeIntegral;
+		}
+		ExchangeIntegral::ExchangeIntegralInit getExchangeIntegralInit()const {
+			return EII;
 		}
 	};
+	double Exchange_interaction_term(SpinSystem& sps)
+	{
+		double sum = 0.0;
+		const auto& il = sps.getLattice();
+		const auto& ions = sps.getIons();
+		const auto& exchangeIntegral=sps.getExchangeIntegral();
+		const auto& EII = sps.getExchangeIntegralInit();
+		const auto& pairs =il.getUniquePairs();
+		const auto& exchange =
+			exchangeIntegral.get_exchange_integral();
+
+		if (EII == ExchangeIntegral::ExchangeIntegralInit::constant) {
+			const double J = std::get<double>(exchange);
+
+			for (const auto& pair : pairs) {
+				const std::size_t i = pair.first;
+				const std::size_t j = pair.second;
+
+				if (i == j) {
+					continue;
+				}
+
+				sum += J
+					* ions.get_spin_length(i)
+					* ions.get_spin_length(j)
+					* Vector3D_Decart::scalar_product(
+						ions.get_direction(i),
+						ions.get_direction(j)
+					);
+			}
+		}
+		else {
+			const auto& J =
+				std::get<std::vector<FM::Matrix>>(exchange);
+
+			for (std::size_t k = 0; k < pairs.size(); ++k) {
+				const std::size_t i = pairs[k].first;
+				const std::size_t j = pairs[k].second;
+
+				if (i == j) {
+					continue;
+				}
+
+				sum += ions.get_spin_length(i)
+					* ions.get_spin_length(j)
+					* Vector3D_Decart::scalar_product(
+						ions.get_direction(i),
+						J[k] * ions.get_direction(j)
+					);
+			}
+		}
+
+		return sum;
+	}
+	void Iterative_minimization_step(SpinSystem sps)
+	{
+		const auto& il = sps.getLattice();
+		auto ions = sps.getIons();
+		const auto& exchangeIntegral = sps.getExchangeIntegral();
+		const auto& EII = sps.getExchangeIntegralInit();
+		const auto& indices = il.getNeighborIndices();
+		const auto& mapping = il.getMatrixIndexBySlot();
+		const auto& exchange =
+			exchangeIntegral.get_exchange_integral();
+		const std::size_t neighborCount =
+			il.getNeighborCount();
+
+		std::vector<std::size_t> processedPairs;
+		processedPairs.reserve(neighborCount);
+
+		for (std::size_t i = 0; i < il.getN(); ++i) {
+			Vector3D_Decart::Vector3D_Dec h(0.0, 0.0, 0.0);
+			processedPairs.clear();
+
+			for (std::size_t a = 0; a < neighborCount; ++a) {
+				const std::size_t slot =
+					neighborCount * i + a;
+
+				const std::size_t j =
+					static_cast<std::size_t>(indices[slot]);
+
+				if (i == j) {
+					continue;
+				}
+
+				const std::size_t k = mapping[slot];
+
+				// Coincident periodic neighbors contribute only once.
+				if (std::find(
+					processedPairs.begin(),
+					processedPairs.end(),
+					k
+				) != processedPairs.end()) {
+					continue;
+				}
+
+				processedPairs.push_back(k);
+
+				const double Sj = ions.get_spin_length(j);
+
+				if (EII ==
+					ExchangeIntegral::ExchangeIntegralInit::constant) {
+					const double J = std::get<double>(exchange);
+
+					h -= ions.get_direction(j) * (J * Sj);
+				}
+				else {
+					const auto& J =
+						std::get<std::vector<FM::Matrix>>(exchange);
+
+					if (i < j) {
+						h -= (J[k] * ions.get_direction(j)) * Sj;
+					}
+					else {
+						h -= (
+							FM::transpose(J[k])
+							* ions.get_direction(j)
+							) * Sj;
+					}
+				}
+			}
+
+			const double hNorm = Vector3D_Decart::norm(h);
+
+			if (hNorm > 1.0e-15) {
+				ions.ions[i].set_direction(
+					h * (1.0 / hNorm)
+				);
+			}
+		}
+	}
 }

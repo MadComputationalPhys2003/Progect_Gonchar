@@ -54,6 +54,7 @@ qt_add_executable(UrFaustGUI_TEST_1
     save_frame_dialog.ui
     exchange_cheat_sheet_dialog.h exchange_cheat_sheet_dialog.cpp exchange_cheat_sheet_dialog.ui
 )
+target_include_directories(UrFaustGUI_TEST_1 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 set_target_properties(UrFaustGUI_TEST_1 PROPERTIES
     AUTORCC ON
 )
