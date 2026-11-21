@@ -256,7 +256,7 @@ namespace UrFaust {
 			return EII;
 		}
 	};
-	double Exchange_interaction_term(SpinSystem& sps)
+	inline double Exchange_interaction_term(SpinSystem& sps)
 	{
 		double sum = 0.0;
 		const auto& il = sps.getLattice();
@@ -310,7 +310,7 @@ namespace UrFaust {
 
 		return sum;
 	}
-	void Iterative_minimization_step(SpinSystem sps)
+	inline void Iterative_minimization_step(SpinSystem& sps)
 	{
 		const auto& il = sps.getLattice();
 		auto ions = sps.getIons();

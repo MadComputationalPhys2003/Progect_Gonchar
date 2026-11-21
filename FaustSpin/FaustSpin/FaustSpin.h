@@ -420,6 +420,7 @@ namespace FaustSpin {
 			return -mu_Bor * sum;
 		}
 	}
+
 	inline double Hamiltonan(FaustSpinSystemInit& sps) {
 		return(sps.exchange ? HamiltonianTermsAndMinAlgorithms::exchange_interaction_term(sps) : 0.0)
 			+ (sps.ion_anisotropy ? HamiltonianTermsAndMinAlgorithms::single_ion_anisotropy_term(sps) : 0.0)
