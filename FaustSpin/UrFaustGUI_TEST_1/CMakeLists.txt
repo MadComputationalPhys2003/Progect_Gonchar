@@ -4,10 +4,7 @@ project(UrFaustGUI_TEST_1 LANGUAGES CXX)
 find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets OpenGL Svg)
 
 qt_standard_project_setup()
-
-qt_add_executable(UrFaustGUI_TEST_1
-    WIN32 MACOSX_BUNDLE
-    main.cpp
+add_library(UrFaustWidgets OBJECT
     main_window_1.cpp
     main_window_1.h
     main_window_1.ui
@@ -67,7 +64,8 @@ target_link_libraries(UrFaustGUI_TEST_1
         UrFaustCore
         Qt6::Svg
 )
-
+qt_add_executable(UrFaustGUI_TEST_1 WIN32 MACOSX_BUNDLE main.cpp)
+target_link_libraries(UrFaustGUI_TEST_1 PRIVATE UrFaustWidgets)
 install(TARGETS UrFaustGUI_TEST_1
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
