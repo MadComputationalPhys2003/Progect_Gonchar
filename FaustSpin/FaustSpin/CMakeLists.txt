@@ -15,7 +15,5 @@ add_executable(UrFaustConsole
     Subprograms/UrFaustProgram.h
 )
 
-target_link_libraries(UrFaustConsole PRIVATE UrFaustCore
-UrFaustWidgets
-)
+target_link_libraries(UrFaustConsole PRIVATE UrFaustCore)
 add_library(FaustMath ALIAS UrFaustCore)

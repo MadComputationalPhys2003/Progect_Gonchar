@@ -9,6 +9,9 @@ qt_add_executable(FaustSpinGUI
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    faust_spin_parameters_dialog.h
+    faust_spin_parameters_dialog.cpp
+    faust_spin_parameters_dialog.ui
 )
 
 target_link_libraries(FaustSpinGUI PRIVATE
@@ -17,4 +20,5 @@ target_link_libraries(FaustSpinGUI PRIVATE
     Qt6::OpenGL
     Qt6::Svg
     FaustMath
+    UrFaustWidgets
 )

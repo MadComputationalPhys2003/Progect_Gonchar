@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include "FaustSpinSimulation.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -20,5 +20,6 @@ public:
 private:
     Ui::MainMenu *ui;
     MainWindow_1 *urFaustWindow = nullptr;
+    FaustSpinSim::SimulationConfig faustSpinConfig;
 };
 #endif // MAINWINDOW_H

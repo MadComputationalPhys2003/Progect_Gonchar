@@ -51,19 +51,18 @@ add_library(UrFaustWidgets OBJECT
     save_frame_dialog.ui
     exchange_cheat_sheet_dialog.h exchange_cheat_sheet_dialog.cpp exchange_cheat_sheet_dialog.ui
 )
-target_include_directories(UrFaustGUI_TEST_1 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-set_target_properties(UrFaustGUI_TEST_1 PROPERTIES
-    AUTORCC ON
+target_include_directories(UrFaustWidgets PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+set_target_properties(UrFaustWidgets PROPERTIES AUTORCC ON)
+
+target_link_libraries(UrFaustWidgets PUBLIC
+    Qt::Core
+    Qt::Widgets
+    Qt6::OpenGLWidgets
+    Qt6::OpenGL
+    UrFaustCore
+    Qt6::Svg
 )
-target_link_libraries(UrFaustGUI_TEST_1
-    PRIVATE
-        Qt::Core
-        Qt::Widgets
-        Qt6::OpenGLWidgets
-        Qt6::OpenGL
-        UrFaustCore
-        Qt6::Svg
-)
+
 qt_add_executable(UrFaustGUI_TEST_1 WIN32 MACOSX_BUNDLE main.cpp)
 target_link_libraries(UrFaustGUI_TEST_1 PRIVATE UrFaustWidgets)
 install(TARGETS UrFaustGUI_TEST_1
