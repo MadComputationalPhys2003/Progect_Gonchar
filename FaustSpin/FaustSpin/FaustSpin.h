@@ -489,7 +489,7 @@ namespace FaustSpin {
 				const auto& g = std::get<std::vector<FM::Matrix>>(zeenman).at(index);
 				for (std::size_t k = 0; k < 3; ++k) {
 					for (std::size_t a = 0; a < 3; ++a) {
-						h_zee[k] =mu_Bor*B[a]*g[3 * a + k];
+						h_zee[k] +=mu_Bor*B[a]*g[3 * a + k];
 					}
 				}
 				return h_zee;

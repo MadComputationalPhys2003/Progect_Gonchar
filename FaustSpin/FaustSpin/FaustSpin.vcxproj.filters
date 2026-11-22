@@ -86,5 +86,8 @@
     <ClInclude Include="Initialisation Headers\Faust_Zeeman_Term.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="FaustSpinSimulation.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -410,15 +410,12 @@ namespace UrFaustSim {
             return count;
         }
 
-        double getEnergy() const
+        double getEnergy()
         {
-            const double energy = spinSystem.Exchange_interaction_term();
-
+            const double energy = UrFaust::Exchange_interaction_term(spinSystem);
             validateEnergy(energy);
-
             return energy;
         }
-
         std::vector<Vector3D_Decart::Vector3D_Dec>
             getSpinDirections() const
         {
@@ -458,7 +455,7 @@ namespace UrFaustSim {
                 sweep < config.maxSweeps;
                 ++sweep) {
 
-                spinSystem.Iterative_minimization_step();
+                UrFaust::Iterative_minimization_step(spinSystem);
 
                 const double energy = getEnergy();
                 result.completedSweeps = sweep + 1;

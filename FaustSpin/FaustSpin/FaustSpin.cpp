@@ -1,125 +1,114 @@
-﻿#include "Subprograms/UrFaustSimulation_1.h"
+﻿#include "FaustSpinSimulation.h"
+#include "Write_To_File.h"
 
 #include <cstdint>
 #include <exception>
+#include <filesystem>
 #include <iomanip>
 #include <iostream>
-#include<fstream>
-#include <string_view>
-#include <string>
 #include <stdexcept>
 
 namespace {
 
-	[[nodiscard]] std::string_view dimensionName(UrFaust::Dimension dimension)
-	{
-		switch (dimension) {
-		case UrFaust::Dimension::one:
-			return "1D";
-		case UrFaust::Dimension::two:
-			return "2D";
-		case UrFaust::Dimension::three:
-			return "3D";
-		default:
-			return "unknown";
-		}
-	}
+    namespace fs = std::filesystem;
 
-	void runExample(
-		UrFaust::Dimension dimension,
-		std::uint64_t lx,
-		std::uint64_t ly,
-		std::uint64_t lz)
-	{
-		UrFaustSim::SimulationConfig config;
-		config.lx = lx;
-		config.ly = ly;
-		config.lz = lz;
-		config.spinLength = 5.0;
-		config.exchangeIntegral = -1.0;
-		config.epsilon = 1.0e-10;
-		config.maxSweeps = 1000;
-        config.initialization = InitIons::Ions::SpinDirectionInit::random;
-		config.dimension = dimension;
+    const char* dimensionName(FaustSpin::Dimension dimension)
+    {
+        switch (dimension) {
+        case FaustSpin::Dimension::one:   return "1D";
+        case FaustSpin::Dimension::two:   return "2D";
+        case FaustSpin::Dimension::three: return "3D";
+        }
+        throw std::invalid_argument("Unknown lattice dimension");
+    }
 
-		UrFaustSim::Simulation simulation(config);
-		const UrFaustSim::SimulationResult result = simulation.run();
-		std::ofstream spinFile(
-			"spins_" + std::string(dimensionName(dimension)) + ".csv"
-		);
+    fs::path findTexTemplate()
+    {
+        const auto relativePath = fs::path("Latex templates") / "UrFaustResult.tex";
+        const fs::path candidates[] = {
+            relativePath,
+            fs::path("FaustSpin") / relativePath,
+            fs::path("FaustSpin") / "FaustSpin" / relativePath,
+            fs::path(__FILE__).parent_path() / relativePath
+        };
+        for (const auto& path : candidates) {
+            if (fs::is_regular_file(path)) {
+                return path;
+            }
+        }
+        return {};
+    }
 
-		if (!spinFile) {
-			throw std::runtime_error("Cannot create spins file.");
-		}
+    void runExample(FaustSpin::Dimension dimension, std::uint64_t lx,
+        std::uint64_t ly, std::uint64_t lz, const fs::path& templatePath)
+    {
+        FaustSpinSim::SimulationConfig config;
+        config.dimension = dimension;
+        config.lx = lx;
+        config.ly = ly;
+        config.lz = lz;
+        config.spinLength = 1.0;
+        config.initialization = FaustSpinSim::SpinDirectionMode::random;
+        config.directionSeed = 42;
 
-		spinFile << std::setprecision(17);
-		spinFile << "sweep,energy,index,nx,ny,nz\n";
+        config.exchangeEnabled = true;
+        config.exchangeIntegral = -1.0;  // meV
+        config.anisotropyEnabled = true;
+        config.singleIonAnisotropy = 0.2;  // meV, easy plane perpendicular to z
+        config.anisotropyDirection = FaustSpinSim::Vector3{ 0.0, 0.0, 1.0 };
+        config.zeemanEnabled = true;
+        config.gFactor = 2.0;
+        config.magneticField = FaustSpinSim::Vector3{ 0.0, 0.0, 1.0 };  // T
 
-		for (const auto& frame : result.frames) {
-			for (std::size_t i = 0; i < frame.spinDirections.size(); ++i) {
-				const auto& n = frame.spinDirections[i];
+        FaustSpinSim::Simulation simulation(config);
+        const auto result = simulation.run();
 
-				spinFile << frame.sweep << ','
-					<< frame.energy << ','
-					<< i << ','
-					<< n[0] << ','
-					<< n[1] << ','
-					<< n[2] << '\n';
-			}
-		}
+        const char* name = dimensionName(dimension);
+        const auto directory = fs::path("Output") / "FaustSpin" / name;
+        WriteFileFaustSpinSimulation::write_all_txt(result, directory);
+        if (!templatePath.empty()) {
+            WriteFileFaustSpinSimulation::write_result_tex(
+                result, templatePath, directory / "FaustSpinResult.tex");
+        }
 
-		spinFile.close();
-
-		if (!spinFile) {
-			throw std::runtime_error("Cannot save spins file.");
-		}
-		std::ofstream file("energy.csv");
-
-		file << "sweep,energy\n";
-		file << std::setprecision(17);
-
-		for (const auto& frame : result.frames) {
-			file << frame.sweep << ',' << frame.energy << '\n';
-		}
-		const UrFaustSim::SimulationFrame& initialFrame = result.frames.front();
-		const UrFaustSim::SimulationFrame& finalFrame = result.frames.back();
-
-		std::cout
-			<< "\n" << dimensionName(dimension) << " simulation\n"
-			<< "Lattice:        " << lx;
-
-		if (dimension != UrFaust::Dimension::one) {
-			std::cout << " x " << ly;
-		}
-		if (dimension == UrFaust::Dimension::three) {
-			std::cout << " x " << lz;
-		}
-
-		std::cout
-			<< '\n'
-			<< "Spins:          " << initialFrame.spinDirections.size() << '\n'
-			<< "Initial energy: " << initialFrame.energy << '\n'
-			<< "Final energy:   " << finalFrame.energy << '\n'
-			<< "Sweeps:         " << result.completedSweeps << '\n'
-			<< "Frames:         " << result.frames.size() << '\n'
-			<< "Converged:      " << (result.converged ? "yes" : "no") << '\n';
-	}
+        std::cout << '\n'
+            << "FaustSpin " << name << '\n'
+            << "Lattice:        " << lx << " x " << ly << " x " << lz << '\n'
+            << "Spins:          " << result.spinIndices.size() << '\n'
+            << "Energy (meV):   " << result.frames.front().energy
+            << " -> " << result.frames.back().energy << '\n'
+            << "Sweeps:         " << result.completedSweeps << '\n'
+            << "Converged:      " << (result.converged ? "yes" : "no") << '\n'
+            << "Output:         " << directory << '\n';
+    }
 
 } // namespace
 
-int main()
+int main(int argc, char* argv[])
 {
-	try {
-		std::cout << std::setprecision(12);
+    if (argc > 2) {
+        std::cerr << "Usage: FaustSpin [path-to-LaTeX-template]\n";
+        return 2;
+    }
 
-		runExample(UrFaust::Dimension::one, 8, 1, 1);
-		runExample(UrFaust::Dimension::two, 5, 5, 1);
-		runExample(UrFaust::Dimension::three, 4, 4, 4);
+    try {
+        const auto templatePath = argc == 2 ? fs::path(argv[1]) : findTexTemplate();
+        if (argc == 2 && !fs::is_regular_file(templatePath)) {
+            std::cerr << "LaTeX template not found: " << templatePath << '\n';
+            return 1;
+        }
+        if (templatePath.empty()) {
+            std::cerr << "UrFaustResult.tex not found. Writing TXT results only.\n";
+        }
 
-		return 0;
-	}
-	catch (const std::exception& exception) {
-		std::cerr << "Simulation failed: " << exception.what() << '\n';
-		return 1;
-	}
+        std::cout << std::setprecision(12);
+        runExample(FaustSpin::Dimension::one, 8, 1, 1, templatePath);
+        runExample(FaustSpin::Dimension::two, 5, 5, 1, templatePath);
+        runExample(FaustSpin::Dimension::three, 4, 4, 4, templatePath);
+    }
+    catch (const std::exception& error) {
+        std::cerr << "FaustSpin failed: " << error.what() << '\n';
+        return 1;
+    }
+    return 0;
 }

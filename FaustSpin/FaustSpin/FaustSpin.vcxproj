@@ -138,6 +138,7 @@
     <ClInclude Include="2D\Neighbors_2D_Cube.h" />
     <ClInclude Include="3D\Neighbors_3D_Cube.h" />
     <ClInclude Include="FaustSpin.h" />
+    <ClInclude Include="FaustSpinSimulation.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="Initialisation Headers\Faust_Exchange_Integral.h" />
     <ClInclude Include="Initialisation Headers\Faust_Single_Ion_Anisotropy.h" />
