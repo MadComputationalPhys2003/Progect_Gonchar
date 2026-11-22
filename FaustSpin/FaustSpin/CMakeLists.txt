@@ -16,3 +16,4 @@ add_executable(UrFaustConsole
 )
 
 target_link_libraries(UrFaustConsole PRIVATE UrFaustCore)
+add_library(FaustMath ALIAS UrFaustCore)

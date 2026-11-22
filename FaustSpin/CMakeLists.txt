@@ -12,3 +12,4 @@ qt_standard_project_setup()
 
 add_subdirectory(FaustSpin)
 add_subdirectory(UrFaustGUI_TEST_1)
+add_subdirectory(FaustSpinGUI)
