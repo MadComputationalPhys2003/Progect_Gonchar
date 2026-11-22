@@ -278,6 +278,7 @@ namespace InitIons {
 			}
 			return result;
 		};
+
 		Vector3D_Decart::Vector3D_Dec get_direction(size_t index) const {
 			if (index >= ions.size()) {
 				throw std::out_of_range("Index out of range");

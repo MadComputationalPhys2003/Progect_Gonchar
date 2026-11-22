@@ -6,7 +6,6 @@
 #include "Initialisation Headers/Faust_Exchange_Integral.h"
 #include"Initialisation Headers/Faust_Single_Ion_Anisotropy.h"
 #include"Initialisation Headers/Faust_Zeeman_Term.h"
-#include"Subprograms/Urfaust.h"
 #include<random>
 #include <variant>
 #include<numbers>
@@ -15,7 +14,7 @@
 #include <cstddef>
 #include <utility>
 #include <vector>
-constexpr double mu_Bor = 9.2740100783e-24;  // Bohr magneton J/T
+//constexpr double mu_Bor = 9.2740100783e-24;  // Bohr magneton J/T
 namespace FaustSpin {
 	enum class Dimension {
 		one,
@@ -188,7 +187,7 @@ namespace FaustSpin {
 		ExchangeIntegral::ExchangeIntegralInit EII;
 		Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init SIAI;
 		Zeeman_Term::Zeeman_Term_Init ZTI;
-		FM::Matrix B = FM::Matrix(3, 1);
+		Vector3D_Decart::Vector3D_Dec B;
 		double eps;
 		static InitLattice makeInitLattice(Dimension dim, uint64_t lx, uint64_t ly, uint64_t lz,
 			uint64_t x0, uint64_t y0, uint64_t z0) {
@@ -216,6 +215,8 @@ namespace FaustSpin {
 		bool exchange;
 		bool ion_anisotropy;
 		bool Zeeman;
+		double mu_B = 0.057883817982; //мэ¬ / “л (meV/T)
+		std::optional<Vector3D_Decart::Vector3D_Dec> anisotropy_direction;
 		FaustSpinSystemInit(
 			const uint64_t lx, const uint64_t ly, const uint64_t lz,
 			const uint64_t x0, const uint64_t y0, const uint64_t z0,
@@ -228,14 +229,16 @@ namespace FaustSpin {
 			ExchangeIntegral::ExchangeIntegralInit eii,
 			Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init siai,
 			Zeeman_Term::Zeeman_Term_Init zti,
-			FM::Matrix b,
+			Vector3D_Decart::Vector3D_Dec b,
 			Dimension d,
 			double ee,
 			bool ex = true,
 			bool ia = false,
 			bool zee = false,
 			std::string df = " ",
-			std::optional<int> directionSeed = std::nullopt)
+			std::optional<int> directionSeed = std::nullopt,
+			std::optional<Vector3D_Decart::Vector3D_Dec> ad=Vector3D_Decart::Vector3D_Dec(0.0,0.0,1)
+		)
 			: il(makeInitLattice(d, lx, ly, lz, x0, y0, z0))
 			, ions(makeInitIons(
 				il.getN(), sli, sdi, df, directionSeed))
@@ -250,6 +253,7 @@ namespace FaustSpin {
 			, exchange(ex)
 			, ion_anisotropy(ia)
 			, Zeeman(zee)
+			,anisotropy_direction(ad)
 		{
 			ions.set_spin(std::move(spin), sli);
 			exchangeIntegral.set_eexchange_integral(std::move(j), eii);
@@ -274,31 +278,34 @@ namespace FaustSpin {
 		std::vector<Vector3D_Decart::Vector3D_Dec> getSpinDirections() const {
 			return ions.get_Directions();
 		};
-		InitLattice getLattice()const {
+		const InitLattice& getLattice()const {
 			return il;
 		}
-		InitIons::Ions getIons() const {
+		const InitIons::Ions& getIons() const {
 			return ions;
 		}
-		ExchangeIntegral getExchangeIntegral() const {
+		InitIons::Ions& getIons(){
+			return ions;
+		}
+		const ExchangeIntegral& getExchangeIntegral() const {
 			return exchangeIntegral;
 		}
-		Single_Ion_Anisotropy getSingle_Ion_Anisotropy()const {
+		const Single_Ion_Anisotropy& getSingle_Ion_Anisotropy()const {
 			return single;
 		}
-		Zeeman_Term getZeenmanTerm()const {
+		const Zeeman_Term& getZeenmanTerm()const {
 			return zeenman;
 		}
-		const FM::Matrix& getMagneticField() const {
+		const Vector3D_Decart::Vector3D_Dec& getMagneticField() const {
 			return B;
 		}
-		ExchangeIntegral::ExchangeIntegralInit getExchangeIntegralInit()const {
+		const ExchangeIntegral::ExchangeIntegralInit& getExchangeIntegralInit()const {
 			return EII;
 		}
-		Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init getSingle_Ion_Anisotropy_Init()const {
+		const Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init& getSingle_Ion_Anisotropy_Init()const {
 			return SIAI;
 		}
-		Zeeman_Term::Zeeman_Term_Init getZeeman_Term_Init()const {
+		const Zeeman_Term::Zeeman_Term_Init& getZeeman_Term_Init()const {
 			return ZTI;
 		}
 	};
@@ -365,10 +372,14 @@ namespace FaustSpin {
 			const auto& SIAI = sps.getSingle_Ion_Anisotropy_Init();
 			const auto& sia =
 				single_ion_anisotropy_term.get_Single_Ion_Anisotropy();
+			const auto axis = sps.anisotropy_direction;
+			Vector3D_Decart::Vector3D_Dec default_direction(0.0, 0.0, 1.0);
 			if (SIAI == Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init::constant) {
 				const double D = std::get<double>(sia);
 				for (std::size_t i = 0; i < il.getN(); ++i) {
-					const double Sz = ions.get_spin_length(i) * ions.get_direction(i)[2];
+					const double Sz = ions.get_spin_length(i) * 
+						Vector3D_Decart::scalar_product(ions.get_direction(i),
+							axis.value_or(default_direction));
 					sum += D * Sz * Sz;
 				}
 			}
@@ -395,10 +406,6 @@ namespace FaustSpin {
 			const auto& zt = zeeman.get_Zeeman_Term();
 			const auto& B = sps.getMagneticField();
 
-			if (B.get_rows() != 3 || B.get_cols() != 1) {
-				throw std::invalid_argument("Magnetic field must be a 3x1 column");
-			}
-
 			const Vector3D_Decart::Vector3D_Dec field(B[0], B[1], B[2]);
 			if (ZTI == Zeeman_Term::Zeeman_Term_Init::constant) {
 				const double g = std::get<double>(zt);
@@ -417,7 +424,124 @@ namespace FaustSpin {
 			else {
 				throw std::invalid_argument("Unknown Zeeman term mode");
 			}
-			return -mu_Bor * sum;
+			return -sps.mu_B * sum;
+		}
+		inline Vector3D_Decart::Vector3D_Dec exchange_field(const std::variant<double, std::vector<FM::Matrix>>& exint,
+			const ExchangeIntegral::ExchangeIntegralInit& mode, const InitIons::Ions& ions,
+			const std::size_t& i, const std::size_t& j, const std::size_t& k)
+		{
+			Vector3D_Decart::Vector3D_Dec h_ex(0.0, 0.0, 0.0);
+			const double Sj = ions.get_spin_length(j);
+			if (mode ==
+				ExchangeIntegral::ExchangeIntegralInit::constant) {
+				const double J = std::get<double>(exint);
+				h_ex = -ions.get_direction(j) * (J * Sj);
+				return h_ex;
+			}
+			else {
+				const auto& J =
+					std::get<std::vector<FM::Matrix>>(exint);
+				if (i < j) {
+					h_ex = -(J[k] * ions.get_direction(j)) * Sj;
+				}
+				else {
+					h_ex = -(
+						FM::transpose(J[k])
+						* ions.get_direction(j)
+						) * Sj;
+				}
+				return h_ex;
+			}
+		}
+		inline Vector3D_Decart::Vector3D_Dec anisotropic_field(const std::variant<double, std::vector<FM::Matrix>>& sinan,
+			const Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init& mode, const InitIons::Ions& ions,
+			const std::size_t& i,std::optional<Vector3D_Decart::Vector3D_Dec>ax) {
+			Vector3D_Decart::Vector3D_Dec h_an(0.0, 0.0, 0.0);
+			Vector3D_Decart::Vector3D_Dec default_direction(0.0, 0.0, 1.0);
+			double h_temp=0;
+			if (mode == Single_Ion_Anisotropy::Single_Ion_Anisotropy_Init::constant) {
+				const double D = std::get<double>(sinan);
+				h_temp = -2 * D *Vector3D_Decart::scalar_product( ions.get_direction(i),ax.value_or(default_direction)) * ions.get_spin_length(i);
+				h_an=ax.value_or(default_direction)*h_temp;
+				return h_an;
+			}
+			else {
+				const auto& D = std::get<std::vector<FM::Matrix>>(sinan);
+				for (std::size_t k = 0; k < 3; ++k) {
+					for (std::size_t a = 0; a < 3; ++a) {
+						h_an[k] -= ions.get_direction(i)[a] * ions.get_spin_length(i)*(D.at(i)[3 * k + a] + D.at(i)[3 * a + k]);
+					}
+				}
+				return  h_an;
+			}
+		}
+		inline Vector3D_Decart::Vector3D_Dec Zeenman_field(const std::variant<double, std::vector<FM::Matrix>>& zeenman,
+			const Zeeman_Term::Zeeman_Term_Init& mode,const Vector3D_Decart::Vector3D_Dec& B, const double mu_Bor,
+			const std::size_t index)
+		{
+			Vector3D_Decart::Vector3D_Dec h_zee(0.0, 0.0, 0.0);
+			if (mode == Zeeman_Term::Zeeman_Term_Init::constant) {
+				const double g = std::get<double>(zeenman);
+				h_zee = mu_Bor* g *B;
+				return h_zee;
+			}
+			else {
+				const auto& g = std::get<std::vector<FM::Matrix>>(zeenman).at(index);
+				for (std::size_t k = 0; k < 3; ++k) {
+					for (std::size_t a = 0; a < 3; ++a) {
+						h_zee[k] =mu_Bor*B[a]*g[3 * a + k];
+					}
+				}
+				return h_zee;
+			}
+		}
+		inline Vector3D_Decart::Vector3D_Dec Local_field(
+			const FaustSpinSystemInit& sps, std::size_t i)
+		{
+			const auto& lattice = sps.getLattice();
+			if (i >= lattice.getN()) {
+				throw std::out_of_range("Spin index out of range");
+			}
+
+			const auto& ions = sps.getIons();
+			Vector3D_Decart::Vector3D_Dec h(0.0, 0.0, 0.0);
+
+			if (sps.exchange) {
+				const auto& exchange = sps.getExchangeIntegral().get_exchange_integral();
+				const auto mode = sps.getExchangeIntegralInit();
+				const auto& indices = lattice.getNeighborIndices();
+				const auto& mapping = lattice.getMatrixIndexBySlot();
+				const std::size_t count = lattice.getNeighborCount();
+				const std::size_t base = i * count;
+				const auto first = mapping.begin() + base;
+
+				for (std::size_t a = 0; a < count; ++a) {
+					const auto j = static_cast<std::size_t>(indices[base + a]);
+					const auto current = first + a;
+					const std::size_t k = *current;
+
+					// ѕериодические слоты могут ссылатьс€ на одну и ту же св€зь.
+					if (j == i || std::find(first, current, k) != current) {
+						continue;
+					}
+
+					h += exchange_field(exchange, mode, ions, i, j, k);
+				}
+			}
+
+			if (sps.ion_anisotropy) {
+				h += anisotropic_field(
+					sps.getSingle_Ion_Anisotropy().get_Single_Ion_Anisotropy(),
+					sps.getSingle_Ion_Anisotropy_Init(), ions, i,sps.anisotropy_direction);
+			}
+
+			if (sps.Zeeman) {
+				h += Zeenman_field(
+					sps.getZeenmanTerm().get_Zeeman_Term(),
+					sps.getZeeman_Term_Init(), sps.getMagneticField(), sps.mu_B, i);
+			}
+
+			return h;
 		}
 	}
 
@@ -425,6 +549,21 @@ namespace FaustSpin {
 		return(sps.exchange ? HamiltonianTermsAndMinAlgorithms::exchange_interaction_term(sps) : 0.0)
 			+ (sps.ion_anisotropy ? HamiltonianTermsAndMinAlgorithms::single_ion_anisotropy_term(sps) : 0.0)
 			+ (sps.Zeeman ? HamiltonianTermsAndMinAlgorithms::Zeenman_Term(sps) : 0.0);
+	}
+	inline InitIons::Ions Iterative_minimization_step(FaustSpinSystemInit& sps) {
+		auto& ions = sps.getIons();
+		const std::size_t count = sps.getLattice().getN();
+		for (std::size_t i = 0; i < count; i++) {
+			auto h = HamiltonianTermsAndMinAlgorithms::Local_field(sps, i);
+			double h_norm = Vector3D_Decart::norm(h);
+
+			if (h_norm > 1.0e-15) {
+				ions.ions[i].set_direction(
+					h * (1.0 / h_norm)
+				);
+			}
+		}
+		return ions;
 	}
 }
 
