@@ -2,7 +2,8 @@
 #include "ui_faust_spin_parameters_dialog.h"
 #include "faust_spin_exchange_integral_dialog.h"
 #include "faust_spin_single_ion_anisotropy_dialog.h"
-
+#include "faust_spin_g_factor_dialog.h"
+#include "spin_parameters_dialog.h"
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -158,7 +159,20 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
             anisotropyConfig_ = std::move(candidate);
         }
     });
+    connect(ui->pushButtonG, &QPushButton::clicked, this, [this] {
+        FaustSpinGFactorDialog dialog(this);
+        dialog.exec();
+    });
+    connect(ui->pushButtonSetSpitParametrs, &QPushButton::clicked, this, [this] {
+        FaustSpinSim::SimulationConfig lattice;
+        readLattice(lattice);
 
+        const auto ionCount =
+            static_cast<std::size_t>(lattice.lx * lattice.ly * lattice.lz);
+
+        SpinParametersDialog dialog(ionCount, {}, this);
+        dialog.exec();
+    });
     updateDimensionControls(ui->dimensionComboBox->currentIndex());
 }
 

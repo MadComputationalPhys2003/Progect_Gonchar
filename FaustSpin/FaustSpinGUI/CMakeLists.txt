@@ -24,7 +24,15 @@ qt_add_executable(FaustSpinGUI
     manual_single_ion_anisotropy_dialog.h
     manual_single_ion_anisotropy_dialog.cpp
     manual_single_ion_anisotropy_dialog.ui
-    random_single_ion_anisotropy_dialog.h random_single_ion_anisotropy_dialog.cpp random_single_ion_anisotropy_dialog.ui
+    random_single_ion_anisotropy_dialog.h
+    random_single_ion_anisotropy_dialog.cpp
+    random_single_ion_anisotropy_dialog.ui
+    faust_spin_g_factor_dialog.h
+    faust_spin_g_factor_dialog.cpp
+    faust_spin_g_factor_dialog.ui
+    spin_parameters_dialog.h
+    spin_parameters_dialog.cpp
+    spin_parameters_dialog.ui
 
 )
 
