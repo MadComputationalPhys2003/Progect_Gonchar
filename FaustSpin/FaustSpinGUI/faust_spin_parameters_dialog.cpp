@@ -274,24 +274,29 @@ bool FaustSpinParametersDialog::anisotropyFitsLattice(
 
 void FaustSpinParametersDialog::accept()
 {
+    if (validateInputs()) {
+        QDialog::accept();
+    }
+}
+
+bool FaustSpinParametersDialog::validateInputs()
+{
     FaustSpinSim::SimulationConfig geometry;
     readLattice(geometry);
 
     if (!exchangeFitsLattice(geometry)) {
         QMessageBox::warning(this, tr("Exchange integral"),
                              tr("The lattice has changed. Set the exchange matrices again."));
-        return;
+        return false;
     }
 
     if (!anisotropyFitsLattice(geometry)) {
         QMessageBox::warning(this, tr("Single-ion anisotropy"),
                              tr("The lattice has changed. Set the anisotropy matrices again."));
-        return;
+        return false;
     }
-    if (!readMagneticField()) {
-        return;
-    }
-    QDialog::accept();
+
+    return readMagneticField();
 }
 void FaustSpinParametersDialog::setupMagneticFieldEditors()
 {

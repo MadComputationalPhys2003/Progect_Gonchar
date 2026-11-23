@@ -22,7 +22,7 @@ public:
 
     void accept() override;
     void applyTo(FaustSpinSim::SimulationConfig &config) const;
-
+    bool validateInputs();
 private:
     void updateDimensionControls(int index);
     void readLattice(FaustSpinSim::SimulationConfig &config) const;
@@ -35,6 +35,7 @@ private:
     std::array<QSpinBox *, 3> sizeEditors{};
     void setupMagneticFieldEditors();
     bool readMagneticField();
+
 std::optional<SpinParametersDialog::Settings> spinSettings_;
     FaustSpinSim::Vector3 magneticField_;
     std::array<QDoubleSpinBox *, 4> magneticFieldEditors_{};

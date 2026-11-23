@@ -33,6 +33,7 @@ qt_add_executable(FaustSpinGUI
     spin_parameters_dialog.h
     spin_parameters_dialog.cpp
     spin_parameters_dialog.ui
+    faust_spin_visualization.h faust_spin_visualization.cpp faust_spin_visualization.ui
 
 )
 

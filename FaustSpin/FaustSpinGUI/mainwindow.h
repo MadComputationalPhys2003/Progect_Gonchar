@@ -10,7 +10,9 @@ class MainMenu;
 }
 QT_END_NAMESPACE
 class MainWindow_1;
+class QAction;
 class QThread;
+class FaustSpinParametersDialog;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -20,12 +22,14 @@ public:
     ~MainWindow() override;
 
 private:
-    void startFaustSpin();
+  void startFaustSpin(FaustSpinParametersDialog &dialog);
+    void saveFaustSpinTxt();
 
     Ui::MainMenu *ui;
     MainWindow_1 *urFaustWindow = nullptr;
     FaustSpinSim::SimulationConfig faustSpinConfig;
     std::optional<FaustSpinSim::SimulationResult> faustSpinResult_;
     QThread *faustSpinWorker_ = nullptr;
+    QAction *saveFaustSpinTxtAction_ = nullptr;
 };
 #endif // MAINWINDOW_H
