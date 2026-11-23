@@ -1,22 +1,34 @@
-#ifndef MANUAL_SINGLE_ION_ANISOTROPY_DIALOG_H
-#define MANUAL_SINGLE_ION_ANISOTROPY_DIALOG_H
+#pragma once
+
+#include "Faust math/Faust_Matrix.h"
 
 #include <QDialog>
 
-namespace Ui {
-class ManualSingleIonAnisotropyDialog;
-}
+#include <array>
+#include <memory>
+#include <vector>
 
-class ManualSingleIonAnisotropyDialog : public QDialog
+class QLineEdit;
+namespace Ui { class ManualSingleIonAnisotropyDialog; }
+
+class ManualSingleIonAnisotropyDialog final : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ManualSingleIonAnisotropyDialog(QWidget *parent = nullptr);
-    ~ManualSingleIonAnisotropyDialog();
+    explicit ManualSingleIonAnisotropyDialog(std::vector<FM::Matrix> matrices,
+                                             QWidget *parent = nullptr);
+    ~ManualSingleIonAnisotropyDialog() override;
+
+    std::vector<FM::Matrix> takeMatrices();
+    void accept() override;
 
 private:
-    Ui::ManualSingleIonAnisotropyDialog *ui;
-};
+    void showIon(int index);
+    bool saveMatrix();
 
-#endif // MANUAL_SINGLE_ION_ANISOTROPY_DIALOG_H
+    std::unique_ptr<Ui::ManualSingleIonAnisotropyDialog> ui;
+    std::vector<FM::Matrix> matrices_;
+    std::array<QLineEdit *, 9> entries_{};
+    int ion_ = 0;
+};

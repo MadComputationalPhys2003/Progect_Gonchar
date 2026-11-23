@@ -1,22 +1,30 @@
-#ifndef FAUST_SPIN_SINGLE_ION_ANISOTROPY_DIALOG_H
-#define FAUST_SPIN_SINGLE_ION_ANISOTROPY_DIALOG_H
+#pragma once
+
+#include "FaustSpinSimulation.h"
 
 #include <QDialog>
 
-namespace Ui {
-class FaustSpinSingleIonAnisotropyDialog;
-}
+#include <memory>
+#include <optional>
 
-class FaustSpinSingleIonAnisotropyDialog : public QDialog
+namespace Ui { class FaustSpinSingleIonAnisotropyDialog; }
+
+class FaustSpinSingleIonAnisotropyDialog final : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit FaustSpinSingleIonAnisotropyDialog(QWidget *parent = nullptr);
-    ~FaustSpinSingleIonAnisotropyDialog();
+    explicit FaustSpinSingleIonAnisotropyDialog(FaustSpinSim::SimulationConfig &config,
+                                                QWidget *parent = nullptr);
+    ~FaustSpinSingleIonAnisotropyDialog() override;
+
+    void accept() override;
 
 private:
-    Ui::FaustSpinSingleIonAnisotropyDialog *ui;
-};
+    void configureAnisotropy();
+    void updateControls();
 
-#endif // FAUST_SPIN_SINGLE_ION_ANISOTROPY_DIALOG_H
+    std::unique_ptr<Ui::FaustSpinSingleIonAnisotropyDialog> ui;
+    FaustSpinSim::SimulationConfig &config_;
+    std::optional<FaustSpinSim::Interaction> selected_;
+};

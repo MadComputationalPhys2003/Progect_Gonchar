@@ -1,14 +1,14 @@
 #pragma once
 
+#include "FaustSpinSimulation.h"
+
 #include <QDialog>
 #include <array>
-#include "FaustSpinSimulation.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class FaustSpinParametersDialog; }
 class QSpinBox;
 QT_END_NAMESPACE
-
-namespace FaustSpinSim { struct SimulationConfig; }
 
 class FaustSpinParametersDialog : public QDialog
 {
@@ -17,16 +17,18 @@ public:
         const FaustSpinSim::SimulationConfig &config,
         QWidget *parent = nullptr);
     ~FaustSpinParametersDialog() override;
-    void accept();
+
+    void accept() override;
     void applyTo(FaustSpinSim::SimulationConfig &config) const;
 
 private:
     void updateDimensionControls(int index);
     void readLattice(FaustSpinSim::SimulationConfig &config) const;
     bool exchangeFitsLattice(const FaustSpinSim::SimulationConfig &config) const;
+    bool anisotropyFitsLattice(const FaustSpinSim::SimulationConfig &config) const;
 
-    // Это поле поставь после указателя ui.
-    FaustSpinSim::SimulationConfig exchangeConfig_;
     Ui::FaustSpinParametersDialog *ui;
+    FaustSpinSim::SimulationConfig exchangeConfig_;
+    FaustSpinSim::SimulationConfig anisotropyConfig_;
     std::array<QSpinBox *, 3> sizeEditors{};
 };

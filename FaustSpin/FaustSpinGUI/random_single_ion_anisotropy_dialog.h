@@ -1,22 +1,25 @@
-#ifndef RANDOM_SINGLE_ION_ANISOTROPY_DIALOG_H
-#define RANDOM_SINGLE_ION_ANISOTROPY_DIALOG_H
+#pragma once
 
 #include <QDialog>
 
-namespace Ui {
-class RandomSingleIonAnisotropyDialog;
-}
+#include <memory>
+#include <utility>
 
-class RandomSingleIonAnisotropyDialog : public QDialog
+namespace Ui { class RandomSingleIonAnisotropyDialog; }
+
+class RandomSingleIonAnisotropyDialog final : public QDialog
 {
     Q_OBJECT
 
 public:
     explicit RandomSingleIonAnisotropyDialog(QWidget *parent = nullptr);
-    ~RandomSingleIonAnisotropyDialog();
+    ~RandomSingleIonAnisotropyDialog() override;
+
+    std::pair<double, double> bounds() const;
+    void accept() override;
 
 private:
-    Ui::RandomSingleIonAnisotropyDialog *ui;
+    std::unique_ptr<Ui::RandomSingleIonAnisotropyDialog> ui;
+    double minimum_ = -1.0;
+    double maximum_ = 1.0;
 };
-
-#endif // RANDOM_SINGLE_ION_ANISOTROPY_DIALOG_H

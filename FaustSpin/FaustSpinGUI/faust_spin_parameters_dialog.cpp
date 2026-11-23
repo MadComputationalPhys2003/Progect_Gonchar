@@ -1,24 +1,27 @@
-#include "FaustSpinSimulation.h"
 #include "faust_spin_parameters_dialog.h"
 #include "ui_faust_spin_parameters_dialog.h"
 #include "faust_spin_exchange_integral_dialog.h"
+#include "faust_spin_single_ion_anisotropy_dialog.h"
 
+#include <QHeaderView>
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <QPushButton>
-#include <utility>
-#include <QKeyEvent>
 #include <QSpinBox>
 #include <QTableWidget>
-#include <QHeaderView>
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <utility>
 
 namespace {
 using FaustSpin::Dimension;
 
 constexpr std::array dimensions{Dimension::one, Dimension::two, Dimension::three};
 constexpr std::uint64_t minExtent = 2;
+constexpr std::uint64_t maxExtent = 99;
+
 class LatticeSizeSpinBox final : public QSpinBox
 {
 public:
@@ -51,19 +54,34 @@ private:
     QTableWidget *table_;
     int column_;
 };
-constexpr std::uint64_t maxExtent = 99;
+
+bool sameLattice(const FaustSpinSim::SimulationConfig &a,
+                 const FaustSpinSim::SimulationConfig &b)
+{
+    return a.dimension == b.dimension && a.lx == b.lx && a.ly == b.ly && a.lz == b.lz;
 }
+} // namespace
 
 FaustSpinParametersDialog::FaustSpinParametersDialog(
     const FaustSpinSim::SimulationConfig &config, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::FaustSpinParametersDialog)
-    ,exchangeConfig_(config)
+    , exchangeConfig_(config)
+    , anisotropyConfig_{
+          .lx = config.lx,
+          .ly = config.ly,
+          .lz = config.lz,
+          .dimension = config.dimension,
+          .singleIonAnisotropy = config.singleIonAnisotropy,
+          .anisotropyMode = config.anisotropyMode,
+          .anisotropyDirection = config.anisotropyDirection
+      }
 {
     ui->setupUi(this);
     ui->checkBoxExchange->setChecked(config.exchangeEnabled);
     ui->checkBoxAnisotropy->setChecked(config.anisotropyEnabled);
     ui->checkBoxZeenmam->setChecked(config.zeemanEnabled);
+
     auto *table = ui->latticeSizeTableWidget;
     table->verticalHeader()->hide();
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -105,8 +123,7 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
 
     connect(ui->dimensionComboBox, &QComboBox::currentIndexChanged,
             this, &FaustSpinParametersDialog::updateDimensionControls);
-    connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+
     connect(ui->setExchangeIntegralButton, &QPushButton::clicked, this, [this] {
         FaustSpinSim::SimulationConfig candidate;
         readLattice(candidate);
@@ -121,6 +138,24 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
         FaustSpinExchangeIntegralDialog dialog(candidate, this);
         if (dialog.exec() == QDialog::Accepted) {
             exchangeConfig_ = std::move(candidate);
+        }
+    });
+
+    connect(ui->pushButtonAnisotropy, &QPushButton::clicked, this, [this] {
+        FaustSpinSim::SimulationConfig candidate;
+        readLattice(candidate);
+        candidate.anisotropyMode = anisotropyConfig_.anisotropyMode;
+        candidate.anisotropyDirection = anisotropyConfig_.anisotropyDirection;
+
+        if (anisotropyFitsLattice(candidate)) {
+            candidate.singleIonAnisotropy = anisotropyConfig_.singleIonAnisotropy;
+        } else {
+            candidate.singleIonAnisotropy = std::vector<FM::Matrix>{};
+        }
+
+        FaustSpinSingleIonAnisotropyDialog dialog(candidate, this);
+        if (dialog.exec() == QDialog::Accepted) {
+            anisotropyConfig_ = std::move(candidate);
         }
     });
 
@@ -140,18 +175,18 @@ void FaustSpinParametersDialog::updateDimensionControls(int index)
 
 void FaustSpinParametersDialog::applyTo(FaustSpinSim::SimulationConfig &config) const
 {
-    const int index = ui->dimensionComboBox->currentIndex();
-
-    config.dimension = static_cast<Dimension>(ui->dimensionComboBox->currentData().toInt());
     readLattice(config);
     config.exchangeMode = exchangeConfig_.exchangeMode;
     config.exchangeIntegral = exchangeConfig_.exchangeIntegral;
+    config.anisotropyMode = anisotropyConfig_.anisotropyMode;
+    config.singleIonAnisotropy = anisotropyConfig_.singleIonAnisotropy;
     config.epsilon = ui->energyErrorSpinBox->value();
     config.maxSweeps = static_cast<std::size_t>(ui->maximumIterationsSpinBox->value());
     config.exchangeEnabled = ui->checkBoxExchange->isChecked();
     config.anisotropyEnabled = ui->checkBoxAnisotropy->isChecked();
     config.zeemanEnabled = ui->checkBoxZeenmam->isChecked();
 }
+
 void FaustSpinParametersDialog::readLattice(FaustSpinSim::SimulationConfig &config) const
 {
     const int index = ui->dimensionComboBox->currentIndex();
@@ -166,10 +201,14 @@ bool FaustSpinParametersDialog::exchangeFitsLattice(
     const FaustSpinSim::SimulationConfig &config) const
 {
     return exchangeConfig_.exchangeMode == FaustSpinSim::ExchangeMode::constant ||
-           (exchangeConfig_.dimension == config.dimension &&
-            exchangeConfig_.lx == config.lx &&
-            exchangeConfig_.ly == config.ly &&
-            exchangeConfig_.lz == config.lz);
+           sameLattice(exchangeConfig_, config);
+}
+
+bool FaustSpinParametersDialog::anisotropyFitsLattice(
+    const FaustSpinSim::SimulationConfig &config) const
+{
+    return anisotropyConfig_.anisotropyMode == FaustSpinSim::AnisotropyMode::constant ||
+           sameLattice(anisotropyConfig_, config);
 }
 
 void FaustSpinParametersDialog::accept()
@@ -180,6 +219,12 @@ void FaustSpinParametersDialog::accept()
     if (!exchangeFitsLattice(geometry)) {
         QMessageBox::warning(this, tr("Exchange integral"),
                              tr("The lattice has changed. Set the exchange matrices again."));
+        return;
+    }
+
+    if (!anisotropyFitsLattice(geometry)) {
+        QMessageBox::warning(this, tr("Single-ion anisotropy"),
+                             tr("The lattice has changed. Set the anisotropy matrices again."));
         return;
     }
 
