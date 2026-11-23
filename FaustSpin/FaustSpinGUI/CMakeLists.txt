@@ -12,6 +12,20 @@ qt_add_executable(FaustSpinGUI
     faust_spin_parameters_dialog.h
     faust_spin_parameters_dialog.cpp
     faust_spin_parameters_dialog.ui
+    faust_spin_exchange_integral_dialog.h
+    faust_spin_exchange_integral_dialog.cpp
+    faust_spin_exchange_integral_dialog.ui
+    manual_exchange_dialog_faust_spin.h
+    manual_exchange_dialog_faust_spin.cpp
+    manual_exchange_dialog_faust_spin.ui
+    faust_spin_single_ion_anisotropy_dialog.h
+    faust_spin_single_ion_anisotropy_dialog.cpp
+    faust_spin_single_ion_anisotropy_dialog.ui
+    manual_single_ion_anisotropy_dialog.h
+    manual_single_ion_anisotropy_dialog.cpp
+    manual_single_ion_anisotropy_dialog.ui
+    random_single_ion_anisotropy_dialog.h random_single_ion_anisotropy_dialog.cpp random_single_ion_anisotropy_dialog.ui
+
 )
 
 target_link_libraries(FaustSpinGUI PRIVATE

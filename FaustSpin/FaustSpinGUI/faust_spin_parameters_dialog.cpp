@@ -1,6 +1,11 @@
 #include "FaustSpinSimulation.h"
 #include "faust_spin_parameters_dialog.h"
 #include "ui_faust_spin_parameters_dialog.h"
+#include "faust_spin_exchange_integral_dialog.h"
+
+#include <QMessageBox>
+#include <QPushButton>
+#include <utility>
 #include <QKeyEvent>
 #include <QSpinBox>
 #include <QTableWidget>
@@ -53,9 +58,12 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
     const FaustSpinSim::SimulationConfig &config, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::FaustSpinParametersDialog)
+    ,exchangeConfig_(config)
 {
     ui->setupUi(this);
-
+    ui->checkBoxExchange->setChecked(config.exchangeEnabled);
+    ui->checkBoxAnisotropy->setChecked(config.anisotropyEnabled);
+    ui->checkBoxZeenmam->setChecked(config.zeemanEnabled);
     auto *table = ui->latticeSizeTableWidget;
     table->verticalHeader()->hide();
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -99,6 +107,22 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
             this, &FaustSpinParametersDialog::updateDimensionControls);
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(ui->setExchangeIntegralButton, &QPushButton::clicked, this, [this] {
+        FaustSpinSim::SimulationConfig candidate;
+        readLattice(candidate);
+        candidate.exchangeMode = exchangeConfig_.exchangeMode;
+
+        if (exchangeFitsLattice(candidate)) {
+            candidate.exchangeIntegral = exchangeConfig_.exchangeIntegral;
+        } else {
+            candidate.exchangeIntegral = std::vector<FM::Matrix>{};
+        }
+
+        FaustSpinExchangeIntegralDialog dialog(candidate, this);
+        if (dialog.exec() == QDialog::Accepted) {
+            exchangeConfig_ = std::move(candidate);
+        }
+    });
 
     updateDimensionControls(ui->dimensionComboBox->currentIndex());
 }
@@ -119,9 +143,45 @@ void FaustSpinParametersDialog::applyTo(FaustSpinSim::SimulationConfig &config) 
     const int index = ui->dimensionComboBox->currentIndex();
 
     config.dimension = static_cast<Dimension>(ui->dimensionComboBox->currentData().toInt());
+    readLattice(config);
+    config.exchangeMode = exchangeConfig_.exchangeMode;
+    config.exchangeIntegral = exchangeConfig_.exchangeIntegral;
+    config.epsilon = ui->energyErrorSpinBox->value();
+    config.maxSweeps = static_cast<std::size_t>(ui->maximumIterationsSpinBox->value());
+    config.exchangeEnabled = ui->checkBoxExchange->isChecked();
+    config.anisotropyEnabled = ui->checkBoxAnisotropy->isChecked();
+    config.zeemanEnabled = ui->checkBoxZeenmam->isChecked();
+}
+void FaustSpinParametersDialog::readLattice(FaustSpinSim::SimulationConfig &config) const
+{
+    const int index = ui->dimensionComboBox->currentIndex();
+    config.dimension = static_cast<FaustSpin::Dimension>(
+        ui->dimensionComboBox->currentData().toInt());
     config.lx = static_cast<std::uint64_t>(sizeEditors[0]->value());
     config.ly = index >= 1 ? static_cast<std::uint64_t>(sizeEditors[1]->value()) : 1;
     config.lz = index >= 2 ? static_cast<std::uint64_t>(sizeEditors[2]->value()) : 1;
-    config.epsilon = ui->energyErrorSpinBox->value();
-    config.maxSweeps = static_cast<std::size_t>(ui->maximumIterationsSpinBox->value());
+}
+
+bool FaustSpinParametersDialog::exchangeFitsLattice(
+    const FaustSpinSim::SimulationConfig &config) const
+{
+    return exchangeConfig_.exchangeMode == FaustSpinSim::ExchangeMode::constant ||
+           (exchangeConfig_.dimension == config.dimension &&
+            exchangeConfig_.lx == config.lx &&
+            exchangeConfig_.ly == config.ly &&
+            exchangeConfig_.lz == config.lz);
+}
+
+void FaustSpinParametersDialog::accept()
+{
+    FaustSpinSim::SimulationConfig geometry;
+    readLattice(geometry);
+
+    if (!exchangeFitsLattice(geometry)) {
+        QMessageBox::warning(this, tr("Exchange integral"),
+                             tr("The lattice has changed. Set the exchange matrices again."));
+        return;
+    }
+
+    QDialog::accept();
 }
