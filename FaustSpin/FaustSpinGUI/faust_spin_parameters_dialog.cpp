@@ -175,8 +175,12 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
         const auto ionCount =
             static_cast<std::size_t>(lattice.lx * lattice.ly * lattice.lz);
 
-        SpinParametersDialog dialog(ionCount, {}, this);
-        dialog.exec();
+        SpinParametersDialog dialog(
+            ionCount, spinSettings_.value_or(SpinParametersDialog::Settings{}), this);
+
+        if (dialog.exec() == QDialog::Accepted) {
+            spinSettings_ = dialog.settings();
+        }
     });
     updateDimensionControls(ui->dimensionComboBox->currentIndex());
 }
@@ -200,11 +204,48 @@ void FaustSpinParametersDialog::applyTo(FaustSpinSim::SimulationConfig &config) 
     config.anisotropyMode = anisotropyConfig_.anisotropyMode;
     config.singleIonAnisotropy = anisotropyConfig_.singleIonAnisotropy;
     config.epsilon = ui->energyErrorSpinBox->value();
-    config.maxSweeps = static_cast<std::size_t>(ui->maximumIterationsSpinBox->value());
+    config.maxSweeps = static_cast<std::size_t>(
+        ui->maximumIterationsSpinBox->value());
     config.exchangeEnabled = ui->checkBoxExchange->isChecked();
     config.anisotropyEnabled = ui->checkBoxAnisotropy->isChecked();
     config.zeemanEnabled = ui->checkBoxZeenmam->isChecked();
-        config.magneticField = magneticField_;
+    config.magneticField = magneticField_;
+
+    if (!spinSettings_) {
+        return;
+    }
+
+    const auto &settings = *spinSettings_;
+    using DirectionMode = SpinParametersDialog::DirectionMode;
+    using FaustSpinSim::SpinDirectionMode;
+    using FaustSpinSim::SpinLengthMode;
+
+    config.spinLength = settings.spinLength;
+    config.spinLengthMode = std::holds_alternative<double>(settings.spinLength)
+                                ? SpinLengthMode::constant
+                                : SpinLengthMode::different;
+
+    config.initialSpinDirections.reset();
+
+    switch (settings.directionMode) {
+    case DirectionMode::parallel:
+        config.initialization = SpinDirectionMode::parallel;
+        config.parallelDirection = settings.parallelDirection;
+        break;
+    case DirectionMode::random:
+        config.initialization = SpinDirectionMode::random;
+        config.directionSeed = settings.directionSeed;
+        break;
+    case DirectionMode::file:
+        config.initialization = SpinDirectionMode::file;
+        config.directionFile = settings.directionFile.toStdString();
+        config.initialSpinDirections = settings.ionDirections;
+        break;
+    case DirectionMode::manual:
+        config.initialization = SpinDirectionMode::parallel;
+        config.initialSpinDirections = settings.ionDirections;
+        break;
+    }
 }
 
 void FaustSpinParametersDialog::readLattice(FaustSpinSim::SimulationConfig &config) const

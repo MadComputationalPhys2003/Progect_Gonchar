@@ -1,7 +1,8 @@
 #pragma once
 
 #include "FaustSpinSimulation.h"
-
+#include "spin_parameters_dialog.h"
+#include <optional>
 #include <QDialog>
 #include <array>
 
@@ -34,7 +35,7 @@ private:
     std::array<QSpinBox *, 3> sizeEditors{};
     void setupMagneticFieldEditors();
     bool readMagneticField();
-
+std::optional<SpinParametersDialog::Settings> spinSettings_;
     FaustSpinSim::Vector3 magneticField_;
     std::array<QDoubleSpinBox *, 4> magneticFieldEditors_{};
 };
