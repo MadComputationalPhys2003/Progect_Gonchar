@@ -8,6 +8,7 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class FaustSpinParametersDialog; }
 class QSpinBox;
+class QDoubleSpinBox;
 QT_END_NAMESPACE
 
 class FaustSpinParametersDialog : public QDialog
@@ -31,4 +32,9 @@ private:
     FaustSpinSim::SimulationConfig exchangeConfig_;
     FaustSpinSim::SimulationConfig anisotropyConfig_;
     std::array<QSpinBox *, 3> sizeEditors{};
+    void setupMagneticFieldEditors();
+    bool readMagneticField();
+
+    FaustSpinSim::Vector3 magneticField_;
+    std::array<QDoubleSpinBox *, 4> magneticFieldEditors_{};
 };

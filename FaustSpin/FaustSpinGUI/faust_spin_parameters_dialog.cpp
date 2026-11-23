@@ -10,7 +10,11 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QTableWidget>
+#include <QCheckBox>
+#include <QDoubleSpinBox>
 
+#include <cmath>
+#include <limits>
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -77,12 +81,13 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
           .anisotropyMode = config.anisotropyMode,
           .anisotropyDirection = config.anisotropyDirection
       }
+    , magneticField_(config.magneticField)
 {
     ui->setupUi(this);
     ui->checkBoxExchange->setChecked(config.exchangeEnabled);
     ui->checkBoxAnisotropy->setChecked(config.anisotropyEnabled);
     ui->checkBoxZeenmam->setChecked(config.zeemanEnabled);
-
+    setupMagneticFieldEditors();
     auto *table = ui->latticeSizeTableWidget;
     table->verticalHeader()->hide();
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -199,6 +204,7 @@ void FaustSpinParametersDialog::applyTo(FaustSpinSim::SimulationConfig &config) 
     config.exchangeEnabled = ui->checkBoxExchange->isChecked();
     config.anisotropyEnabled = ui->checkBoxAnisotropy->isChecked();
     config.zeemanEnabled = ui->checkBoxZeenmam->isChecked();
+        config.magneticField = magneticField_;
 }
 
 void FaustSpinParametersDialog::readLattice(FaustSpinSim::SimulationConfig &config) const
@@ -241,6 +247,81 @@ void FaustSpinParametersDialog::accept()
                              tr("The lattice has changed. Set the anisotropy matrices again."));
         return;
     }
-
+    if (!readMagneticField()) {
+        return;
+    }
     QDialog::accept();
+}
+void FaustSpinParametersDialog::setupMagneticFieldEditors()
+{
+    auto *table = ui->magneticFieldTableWidget;
+    table->verticalHeader()->hide();
+    table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    table->setSelectionMode(QAbstractItemView::NoSelection);
+
+    const double magnitude = std::hypot(
+        magneticField_[0], magneticField_[1], magneticField_[2]);
+
+    std::array<double, 4> values{magnitude, 0.0, 0.0, 1.0};
+    if (magnitude > 0.0) {
+        for (std::size_t i = 0; i < 3; ++i) {
+            values[i + 1] = magneticField_[i] / magnitude;
+        }
+    }
+
+    for (std::size_t column = 0; column < magneticFieldEditors_.size(); ++column) {
+        auto *editor = new QDoubleSpinBox(table);
+        editor->setDecimals(12);
+        editor->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        editor->setAlignment(Qt::AlignCenter);
+
+        if (column == 0) {
+            editor->setRange(0.0, std::numeric_limits<double>::max());
+            editor->setSingleStep(1.0);
+        } else {
+            editor->setRange(-1.0, 1.0);
+            editor->setSingleStep(0.1);
+        }
+
+        editor->setValue(values[column]);
+        table->setCellWidget(0, static_cast<int>(column), editor);
+        magneticFieldEditors_[column] = editor;
+    }
+
+    table->resizeRowsToContents();
+    connect(ui->checkBoxZeenmam, &QCheckBox::toggled,
+            table, &QWidget::setVisible);
+    table->setVisible(ui->checkBoxZeenmam->isChecked());
+}
+
+bool FaustSpinParametersDialog::readMagneticField()
+{
+    if (!ui->checkBoxZeenmam->isChecked()) {
+        return true;
+    }
+
+    for (auto *editor : magneticFieldEditors_) {
+        editor->interpretText();
+    }
+
+    const double magnitude = magneticFieldEditors_[0]->value();
+    const double nx = magneticFieldEditors_[1]->value();
+    const double ny = magneticFieldEditors_[2]->value();
+    const double nz = magneticFieldEditors_[3]->value();
+    const double norm = std::hypot(nx, ny, nz);
+
+    constexpr double tolerance = 1.0e-9;
+    if (std::abs(norm - 1.0) > tolerance) {
+        QMessageBox::warning(this, tr("Magnetic field"),
+                             tr("The field direction must be a unit vector."));
+        magneticFieldEditors_[1]->setFocus();
+        return false;
+    }
+
+    magneticField_ = FaustSpinSim::Vector3{
+        magnitude * (nx / norm),
+        magnitude * (ny / norm),
+        magnitude * (nz / norm)
+    };
+    return true;
 }
