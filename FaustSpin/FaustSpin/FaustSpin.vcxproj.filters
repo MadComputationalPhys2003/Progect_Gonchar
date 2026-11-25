@@ -89,5 +89,8 @@
     <ClInclude Include="FaustSpinSimulation.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Additional calculus\IonMagnetMoment.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

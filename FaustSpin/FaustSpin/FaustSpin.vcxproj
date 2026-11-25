@@ -132,6 +132,7 @@
     <ClCompile Include="FaustSpin.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Additional calculus\IonMagnetMoment.h" />
     <ClInclude Include="Faust math\Exchange_Hamiltonian.h" />
     <ClInclude Include="Faust math\Faust_Matrix.h" />
     <ClInclude Include="1D\Neighbors_1D.h" />
