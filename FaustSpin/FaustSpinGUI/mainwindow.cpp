@@ -15,11 +15,12 @@
 #include <QPushButton>
 #include <QTemporaryDir>
 #include <QThread>
-
+#include "faust_spin_visualization.h"
 #include <exception>
 #include <memory>
 #include <utility>
-
+#include <QApplication>
+#include <QToolButton>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainMenu)
@@ -36,7 +37,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->FaustPushButtom, &QPushButton::clicked, this, [this] {
         FaustSpinParametersDialog dialog(faustSpinConfig, this);
-
+        if (auto *fileButton = dialog.findChild<QToolButton *>("fileToolButton")) {
+            auto *menu = new QMenu(fileButton);
+            menu->addAction(saveFaustSpinTxtAction_);
+            fileButton->setMenu(menu);
+            fileButton->setPopupMode(QToolButton::InstantPopup);
+        }
         auto *calculate = dialog.findChild<QPushButton *>("CalculatepushButton");
         auto *energyPlot = dialog.findChild<QPushButton *>("pushButtonEnergyplot");
         calculate->setAutoDefault(false);
@@ -61,7 +67,21 @@ MainWindow::MainWindow(QWidget *parent)
             plot.setResult(plotData);
             plot.exec();
         });
+        if (auto *spinVisualization =
+            dialog.findChild<QPushButton *>("pushButtonSpinVisualization")) {
+            spinVisualization->setAutoDefault(false);
+            spinVisualization->setEnabled(faustSpinResult_.has_value());
 
+            connect(spinVisualization, &QPushButton::clicked, &dialog, [this, &dialog] {
+                if (!faustSpinResult_ || faustSpinResult_->frames.empty()) {
+                    return;
+                }
+
+                FaustSpinVisualization visualization(&dialog);
+                visualization.setResult(*faustSpinResult_);
+                visualization.exec();
+            });
+        }
         if (dialog.exec() == QDialog::Accepted) {
             dialog.applyTo(faustSpinConfig);
         }
@@ -104,16 +124,22 @@ void MainWindow::startFaustSpin(FaustSpinParametersDialog &dialog)
 
     worker->setParent(this);
     faustSpinWorker_ = worker;
-
+    saveFaustSpinTxtAction_->setEnabled(false);
     QPointer<QPushButton> calculate(dialog.findChild<QPushButton *>("CalculatepushButton"));
     QPointer<QPushButton> energyPlot(dialog.findChild<QPushButton *>("pushButtonEnergyplot"));
     calculate->setText(tr("Calculating..."));
     calculate->setEnabled(false);
     energyPlot->setEnabled(false);
+    QPointer<QPushButton> spinVisualization(
+        dialog.findChild<QPushButton *>("pushButtonSpinVisualization"));
+    if (spinVisualization) {
+        spinVisualization->setEnabled(false);
+    }
     ui->FaustPushButtom->setEnabled(false);
 
     connect(worker, &QThread::finished, this,
-            [this, worker, outcome, calculate, energyPlot, parent = QPointer<QWidget>(&dialog)] {
+            [this, worker, outcome, calculate, energyPlot, spinVisualization,
+             parent = QPointer<QWidget>(&dialog)] {
                 faustSpinWorker_ = nullptr;
                 worker->deleteLater();
                 ui->FaustPushButtom->setEnabled(true);
@@ -121,6 +147,7 @@ void MainWindow::startFaustSpin(FaustSpinParametersDialog &dialog)
                 const bool succeeded = outcome->result.has_value();
                 if (succeeded) {
                     faustSpinResult_ = std::move(outcome->result);
+                     saveFaustSpinTxtAction_->setEnabled(faustSpinResult_.has_value());
                 }
                 if (calculate) {
                     calculate->setText(tr("Calculate"));
@@ -129,7 +156,9 @@ void MainWindow::startFaustSpin(FaustSpinParametersDialog &dialog)
                 if (energyPlot) {
                     energyPlot->setEnabled(faustSpinResult_.has_value());
                 }
-
+                if (spinVisualization) {
+                    spinVisualization->setEnabled(faustSpinResult_.has_value());
+                }
                 QWidget *messageParent = parent ? parent.data() : this;
                 if (!succeeded) {
                     QMessageBox::critical(messageParent, tr("FaustSpin error"), outcome->error);
@@ -137,6 +166,7 @@ void MainWindow::startFaustSpin(FaustSpinParametersDialog &dialog)
                 }
 
                 const auto &result = *faustSpinResult_;
+                saveFaustSpinTxtAction_->setEnabled(faustSpinResult_.has_value());
                 QMessageBox::information(
                     messageParent, tr("FaustSpin result"),
                     tr("Spins: %1\nInitial energy: %2 meV\nFinal energy: %3 meV"
@@ -177,7 +207,8 @@ void MainWindow::saveFaustSpinTxt()
         QMessageBox::critical(this, tr("TXT export error"), QString::fromUtf8(error.what()));
         return;
     }
-
+    auto *activeDialog = QApplication::activeModalWidget();
+    QWidget *parent = activeDialog ? activeDialog : this;
     directory.setAutoRemove(false);
     QMessageBox::information(this, tr("Saved"),
                              tr("Files saved to:\n%1").arg(directory.path()));

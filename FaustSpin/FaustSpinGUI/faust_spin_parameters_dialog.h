@@ -32,6 +32,7 @@ private:
     Ui::FaustSpinParametersDialog *ui;
     FaustSpinSim::SimulationConfig exchangeConfig_;
     FaustSpinSim::SimulationConfig anisotropyConfig_;
+    FaustSpinSim::SimulationConfig gFactorConfig_;
     std::array<QSpinBox *, 3> sizeEditors{};
     void setupMagneticFieldEditors();
     bool readMagneticField();

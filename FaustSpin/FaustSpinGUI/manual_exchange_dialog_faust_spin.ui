@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>890</y>
+     <x>430</x>
+     <y>600</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -35,7 +35,7 @@
      <x>0</x>
      <y>40</y>
      <width>801</width>
-     <height>511</height>
+     <height>401</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -48,8 +48,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>200</x>
-     <y>540</y>
+     <x>210</x>
+     <y>430</y>
      <width>341</width>
      <height>51</height>
     </rect>
@@ -61,8 +61,8 @@
   <widget class="QTableWidget" name="exchangeMatrixTable">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>710</y>
+     <x>130</x>
+     <y>600</y>
      <width>411</width>
      <height>161</height>
     </rect>
@@ -83,8 +83,8 @@
   <widget class="QSpinBox" name="exchangeBondIndex">
    <property name="geometry">
     <rect>
-     <x>312</x>
-     <y>590</y>
+     <x>322</x>
+     <y>480</y>
      <width>38</width>
      <height>26</height>
     </rect>
@@ -93,8 +93,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>590</y>
+     <x>240</x>
+     <y>480</y>
      <width>81</width>
      <height>26</height>
     </rect>
@@ -106,8 +106,8 @@
   <widget class="QLabel" name="exchangeBondCoordinates">
    <property name="geometry">
     <rect>
-     <x>210</x>
-     <y>620</y>
+     <x>220</x>
+     <y>510</y>
      <width>231</width>
      <height>71</height>
     </rect>
@@ -119,8 +119,8 @@
   <widget class="QLabel" name="exchangeInputError">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>590</y>
+     <x>400</x>
+     <y>480</y>
      <width>121</width>
      <height>61</height>
     </rect>

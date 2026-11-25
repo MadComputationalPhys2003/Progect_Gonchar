@@ -77,7 +77,8 @@ void SpinOpenGLWidget::addCone(
     const QVector3D &direction,
     float length,
     float radius,
-    const QVector3D &color)
+    const QVector3D &color,
+    int segments)
 {
     const QVector3D reference =
         std::abs(direction.z()) < 0.9f
@@ -125,15 +126,15 @@ void SpinOpenGLWidget::addCone(
     constexpr float fullCircle = 6.28318530718f;
 
     for (int segment = 0;
-         segment < coneSegments;
+         segment < segments;
          ++segment) {
         const float angle0 =
             fullCircle * static_cast<float>(segment) /
-            static_cast<float>(coneSegments);
+            static_cast<float>(segments);
 
         const float angle1 =
             fullCircle * static_cast<float>(segment + 1) /
-            static_cast<float>(coneSegments);
+            static_cast<float>(segments);
 
         const QVector3D rim0 =
             base + radius *
@@ -154,7 +155,9 @@ void SpinOpenGLWidget::addCone(
 }
 void SpinOpenGLWidget::setFrame(
     const UrFaustSim::SimulationConfig &config,
-    const UrFaustSim::SimulationFrame &frame)
+    const UrFaustSim::SimulationFrame &frame,
+    const QVector3D &fieldDirection,
+    std::size_t fieldStride)
 {
     vertices.clear();
     spinVertexCount = 0;
@@ -162,9 +165,14 @@ void SpinOpenGLWidget::setFrame(
     nodeVertexCount = 0;
     coneVertexCount = 0;
     geometryDirty = true;
-    // Пять отрезков на стрелку, по две вершины.
-    constexpr std::size_t verticesPerNode =
-        2 + 6 + 1 + 6 * coneSegments;
+    const QVector3D field = fieldDirection.normalized();
+    const bool drawField = !field.isNull();
+    fieldStride = std::max(std::size_t{1}, fieldStride);
+
+    constexpr int fieldHeadSegments = 3;
+    const std::size_t verticesPerNode =
+        2 + 6 + 1 + 6 * coneSegments
+        + (drawField ? 2 + 6 * fieldHeadSegments : 0);
 
     const auto maxSpins =
         static_cast<std::size_t>(
@@ -211,6 +219,15 @@ void SpinOpenGLWidget::setFrame(
     const float headLength = 0.25f * arrowLength;
     const float headWidth = 0.12f * arrowLength;
 
+    const QVector3D reference = std::abs(field.z()) < 0.9f
+                                    ? QVector3D(0.0f, 0.0f, 1.0f)
+                                    : QVector3D(0.0f, 1.0f, 0.0f);
+    const QVector3D fieldSide = QVector3D::crossProduct(field, reference).normalized();
+    const QVector3D fieldColor(1.0f, 0.68f, 0.12f);
+    const float fieldHeadRadius = 0.16f * scale;
+    const float fieldHeadLength = std::sqrt(2.0f) * fieldHeadRadius;
+    std::vector<QVector3D> fieldTips;
+
     const std::size_t yzStride = ly * lz;
     std::vector<QVector3D> nodePositions;
     nodePositions.reserve(frame.spinDirections.size());
@@ -248,6 +265,14 @@ void SpinOpenGLWidget::setFrame(
             0.575f + 0.375f * direction.z());
 
         addLine(base, headBase, color);
+
+        if (drawField && x % fieldStride == 0 &&
+            y % fieldStride == 0 && z % fieldStride == 0) {
+            const QVector3D fieldBase = base + 0.24f * scale * fieldSide;
+            const QVector3D fieldTip = fieldBase + 0.65f * scale * field;
+            addLine(fieldBase, fieldTip - fieldHeadLength * field, fieldColor);
+            fieldTips.push_back(fieldTip);
+        }
     }
     spinVertexCount = static_cast<int>(vertices.size());
 
@@ -320,6 +345,11 @@ void SpinOpenGLWidget::setFrame(
             headLength,
             headWidth,
             color);
+    }
+
+    for (const QVector3D &fieldTip : fieldTips) {
+        addCone(fieldTip, field, fieldHeadLength, fieldHeadRadius,
+                fieldColor, fieldHeadSegments);
     }
 
     coneVertexCount =
@@ -847,7 +877,7 @@ bool SpinOpenGLWidget::saveSvg(
     // Стержни стрелок.
     appendPrimitives(0, spinVertexCount, 2);
 
-    // Треугольные грани конусов.
+    // Треугольные грани наконечников.
     appendPrimitives(
         spinVertexCount + latticeVertexCount + nodeVertexCount,
         coneVertexCount,

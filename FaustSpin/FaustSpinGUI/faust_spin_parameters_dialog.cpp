@@ -12,7 +12,7 @@
 #include <QTableWidget>
 #include <QCheckBox>
 #include <QDoubleSpinBox>
-
+#include <QSizePolicy>
 #include <cmath>
 #include <limits>
 #include <algorithm>
@@ -81,6 +81,14 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
           .anisotropyMode = config.anisotropyMode,
           .anisotropyDirection = config.anisotropyDirection
       }
+    , gFactorConfig_{
+          .lx = config.lx,
+          .ly = config.ly,
+          .lz = config.lz,
+          .dimension = config.dimension,
+          .gFactor = config.gFactor,
+          .zeemanMode = config.zeemanMode
+      }
     , magneticField_(config.magneticField)
 {
     ui->setupUi(this);
@@ -88,6 +96,18 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
     ui->checkBoxAnisotropy->setChecked(config.anisotropyEnabled);
     ui->checkBoxZeenmam->setChecked(config.zeemanEnabled);
     setupMagneticFieldEditors();
+    const auto showSettingsWhenChecked = [](QCheckBox *checkBox, QPushButton *button) {
+        auto policy = button->sizePolicy();
+        policy.setRetainSizeWhenHidden(true);
+        button->setSizePolicy(policy);
+
+        connect(checkBox, &QCheckBox::toggled, button, &QWidget::setVisible);
+        button->setVisible(checkBox->isChecked());
+    };
+
+    showSettingsWhenChecked(ui->checkBoxExchange, ui->setExchangeIntegralButton);
+    showSettingsWhenChecked(ui->checkBoxAnisotropy, ui->pushButtonAnisotropy);
+    showSettingsWhenChecked(ui->checkBoxZeenmam, ui->pushButtonG);
     auto *table = ui->latticeSizeTableWidget;
     table->verticalHeader()->hide();
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -165,8 +185,20 @@ FaustSpinParametersDialog::FaustSpinParametersDialog(
         }
     });
     connect(ui->pushButtonG, &QPushButton::clicked, this, [this] {
-        FaustSpinGFactorDialog dialog(this);
-        dialog.exec();
+        FaustSpinSim::SimulationConfig candidate;
+        readLattice(candidate);
+        candidate.zeemanMode = gFactorConfig_.zeemanMode;
+
+        if (candidate.zeemanMode == FaustSpinSim::ZeemanMode::constant ||
+            sameLattice(gFactorConfig_, candidate)) {
+            candidate.gFactor = gFactorConfig_.gFactor;
+        }
+
+        FaustSpinGFactorDialog dialog(candidate, this);
+        if (dialog.exec() == QDialog::Accepted) {
+            dialog.applyTo(candidate);
+            gFactorConfig_ = std::move(candidate);
+        }
     });
     connect(ui->pushButtonSetSpitParametrs, &QPushButton::clicked, this, [this] {
         FaustSpinSim::SimulationConfig lattice;
@@ -209,6 +241,8 @@ void FaustSpinParametersDialog::applyTo(FaustSpinSim::SimulationConfig &config) 
     config.exchangeEnabled = ui->checkBoxExchange->isChecked();
     config.anisotropyEnabled = ui->checkBoxAnisotropy->isChecked();
     config.zeemanEnabled = ui->checkBoxZeenmam->isChecked();
+    config.zeemanMode = gFactorConfig_.zeemanMode;
+    config.gFactor = gFactorConfig_.gFactor;
     config.magneticField = magneticField_;
 
     if (!spinSettings_) {
@@ -295,7 +329,12 @@ bool FaustSpinParametersDialog::validateInputs()
                              tr("The lattice has changed. Set the anisotropy matrices again."));
         return false;
     }
-
+    if (gFactorConfig_.zeemanMode == FaustSpinSim::ZeemanMode::matrix &&
+        !sameLattice(gFactorConfig_, geometry)) {
+        QMessageBox::warning(this, tr("g-factor / g-tensor"),
+                             tr("The lattice has changed. Set the g-tensors again."));
+        return false;
+    }
     return readMagneticField();
 }
 void FaustSpinParametersDialog::setupMagneticFieldEditors()

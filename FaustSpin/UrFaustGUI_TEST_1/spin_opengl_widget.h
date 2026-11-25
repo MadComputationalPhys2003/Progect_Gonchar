@@ -1,6 +1,6 @@
 #ifndef SPIN_OPENGL_WIDGET_H
 #define SPIN_OPENGL_WIDGET_H
-
+#include <cstddef>
 #include "UrFaustSimulation_1.h"
 #include <QPointF>
 #include <QOpenGLWidget>
@@ -30,7 +30,9 @@ public:
 
     void setFrame(
         const UrFaustSim::SimulationConfig &config,
-        const UrFaustSim::SimulationFrame &frame);
+        const UrFaustSim::SimulationFrame &frame,
+        const QVector3D &fieldDirection = QVector3D(),
+        std::size_t fieldStride = 1);
     void setViewAlongX();
     void setViewAlongY();
     void setViewAlongZ();
@@ -66,7 +68,8 @@ private:
         const QVector3D &direction,
         float length,
         float radius,
-        const QVector3D &color);
+        const QVector3D &color,
+        int segments = coneSegments);
     int latticeVertexCount = 0;
     int nodeVertexCount = 0;
     QPointF lastMousePosition;
