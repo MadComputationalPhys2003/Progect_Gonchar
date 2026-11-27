@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1116</width>
-    <height>839</height>
+    <width>1280</width>
+    <height>960</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,18 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QScrollArea" name="visualizationScrollArea">
+     <property name="minimumSize">
+      <size>
+       <width>640</width>
+       <height>360</height>
+      </size>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -24,26 +36,38 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>1092</width>
-        <height>815</height>
+        <width>1239</width>
+        <height>936</height>
        </rect>
       </property>
       <widget class="SpinOpenGLWidget" name="spinOpenGLWidget">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>-40</y>
-         <width>951</width>
-         <height>661</height>
+         <x>11</x>
+         <y>11</y>
+         <width>1234</width>
+         <height>608</height>
         </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>420</height>
+        </size>
        </property>
       </widget>
       <widget class="QPushButton" name="saveSvgButton">
        <property name="geometry">
         <rect>
-         <x>470</x>
-         <y>710</y>
-         <width>93</width>
+         <x>11</x>
+         <y>896</y>
+         <width>94</width>
          <height>29</height>
         </rect>
        </property>
@@ -57,8 +81,8 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>590</x>
-         <y>680</y>
+         <x>11</x>
+         <y>811</y>
          <width>221</width>
          <height>78</height>
         </rect>
@@ -97,10 +121,10 @@
       <widget class="QWidget" name="layoutWidget_2">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>660</y>
-         <width>361</width>
-         <height>121</height>
+         <x>11</x>
+         <y>772</y>
+         <width>247</width>
+         <height>32</height>
         </rect>
        </property>
        <layout class="QGridLayout" name="gridLayout_2">
@@ -191,8 +215,8 @@ QSlider::handle:horizontal:disabled {
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>360</x>
-         <y>650</y>
+         <x>11</x>
+         <y>626</y>
          <width>95</width>
          <height>139</height>
         </rect>
