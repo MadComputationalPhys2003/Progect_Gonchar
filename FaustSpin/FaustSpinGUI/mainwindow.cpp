@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
             }
 
             EnergyPlotDialog plot(&dialog);
+            plot.setWindowFlag(Qt::WindowMaximizeButtonHint, true);
             plot.setWindowTitle(tr("FaustSpin Energy Plot (meV)"));
             plot.setResult(plotData);
             plot.exec();

@@ -197,6 +197,15 @@ void EnergyPlotDialog::setResult(
         scene->sceneRect(), Qt::KeepAspectRatio
         );
 }
+void EnergyPlotDialog::resizeEvent(QResizeEvent *event)
+{
+    QDialog::resizeEvent(event);
+
+    if (scene && !scene->items().isEmpty()) {
+        ui->energyGraphicsView->fitInView(
+            scene->sceneRect(), Qt::KeepAspectRatio);
+    }
+}
 void EnergyPlotDialog::savePlot()
 {
     if (!scene || scene->items().isEmpty()) {

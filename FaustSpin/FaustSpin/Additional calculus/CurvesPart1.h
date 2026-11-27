@@ -33,17 +33,15 @@ namespace Curves1 {
 			field_direction[2] / norm
 		};
 		for (std::size_t i = 0; i < N_points + 1; i++) {
-
+			B = B + i * step;
 			config.magneticField = B * unit_direction;
 			FaustSpinSim::Simulation simulation(config);
 			const auto point_result = simulation.run();
 			if (!point_result.converged) {
 				throw std::runtime_error("Spin minimization did not converge");
 			}
-
 			svb[i].first = B;
 			svb[i].second = point_result.frames.back().spinDirections.at(ion_index)[axis];
-			B = B + i * step;
 			svb[i].first = B;
 			svb[i].second = res.frames.back().spinDirections.at(ion_index)[axis];
 		}

@@ -16,6 +16,8 @@ public:
     explicit EnergyPlotDialog(QWidget *parent = nullptr);
     ~EnergyPlotDialog();
     void setResult(const UrFaustSim::SimulationResult &result);
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 private:
     Ui::EnergyPlotDialog *ui;
     QGraphicsScene *scene = nullptr;
