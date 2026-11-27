@@ -135,6 +135,7 @@
     <ClInclude Include="Additional calculus\Angles.h" />
     <ClInclude Include="Additional calculus\CurvesPart1.h" />
     <ClInclude Include="Additional calculus\IonMagnetMoment.h" />
+    <ClInclude Include="Faust math\Convert_Vector3D_Decart_To.h" />
     <ClInclude Include="Faust math\Exchange_Hamiltonian.h" />
     <ClInclude Include="Faust math\Faust_Matrix.h" />
     <ClInclude Include="1D\Neighbors_1D.h" />

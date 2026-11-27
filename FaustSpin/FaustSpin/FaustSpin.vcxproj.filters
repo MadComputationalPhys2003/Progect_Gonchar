@@ -98,5 +98,8 @@
     <ClInclude Include="Additional calculus\CurvesPart1.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Faust math\Convert_Vector3D_Decart_To.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

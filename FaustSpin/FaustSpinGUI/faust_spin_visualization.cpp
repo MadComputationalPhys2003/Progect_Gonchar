@@ -12,6 +12,8 @@
 #include <QCoreApplication>
 #include <QScrollArea>
 #include <QWheelEvent>
+#include <QKeySequence>
+#include <QShortcut>
 #include <algorithm>
 #include <cstddef>
 #include <limits>
@@ -21,6 +23,26 @@ FaustSpinVisualization::FaustSpinVisualization(QWidget *parent)
     , ui(new Ui::FaustSpinVisualization)
 {
     ui->setupUi(this);
+    setWindowFlag(Qt::WindowSystemMenuHint, true);
+    setWindowFlag(Qt::WindowMinMaxButtonsHint, true);
+
+    auto *fullScreenShortcut = new QShortcut(QKeySequence(Qt::Key_F11), this);
+    fullScreenShortcut->setAutoRepeat(false);
+
+    connect(fullScreenShortcut, &QShortcut::activated, this,
+            [this, wasMaximized = false]() mutable {
+                if (isFullScreen()) {
+                    if (wasMaximized) {
+                        showMaximized();
+                    } else {
+                        showNormal();
+                    }
+                } else {
+                    wasMaximized = isMaximized();
+                    showFullScreen();
+                }
+            });
+    ui->visualizationScrollArea->widget()->setMinimumHeight(936);
     ui->spinOpenGLWidget->installEventFilter(this);
     ui->visualizationScrollArea->setFocusPolicy(Qt::StrongFocus);
     ui->visualizationScrollArea->setFocus();

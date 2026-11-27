@@ -5,21 +5,59 @@
 #include"../Additional calculus/IonMagnetMoment.h"
 #include"../Additional calculus/Angles.h"
 #include<cmath>
+#include <numbers>
 #include <cstddef>
 #include <vector>
 #include <algorithm>
 
 namespace Curves1 {
-	inline std::vector<std::pair<double,double>> spin_direction_vs_B(const FaustSpinSim::SimulationResult& res,
-		std::size_t ion_index,std::size_t axis, const FaustSpinSim::Vector3& field_direction,
-		 double B_max,double B_min,std::uint64_t N_points) {
+	inline std::vector<std::pair<double,double>> spin_direction_vs_B_direction(const FaustSpinSim::SimulationResult& res,
+		std::size_t ion_index, std::size_t axis,std::size_t angle_flag,
+		double angle_max,double angle_min,double other_angle,std::uint64_t N_points) {
+		if (axis > 2) {
+			throw std::invalid_argument("Error! Wrong direction number. 0->x,1->y,2->z");
+		}
+		if (angle_flag > 1) {
+			throw std::invalid_argument("Error! angle_flag has to be 0 or 1");
+		}
+		auto config = res.config;
+		double B = Vector3D_Decart::norm(config.magneticField);
+		double step = std::abs(angle_max-angle_min) * 1.0 / (N_points - 1.0);
+		double angle = angle_min;
+		double& theta = angle_flag == 0 ? angle : other_angle;
+		double& phi = angle_flag == 0 ? other_angle : angle;
+		std::vector<std::pair<double,double>> svb_dir;
+		svb_dir.resize(N_points + 1);
+		//auto config = res.config;
+		config.zeemanEnabled = true;
+		for (std::size_t i = 0; i < N_points + 1; i++) {
+			angle = angle_min + (1.0*i) * step;
+			double x = std::sin(theta)*std::cos(phi) ;
+			double y = std::sin(theta)*std::sin(phi);
+			double z = std::cos(theta);
+			Vector3D_Decart::Vector3D_Dec  unit_direction(x, y, z);
+			config.magneticField = B * unit_direction;
+			FaustSpinSim::Simulation simulation(config);
+			const auto point_result = simulation.run();
+			if (!point_result.converged) {
+				throw std::runtime_error("Spin minimization did not converge");
+			}
+			svb_dir[i].first = angle;
+			svb_dir[i].second = point_result.frames.back().spinDirections.at(ion_index)[axis];
+		}
+		return svb_dir;
+	}
+	inline std::vector<std::pair<double, double>> spin_direction_vs_B_module(const FaustSpinSim::SimulationResult& res,
+		std::size_t ion_index, std::size_t axis, const FaustSpinSim::Vector3& field_direction,
+		double B_max, double B_min, std::uint64_t N_points)
+	{
 		if (axis > 2) {
 			throw std::invalid_argument("Error! Wrong direction number. 0->x,1->y,2->z");
 		}
 		double step = std::abs(B_min - B_max) * 1.0 / (N_points - 1.0);
 		double B = B_min;
-		std::vector<std::pair<double,double>> svb;
-		svb.resize(N_points + 1);
+		std::vector<std::pair<double, double>> svb_abs;
+		svb_abs.resize(N_points + 1);
 		auto config = res.config;
 		config.zeemanEnabled = true;
 		const double norm = Vector3D_Decart::norm(field_direction);
@@ -33,17 +71,18 @@ namespace Curves1 {
 			field_direction[2] / norm
 		};
 		for (std::size_t i = 0; i < N_points + 1; i++) {
-			B = B + i * step;
+			B = B_min + i * step;
 			config.magneticField = B * unit_direction;
 			FaustSpinSim::Simulation simulation(config);
 			const auto point_result = simulation.run();
 			if (!point_result.converged) {
 				throw std::runtime_error("Spin minimization did not converge");
 			}
-			svb[i].first = B;
-			svb[i].second = point_result.frames.back().spinDirections.at(ion_index)[axis];
+			svb_abs[i].first = B;
+			svb_abs[i].second = point_result.frames.back().spinDirections.at(ion_index)[axis];
 		}
-		return svb;
+		return svb_abs;
 	}
+
 
 }
