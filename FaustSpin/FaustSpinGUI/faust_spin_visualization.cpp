@@ -9,7 +9,9 @@
 #include <QSignalBlocker>
 #include <QSlider>
 #include <QSpinBox>
-
+#include <QCoreApplication>
+#include <QScrollArea>
+#include <QWheelEvent>
 #include <algorithm>
 #include <cstddef>
 #include <limits>
@@ -19,6 +21,9 @@ FaustSpinVisualization::FaustSpinVisualization(QWidget *parent)
     , ui(new Ui::FaustSpinVisualization)
 {
     ui->setupUi(this);
+    ui->spinOpenGLWidget->installEventFilter(this);
+    ui->visualizationScrollArea->setFocusPolicy(Qt::StrongFocus);
+    ui->visualizationScrollArea->setFocus();
     setWindowTitle(tr("FaustSpin Visualization"));
 
     ui->frameSlider->setRange(0, 0);
@@ -166,4 +171,25 @@ void FaustSpinVisualization::openSaveFrameDialog()
     SaveFrameDialog dialog(this);
     dialog.setFrameSource(ui->spinOpenGLWidget, ui->frameSpinBox->value());
     dialog.exec();
+}
+bool FaustSpinVisualization::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == ui->spinOpenGLWidget && event->type() == QEvent::Wheel) {
+        auto *wheel = static_cast<QWheelEvent *>(event);
+        if (!wheel->modifiers().testFlag(Qt::ControlModifier)) {
+            auto *viewport = ui->visualizationScrollArea->viewport();
+            QWheelEvent scrollEvent(
+                viewport->mapFromGlobal(wheel->globalPosition()),
+                wheel->globalPosition(),
+                wheel->pixelDelta(), wheel->angleDelta(),
+                wheel->buttons(), wheel->modifiers(),
+                wheel->phase(), wheel->inverted(),
+                wheel->source(), wheel->pointingDevice());
+
+            QCoreApplication::sendEvent(viewport, &scrollEvent);
+            return true;
+        }
+    }
+
+    return QDialog::eventFilter(watched, event);
 }

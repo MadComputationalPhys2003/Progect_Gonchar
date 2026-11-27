@@ -21,7 +21,8 @@ public:
 
     // The result must remain alive and stable while this dialog is open.
     void setResult(const FaustSpinSim::SimulationResult &result);
-
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
 private:
     void updateFrame(int frameIndex);
     void openSaveFrameDialog();
