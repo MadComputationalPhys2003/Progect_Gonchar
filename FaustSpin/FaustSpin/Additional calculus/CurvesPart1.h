@@ -42,8 +42,6 @@ namespace Curves1 {
 			}
 			svb[i].first = B;
 			svb[i].second = point_result.frames.back().spinDirections.at(ion_index)[axis];
-			svb[i].first = B;
-			svb[i].second = res.frames.back().spinDirections.at(ion_index)[axis];
 		}
 		return svb;
 	}

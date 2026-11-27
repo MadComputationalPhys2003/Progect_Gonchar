@@ -24,6 +24,7 @@
 #include <QSize>
 #include <QSizeF>
 #include <QSvgGenerator>
+#include <QTimer>
 EnergyPlotDialog::EnergyPlotDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::EnergyPlotDialog)
@@ -39,6 +40,8 @@ EnergyPlotDialog::EnergyPlotDialog(QWidget *parent)
         );
     scene = new QGraphicsScene(this);
     ui->energyGraphicsView->setScene(scene);
+    ui->energyGraphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->energyGraphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->energyGraphicsView->setRenderHint(QPainter::Antialiasing);
     ui->energyGraphicsView->setBackgroundBrush(QBrush(Qt::white));
     ui->savePlotButton->setAutoDefault(false);
@@ -201,10 +204,12 @@ void EnergyPlotDialog::resizeEvent(QResizeEvent *event)
 {
     QDialog::resizeEvent(event);
 
-    if (scene && !scene->items().isEmpty()) {
-        ui->energyGraphicsView->fitInView(
-            scene->sceneRect(), Qt::KeepAspectRatio);
-    }
+    QTimer::singleShot(0, this, [this] {
+        if (scene && !scene->items().isEmpty()) {
+            ui->energyGraphicsView->fitInView(
+                scene->sceneRect(), Qt::KeepAspectRatio);
+        }
+    });
 }
 void EnergyPlotDialog::savePlot()
 {
